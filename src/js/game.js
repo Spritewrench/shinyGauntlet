@@ -16,33 +16,70 @@
       this.player.anchor.setTo(0.5, 0.5);
       this.player.width = 32;
       this.player.height = 32;
+      this.player.isRolling = 0;
+      
+      
+      
       this.input.onDown.add(this.onInputDown, this);
       this.speed = 4;
     },
 
     update: function () {
-      // Check key states every frame.
-      // Move ONLY one of the left and right key is hold.
 
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
-      {
-          this.player.x -= this.speed;
+      //controls
+      if(this.player.isRolling == 0){
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
+        {
+            this.player.angle = -90;
+            this.player.x -= this.speed;
 
+        }
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
+        {
+            this.player.angle = 90;
+            this.player.x += this.speed;
+        }
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP))
+        {
+            this.player.angle = 0;
+            this.player.y -= this.speed;
+        }
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
+        {
+            this.player.angle = -180;
+            this.player.y += this.speed;
+        }  
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.C) ){
+          this.player.isRolling = 20;
+          alert(this.player.angle);
+        }         
       }
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
-      {
-          this.player.x += this.speed;
-      }
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP))
-      {
-          this.player.y -= this.speed;
-      }
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
-      {
-          this.player.y += this.speed;
-      }      
+      
+        
 
-
+      //----------------------------------------------------------------------------
+      
+      
+      if(this.player.isRolling > 0){
+        this.player.isRolling--;
+        switch(this.player.angle){
+          case 0:
+            this.player.y -= this.speed*2;
+            break;
+          case 90:
+            this.player.x += this.speed*2;
+            break;
+          case -90:
+            this.player.x -= this.speed*2;
+            break;
+          case -180:
+            this.player.y += this.speed*2;
+            break;
+          default:
+            break;
+        }
+      }
+      
     },
 
     onInputDown: function () {
