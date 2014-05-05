@@ -14,6 +14,8 @@
 
       this.player = this.add.sprite(x, y, 'player');
       this.player.anchor.setTo(0.5, 0.5);
+      this.player.worldPosX=0;
+      this.player.worldPosY=0;
       this.player.width = 32;
       this.player.height = 32;
       //custom object variables
@@ -30,7 +32,24 @@
     },
 
     update: function () {
-
+      //alert(quest.tarMon);
+      
+      if(this.player.y > 600){
+        this.player.y = 0;
+        this.player.worldPosY -= 1; 
+      }
+      if(this.player.y < 0){
+        this.player.y = 600;
+        this.player.worldPosY += 1; 
+      } 
+      if(this.player.x > 800){
+        this.player.x = 0;
+        this.player.worldPosX -= 1; 
+      }
+      if(this.player.x < 0){
+        this.player.x = 800;
+        this.player.worldPosX += 1; 
+      }       
       //controls
       if(this.player.isRolling == 0){
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
