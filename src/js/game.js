@@ -4,6 +4,8 @@
   function Game() {
     this.player = null;
     this.speed = null;
+    this.monster = [];
+    this.monsterType = [];
   }
 
   Game.prototype = {
@@ -29,49 +31,90 @@
       
       this.input.onDown.add(this.onInputDown, this);
       this.speed = 4;
+      
+      
+      
+      ////////////////////////////////////////////////////////////////////////////////////////////
+      // Monsters
+      ////////////////////////////////////////////////////////////////////////////////////////////
+      
+      for(var j = 0; j < 1; j++ ){
+        for(var i = 0; i < 5; i++ ){
+          var x = Math.floor((Math.random()*450)-30);
+          var y = Math.floor((Math.random()*450)-30);
+          this.monster[i] = this.add.sprite(x, y, 'player');
+          this.monster[i].anchor.setTo(0.5, 0.5);
+          this.monster[i].width = 32;
+          this.monster[i].height = 32;    
+          this.monster[i].name = j;
+          this.monster[i].hp = mon[this.monster[i].name].hp;
+          this.monster[i].speed = mon[this.monster[i].name].speed;
+          //where monster appears
+          this.monster[i].posX = mon[this.monster[i].name].posX;
+          this.monster[i].posY = mon[this.monster[i].name].posY;
+          this.monster[i].visible = false;        
+        }        
+      }
+        
+      ////////////////////////////////////////////////////////////////////////////////////////////
+        
+      
+      
     },
 
     update: function () {
       //alert(quest.tarMon);
-      
+      for(var i = 0; i < this.monster.length;i++){
+        //this.playerHit;
+        //this.physics.collide(this.player.wep, this.monster[i], this.monHit, null, this); 
+        this.physics.collide(this.player, this.monster[i], this.playerHit, null, this); 
+      }
+      ///////////////////////////////////////////////////////////////////////////////////////////
       if(this.player.y > 600){
         this.player.y = 0;
-        this.player.worldPosY -= 1; 
+        this.player.worldPosY -= 1;
+        this.reload();
       }
       if(this.player.y < 0){
         this.player.y = 600;
         this.player.worldPosY += 1; 
+        this.reload();
       } 
       if(this.player.x > 800){
         this.player.x = 0;
         this.player.worldPosX -= 1; 
+        this.reload();
       }
       if(this.player.x < 0){
         this.player.x = 800;
         this.player.worldPosX += 1; 
+        this.reload();
       }       
       //controls
       if(this.player.isRolling == 0){
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
         {
             this.player.angle = -90;
-            this.player.x -= this.speed;
+            this.player.body.x -= this.speed;
 
         }
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
+        else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
         {
             this.player.angle = 90;
-            this.player.x += this.speed;
+            this.player.body.velocity.x += this.speed;
+        }
+        else {
+          this.player.body.velocity.x = 0;
         }
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP))
         {
             this.player.angle = 0;
-            this.player.y -= this.speed;
+            this.player.body.y -= this.speed;
         }
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
         {
             this.player.angle = -180;
-            this.player.y += this.speed;
+            this.player.body.y += this.speed;
         }  
         //attack
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.A) ){
@@ -101,15 +144,7 @@
         }
         else{
           this.player.wep.visible = false;
-        }
-        //debug switch wep
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.S) ){
-          this.player.wepType = 2;          
-        } 
-        //debug switch wep
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.X) ){
-          this.player.wepType = 1;          
-        }         
+        }       
         //roll
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.D) ){
           this.player.isRolling = 20;
@@ -161,10 +196,36 @@
       }
       
     },
+    playerHit: function (obj1, obj2) {
+
+      //this.game.state.start('menu');
+      obj2.visible = false;
+    },
+    reload: function () {
+      //alert(this.player.worldPosX+" "+this.player.worldPosY);
+      for(var j = 0; j < this.monster.length;j++){
+        for(var i = 0; i < this.monster[j].posX.length;i++){
+          if(this.player.worldPosX === this.monster[j].posX[i]  &&  this.player.worldPosY === this.monster[j].posY[i]){
+            //alert("!");
+            this.monster[j].x = Math.floor((Math.random()*770)+30);
+            this.monster[j].y = Math.floor((Math.random()*570)+30);            
+            this.monster[j].visible = true;
+            i = this.monster[j].posX.length;
+          }
+          else{
+            this.monster[j].visible = false;
+          }        
+        }        
+      }
+        
+
+    },
+
 
     onInputDown: function () {
       this.game.state.start('menu');
     }
+    
 
   };
 
