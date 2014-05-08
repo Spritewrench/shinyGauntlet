@@ -14,6 +14,19 @@
 
       this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
       this.load.setPreloadSprite(this.asset);
+      this.load.image('00', 'assets/world/00.png');
+      this.load.image('01', 'assets/world/01.png');
+      this.load.image('11', 'assets/world/11.png');
+      this.load.image('10', 'assets/world/10.png');
+      this.load.image('0-1', 'assets/world/0-1.png');
+      this.load.image('-10', 'assets/world/-10.png');
+      this.load.image('-1-1', 'assets/world/-1-1.png');
+      
+      
+      
+      
+      
+      
       this.load.image('player', 'assets/player.png');
       this.load.image('player2', 'assets/player.png');
       this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.xml');
