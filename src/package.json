@@ -1,5 +1,5 @@
 {
-  "main": "index.html",
+  "main": "app://xyz/index.html",
   "name": "shiny_gauntlet",
   "description": "demo app of node-webkit",
   "version": "0.1.0",
