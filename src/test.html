@@ -1,0 +1,24 @@
+
+
+<html>
+  <head>
+  </head>
+  <script>
+      var seed = "441111";
+      function genDungeon(seed){
+        var world = [];
+        var x = seed[0];
+        var y = seed[1];
+        var monQue = seed.substr(2, seed.length);
+        
+        var mon = [];
+        mon = monQue.match(new RegExp(".{1,2}", "g"));        
+        alert(mon[0]);
+      }  
+      genDungeon(seed);
+  </script>
+  <body>
+  </body>
+  
+
+</html>

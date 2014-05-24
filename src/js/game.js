@@ -32,8 +32,8 @@
       this.player.anchor.setTo(0.5, 0.5);
       this.player.worldPosX=posX;
       this.player.worldPosY=posY;
-      this.player.width = 32;
-      this.player.height = 32;
+      this.player.width = 64;
+      this.player.height = 64;
       //custom object variables
       this.player.isRolling = 0;
       this.player.hp = 10;
@@ -187,7 +187,7 @@
       if(this.player.isRolling == 0){
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
         {
-            this.player.angle = -90;
+            //this.player.angle = -90;
             this.player.body.velocity.x = -this.speed;
 
         }
@@ -195,7 +195,7 @@
         
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
         {
-            this.player.angle = 90;
+            //this.player.angle = 90;
             this.player.body.velocity.x = this.speed;
             
         }
@@ -203,13 +203,13 @@
 
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP))
         {
-            this.player.angle = 0;
+            //this.player.angle = 0;
             this.player.body.velocity.y = -this.speed;
         }
 
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
         {
-            this.player.angle = -180;
+            //this.player.angle = -180;
             this.player.body.velocity.y = this.speed;
         }
       
