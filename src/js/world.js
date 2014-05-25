@@ -12,7 +12,7 @@ function genDungeon(seed){
   
   for(var i =0; i < x; i++){
     for(var j =0; j < y; j++){
-      alert(''+i+j);
+
       world[''+i+j] = new Object();
       world[''+i+j].posX = 0;
       world[''+i+j].posY = 0;
@@ -25,8 +25,8 @@ function genDungeon(seed){
       for(var k = 0; k < world[''+i+j].monCount; k ++){
         //monster stats
         world[''+i+j].mon[k] = new Object();
-        world[''+i+j].mon[k].x = 50;
-        world[''+i+j].mon[k].y = 50;
+        world[''+i+j].mon[k].x = 400;
+        world[''+i+j].mon[k].y = 300;
         world[''+i+j].mon[k].hp = 1;
         world[''+i+j].mon[k].speed = 1;
         world[''+i+j].mon[k].name = 'player';

@@ -158,26 +158,26 @@
       ///////////////////////////////////////////////////////////////////////////////////////////
       if(this.player.y > 600){
         this.player.y = 0;
-        this.player.worldPosY -= 1;
+        this.player.worldPosY += 1;
         this.reload();
         //this.bg.y = -500;
         
       }
       if(this.player.y < 0){
         this.player.y = 600;
-        this.player.worldPosY += 1; 
+        this.player.worldPosY -= 1; 
         this.reload();
         //this.bg.y = 500;
       } 
       if(this.player.x > 800){
         this.player.x = 0;
-        this.player.worldPosX -= 1; 
+        this.player.worldPosX += 1; 
         this.reload();
         //this.bg.x = -700;
       }
       if(this.player.x < 0){
         this.player.x = 800;
-        this.player.worldPosX += 1; 
+        this.player.worldPosX -= 1; 
         this.reload();
         //this.bg.x = 700;
       }       
