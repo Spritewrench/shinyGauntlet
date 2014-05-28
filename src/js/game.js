@@ -38,11 +38,10 @@
       this.player.isRolling = 0;
       this.player.hp = 10;
       this.player.wepType = 1;
-      this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'player');
-      this.player.wep.width = 16;
-      this.player.wep.height = 32;
+      this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1');
+
       this.player.wep.dmg = 1;
-      this.player.wep.visible = false;
+      //this.player.wep.visible = false;
       
       
       this.input.onDown.add(this.onInputDown, this);
@@ -157,28 +156,62 @@
       }
       ///////////////////////////////////////////////////////////////////////////////////////////
       if(this.player.y > 600){
-        this.player.y = 0;
-        this.player.worldPosY += 1;
-        this.reload();
+        var newY = this.player.worldPosY+1;
+        alert(world[''+this.player.worldPosX+newY]);
+        if(typeof world[''+this.player.worldPosX+newY] !== 'undefined'){
+          this.player.y = 0;
+          this.player.worldPosY = newY;
+
+          this.reload();
+        }
+        else{
+          this.player.y = 600;
+        }
+        
+
         //this.bg.y = -500;
         
       }
       if(this.player.y < 0){
-        this.player.y = 600;
-        this.player.worldPosY -= 1; 
-        this.reload();
+        var newY = this.player.worldPosY-1;
+        alert(world[''+this.player.worldPosX+newY]);
+        if(typeof world[''+this.player.worldPosX+newY] !== 'undefined'){
+          this.player.y = 600;
+          this.player.worldPosY = newY;
+
+          this.reload();
+        }
+        else{
+          this.player.y = 0;
+        }
         //this.bg.y = 500;
       } 
       if(this.player.x > 800){
-        this.player.x = 0;
-        this.player.worldPosX += 1; 
-        this.reload();
+        var newX = this.player.worldPosX+1;
+        alert(world[''+this.player.worldPosX+newY]);
+        if(typeof world[''+newX+this.player.worldPosY] !== 'undefined'){
+          this.player.x = 0;
+          this.player.worldPosX = newX;
+
+          this.reload();
+        }
+        else{
+          this.player.x = 800;
+        }
         //this.bg.x = -700;
       }
       if(this.player.x < 0){
-        this.player.x = 800;
-        this.player.worldPosX -= 1; 
-        this.reload();
+        var newX = this.player.worldPosX-1;
+        alert(world[''+this.player.worldPosX+newY]);
+        if(typeof world[''+newX+this.player.worldPosY] !== 'undefined'){
+          this.player.x = 800;
+          this.player.worldPosX = newX;
+
+          this.reload();
+        }
+        else{
+          this.player.x = 0;
+        }
         //this.bg.x = 700;
       }       
       //controls\
@@ -240,7 +273,8 @@
           }
         }
         else{
-          this.player.wep.visible = false;
+              this.player.wep.body.x = this.player.x+this.player.wep.width + 5;
+              this.player.wep.body.y = this.player.y-this.player.wep.height+25;
         }       
         //roll
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.D) ){

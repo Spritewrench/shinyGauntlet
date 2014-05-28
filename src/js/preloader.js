@@ -35,6 +35,7 @@
       
       
       this.load.image('player', 'assets/player.png');
+      this.load.image('regSwrd1', 'assets/regSwrd1.png');
       this.load.image('player2', 'assets/player.png');
       this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.xml');
     },
