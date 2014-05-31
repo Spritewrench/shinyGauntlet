@@ -1,4 +1,4 @@
-var seed = "441111";
+var seed = "111111";
 var world = [];
 function genDungeon(seed){
   var world = [];
@@ -38,6 +38,4 @@ function genDungeon(seed){
 }
 
 world = genDungeon(seed);
-
-
 

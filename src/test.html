@@ -1,0 +1,23 @@
+<html>
+ <head>
+  <script src="js/lib/jquery-1.11.1.min.js"></script>
+<script>
+$(document).ready(function(){
+ $('input').keyup(function(e){
+  if(e.which==39)
+   $(this).closest('td').next().find('input').focus();
+  else if(e.which==37)
+   $(this).closest('td').prev().find('input').focus();
+  else if(e.which==40)
+   $(this).closest('tr').next().find('td:eq('+$(this).closest('td').index()+')').find('input').focus();
+  else if(e.which==38)
+   $(this).closest('tr').prev().find('td:eq('+$(this).closest('td').index()+')').find('input').focus();
+ });
+});
+</script>
+</head>
+ <body>
+  <input type="text">
+  <input type="text">
+</body>
+</html>

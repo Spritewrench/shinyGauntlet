@@ -10,6 +10,14 @@ html, body {
   margin: 0px;
 }
 
+#titleScreen{
+  padding-top: 100px;
+  text-align: center;
+}
+input{
+  display : block; 
+  margin : auto;  
+}
 .game {
 
   margin: 0px auto;

@@ -17,7 +17,7 @@
       for(var j = 0; j < Object.keys(world).length; j++){
         
         var map = Object.keys(world)[j];
-        this.load.image(''+map, 'assets/world/'+map+'.png');
+        this.load.image(''+map, 'assets/world/00.png');
        
         for(var i = 0; i < world[map].monCount; i++){
           
@@ -45,8 +45,11 @@
     },
 
     update: function () {
-      if (!!this.ready) {
-        this.game.state.start('menu');
+      if (this.ready===true) {
+        //this.ready=true;
+        //hide loading css
+        this.game.state.start('game');
+        
       }
     },
 

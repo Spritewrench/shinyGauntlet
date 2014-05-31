@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>shiny-gauntlet</title>
+
+  <!-- build:css main.min.css -->
+  <link rel="stylesheet" href="css/main.css"> 
+  <link rel="stylesheet" href="css/stylesheet.css" type="text/css" charset="utf-8" />
+  <!-- /build -->
+</head>
+
+<body>
+  
+
+  <div id="shiny-gauntlet-game" class="game" ></div>
+
+
+
+  <!-- build:js main.min.js -->
+  <script>
+    var world = [];
+    var seed = localStorage.getItem("dungeonSeed");
+    var x = seed[0];
+    var y = seed[1];
+    var monQue = seed.substr(2, seed.length);
+
+    var mon = [];
+    mon = monQue.match(new RegExp(".{1,2}", "g"));        
+
+
+    for(var i =0; i < x; i++){
+      for(var j =0; j < y; j++){
+
+        world[''+i+j] = new Object();
+        world[''+i+j].posX = 0;
+        world[''+i+j].posY = 0;
+        world[''+i+j].light = 800;
+        world[''+i+j].msg = 'How do I get out of here?';
+
+        // # of monsters on screen
+        world[''+i+j].monCount = 1;
+        world[''+i+j].mon = []
+        for(var k = 0; k < world[''+i+j].monCount; k ++){
+          //monster stats
+          world[''+i+j].mon[k] = new Object();
+          world[''+i+j].mon[k].x = 400;
+          world[''+i+j].mon[k].y = 300;
+          world[''+i+j].mon[k].hp = 1;
+          world[''+i+j].mon[k].speed = 1;
+          world[''+i+j].mon[k].name = 'player';
+        }      
+      }    
+    }    
+  </script>
+  <script src="js/lib/phaser.js"></script>
+  <script src="js/boot.js"></script>
+  <script src="js/preloader.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- /build -->
+  
+
+</body>
+</html>
+

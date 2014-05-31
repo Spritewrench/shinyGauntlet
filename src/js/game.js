@@ -61,6 +61,7 @@
 
     //in game messages
     var style = { font: '24px nunitolight', fill: '#fff', align: 'center' };
+      
     this.txt = this.add.text(x, this.txtTar, world[this.currentMap].msg, style) ;
     this.dmg = this.add.text(x, y, "",style) ;
 
@@ -157,7 +158,7 @@
       ///////////////////////////////////////////////////////////////////////////////////////////
       if(this.player.y > 600){
         var newY = this.player.worldPosY+1;
-        alert(world[''+this.player.worldPosX+newY]);
+        //alert(world[''+this.player.worldPosX+newY]);
         if(typeof world[''+this.player.worldPosX+newY] !== 'undefined'){
           this.player.y = 0;
           this.player.worldPosY = newY;
@@ -174,7 +175,7 @@
       }
       if(this.player.y < 0){
         var newY = this.player.worldPosY-1;
-        alert(world[''+this.player.worldPosX+newY]);
+        //alert(world[''+this.player.worldPosX+newY]);
         if(typeof world[''+this.player.worldPosX+newY] !== 'undefined'){
           this.player.y = 600;
           this.player.worldPosY = newY;
@@ -188,7 +189,7 @@
       } 
       if(this.player.x > 800){
         var newX = this.player.worldPosX+1;
-        alert(world[''+this.player.worldPosX+newY]);
+        //alert(world[''+this.player.worldPosX+newY]);
         if(typeof world[''+newX+this.player.worldPosY] !== 'undefined'){
           this.player.x = 0;
           this.player.worldPosX = newX;
@@ -202,7 +203,7 @@
       }
       if(this.player.x < 0){
         var newX = this.player.worldPosX-1;
-        alert(world[''+this.player.worldPosX+newY]);
+        //alert(world[''+this.player.worldPosX+newY]);
         if(typeof world[''+newX+this.player.worldPosY] !== 'undefined'){
           this.player.x = 800;
           this.player.worldPosX = newX;
@@ -253,7 +254,7 @@
           this.player.wep.angle = this.player.angle;
           switch(this.player.angle){
             case 0:
-              this.player.wep.body.x = this.player.x;
+              this.player.wep.body.x = this.player.x+this.player.wep.width + 5;this.player.wep.body.x = this.player.x+this.player.wep.width + 5;
               this.player.wep.body.y = this.player.y-(this.player.wep.height+16);
               break;
             case 90:
@@ -265,7 +266,7 @@
               this.player.wep.body.y = this.player.y; 
               break;
             case -180:
-              this.player.wep.body.x = this.player.x;
+              this.player.wep.body.x = this.player.x+this.player.wep.width + 5;
               this.player.wep.body.y = this.player.y+(this.player.wep.height+16);
               break;
             default:
@@ -386,7 +387,7 @@
 
 
     onInputDown: function () {
-      this.game.state.start('menu');
+      //this.game.state.start('menu');
     }
     
 
