@@ -14,26 +14,16 @@
 
       this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
       this.load.setPreloadSprite(this.asset);
-      for(var j = 0; j < Object.keys(world).length; j++){
-        
-        var map = Object.keys(world)[j];
-        this.load.image(''+map, 'assets/world/00.png');
-       
-        for(var i = 0; i < world[map].monCount; i++){
-          
-          this.load.image('world['+map+'].mon['+i+']', 'assets/'+world[map].mon[i].name+'.png');
 
-        }
-        
-      }
+      
    
 
       
       
       
-      
-      
-      
+      this.load.image('test','assets/player.png');
+      this.load.image('map', 'assets/world/00.png');
+      this.load.image('wall', 'assets/player.png');
       this.load.image('player', 'assets/player.png');
       this.load.image('regSwrd1', 'assets/regSwrd1.png');
       this.load.image('player2', 'assets/player.png');

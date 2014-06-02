@@ -13,6 +13,17 @@
     this.textCounter = 200;
     this.txtTar = 500;
     
+    this.topWall = null;
+    this.botWall = null;
+    this.leftWall = null;
+    this.rightWall = null;
+    
+    this.topWall2 = null;
+    this.botWall2 = null;
+    this.leftWall2 = null;
+    this.rightWall2 = null;    
+    
+    
     this.lightSize = 20;
     
   }
@@ -42,6 +53,65 @@
 
       this.player.wep.dmg = 1;
       //this.player.wep.visible = false;
+      
+      
+      //room walls
+      
+      this.topWall = this.add.sprite(0, 0, 'wall');
+      this.topWall.width = 800;
+      this.topWall.height = 50;
+
+      this.topWall.body.immovable = true;
+
+      
+      this.botWall = this.add.sprite(0,550, 'wall');
+      this.botWall.width = 800;
+      this.botWall.height = 50;
+
+      this.botWall.body.immovable = true;
+     
+      
+      
+      this.leftWall = this.add.sprite(0, 0, 'wall');
+      this.leftWall.width = 50;
+      this.leftWall.height = 600;
+
+      this.leftWall.body.immovable = true;
+ 
+      
+      this.rightWall = this.add.sprite(750, 0, 'wall');
+      this.rightWall.width = 50;
+      this.rightWall.height = 600;
+
+      this.rightWall.body.immovable = true;
+     
+      this.topWall2 = this.add.sprite(0, 0, 'wall');
+      this.topWall2.width = 800;
+      this.topWall2.height = 50;
+
+      this.topWall2.body.immovable = true;
+
+      
+      this.botWall2 = this.add.sprite(0,550, 'wall');
+      this.botWall2.width = 800;
+      this.botWall2.height = 50;
+
+      this.botWall2.body.immovable = true;
+     
+      
+      
+      this.leftWall2 = this.add.sprite(0, 0, 'wall');
+      this.leftWall2.width = 50;
+      this.leftWall2.height = 600;
+
+      this.leftWall2.body.immovable = true;
+ 
+      
+      this.rightWall2 = this.add.sprite(750, 0, 'wall');
+      this.rightWall2.width = 50;
+      this.rightWall2.height = 600;
+
+      this.rightWall2.body.immovable = true;
       
       
       this.input.onDown.add(this.onInputDown, this);
@@ -139,7 +209,7 @@
         lightLimit += 10;
       }
       this.lightSize += (lightLimit - this.lightSize)*0.1;
-      
+      //monster hurt
       for(var i = 0; i < this.monster.length;i++){
         //this.playerHit;
         
@@ -155,6 +225,32 @@
         }
           
       }
+      //collide with walls
+      if(this.topWall.visible == true){
+          this.physics.collide(this.player,this.topWall);
+      }
+      if(this.botWall.visible == true){
+          this.physics.collide(this.player,this.botWall);
+      }
+      if(this.leftWall.visible == true){
+          this.physics.collide(this.player,this.leftWall);
+      }      
+      if(this.rightWall.visible == true){
+          this.physics.collide(this.player,this.rightWall);
+      }
+      if(this.topWall2.visible == true){
+          this.physics.collide(this.player,this.topWall2);
+      }
+      if(this.botWall2.visible == true){
+          this.physics.collide(this.player,this.botWall2);
+      }
+      if(this.leftWall2.visible == true){
+          this.physics.collide(this.player,this.leftWall2);
+      }      
+      if(this.rightWall2.visible == true){
+          this.physics.collide(this.player,this.rightWall2);
+      }      
+      
       ///////////////////////////////////////////////////////////////////////////////////////////
       if(this.player.y > 600){
         var newY = this.player.worldPosY+1;
@@ -361,17 +457,75 @@
       //alert(this.player.worldPosX+" "+this.player.worldPosY);
       
       this.currentMap = ''+this.player.worldPosX+this.player.worldPosY;
-      this.bg.loadTexture(this.currentMap);
+      this.bg.loadTexture('map');
       this.textCounter = 200;
       this.txt.setText(world[this.currentMap].msg);
+      
+      //place walls
+      if(this.player.worldPosX ===0){
+        this.leftWall.height = 600;
+        this.leftWall.y = 0;
+        this.leftWall2.height = 600;
+        this.leftWall2.y = 0;
+      }
+      else{
+        this.leftWall.height = 200;
+        this.leftWall.y = 0;
+        this.leftWall2.height = 200;
+        this.leftWall2.y = 400;
+        
+      }
+      
+      if(this.player.worldPosY ===0){
+        this.topWall.width = 800;
+        this.topWall.x = 0;
+        this.topWall2.width = 800;        
+        this.topWall2.x = 0;
+      }
+      else{
+        this.topWall.width = 300;
+        this.topWall.x = 0;
+        this.topWall2.width = 300;        
+        this.topWall2.x = 500;
+      }     
+
+      if(this.player.worldPosX == worldLimitX-1){
+        this.rightWall.height = 600;
+        this.rightWall.y = 0;
+        this.rightWall2.height = 600;
+        this.rightWall2.y = 0;
+      }
+      else{
+        this.rightWall.height = 200;
+        this.rightWall.y = 0;
+        this.rightWall2.height = 200;
+        this.rightWall2.y = 400;
+      }
+      
+      if(this.player.worldPosY == worldLimitX-1){
+        this.botWall.width = 800;
+        this.botWall.x = 0;
+        this.botWall2.width = 800;        
+        this.botWall2.x = 0;
+      }
+      else{
+        this.botWall.width = 300;
+        this.botWall.x = 0;
+        this.botWall2.width = 300;        
+        this.botWall2.x = 500;
+      }      
+      
+      
+      //hide monsters
       for(var i = 0; i < this.monster.length; i++){
         this.monster[i].visible = false;  
       }
+      //load new monsters
       for(var i = 0; i < world[this.currentMap].monCount;i++){
           var x = world[this.currentMap].mon[i].x;
           var y = world[this.currentMap].mon[i].y;
         
-          this.monster[i] = this.add.sprite(x, y, 'world['+this.currentMap+'].mon['+i+']');
+          this.monster[i] = this.add.sprite(x, y, 'test');
           this.monster[i].anchor.setTo(0.5, 0.5);
           this.monster[i].width = 32;
           this.monster[i].height = 32;    
