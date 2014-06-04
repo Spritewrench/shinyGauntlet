@@ -212,7 +212,11 @@
       //monster hurt
       for(var i = 0; i < this.monster.length;i++){
         //this.playerHit;
-        
+        //monster action
+        if(this.monster[i].hp > 0){
+          
+          behaviour(this.monster[i],this.player);
+        }
         if (this.monster[i].visible){
           if(this.monster[i].hp <= 0){
             this.monster[i].visible = false;
@@ -529,7 +533,7 @@
           this.monster[i].anchor.setTo(0.5, 0.5);
           this.monster[i].width = 32;
           this.monster[i].height = 32;    
-
+          this.monster[i].monType = world[this.currentMap].mon[i].monType;
           this.monster[i].hp = world[this.currentMap].mon[i].hp;
           this.monster[i].speed = world[this.currentMap].mon[i].speed;
           //this.monster[i].visible = false;   
