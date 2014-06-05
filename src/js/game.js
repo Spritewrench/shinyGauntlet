@@ -215,7 +215,7 @@
         //monster action
         if(this.monster[i].hp > 0){
           
-          behaviour(this.monster[i],this.player);
+          move(this.monster[i],this.player);
         }
         if (this.monster[i].visible){
           if(this.monster[i].hp <= 0){
@@ -426,6 +426,11 @@
             break;
         }
       }
+      //player death
+      if(this.player.hp <= 0){
+        this.game.state.start('menu');
+        this.player.hp = 10;
+      }
       
       
       
@@ -449,11 +454,8 @@
       this.dmg.anchor.setTo(0.5, 0.5);      
   
     },    
-    playerHit: function (obj1, obj2) {
+    playerHit: function (obj1, obj2) {  
 
-      
-      obj2.body.velocity.x = 0;
-      obj2.body.velocity.y = 0;
     },
 
     
@@ -536,6 +538,7 @@
           this.monster[i].monType = world[this.currentMap].mon[i].monType;
           this.monster[i].hp = world[this.currentMap].mon[i].hp;
           this.monster[i].speed = world[this.currentMap].mon[i].speed;
+          this.monster[i].body.immovable = true;
           //this.monster[i].visible = false;   
           this.spriteGroup.add(this.monster[i]);
       }
