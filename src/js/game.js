@@ -508,7 +508,7 @@
         this.rightWall2.y = 400;
       }
       
-      if(this.player.worldPosY == worldLimitX-1){
+      if(this.player.worldPosY == worldLimitY-1){
         this.botWall.width = 800;
         this.botWall.x = 0;
         this.botWall2.width = 800;        

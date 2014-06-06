@@ -23,7 +23,7 @@
       
       this.load.image('test','assets/player.png');
       this.load.image('map', 'assets/world/00.png');
-      this.load.image('wall', 'assets/player.png');
+      this.load.image('wall', 'assets/wall.png');
       this.load.image('player', 'assets/player.png');
       this.load.image('regSwrd1', 'assets/regSwrd1.png');
       this.load.image('player2', 'assets/player.png');
