@@ -1,6 +1,7 @@
 function move(mon, player){
   var monType = parseInt(mon.monType);
   switch(monType){
+    //chase
     case 1:        
 
       var tx = player.x - mon.x,
@@ -12,19 +13,28 @@ function move(mon, player){
       mon.body.x += velX;
       mon.body.y += velY;     
 
-
-      // distance check
-      var x = player.x - mon.x;
-      var y = player.y - mon.y;
-      distance = Math.sqrt(x*x + y*y);
       
       if(distance <= 50){
         attack(mon,player);
       }
-      
       break;
-     
+    //run away
+    case 2:        
+
+      var tx = player.x - mon.x,
+          ty = player.y - mon.y,
+          dist = Math.sqrt(tx*tx+ty*ty);
+
+      velX = (tx/dist)*mon.speed;
+      velY = (ty/dist)*mon.speed;     
+      mon.body.x -= velX;
+      mon.body.y -= velY;     
+
       
+      if(distance <= 50){
+        attack(mon,player);
+      }
+      break;      
   }
 }
 function attack(mon, player){
