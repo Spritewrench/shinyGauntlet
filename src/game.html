@@ -26,7 +26,8 @@
     var worldLimitX = x;
     var worldLimitY = y;
     var monQue = seed.substr(2, seed.length);
-
+    localStorage.setItem("heroStartX",''+Math.floor((Math.random()*worldLimitX)+0));
+    localStorage.setItem("heroStartY",''+Math.floor((Math.random()*worldLimitY)+0));
     var mon = [];
     mon = monQue.match(new RegExp(".{1,2}", "g"));        
     
@@ -50,7 +51,7 @@
           world[''+i+j].mon[k].x = 400;
           world[''+i+j].mon[k].y = 300;
           world[''+i+j].mon[k].hp = 1;
-          world[''+i+j].mon[k].speed = 1;
+          world[''+i+j].mon[k].speed = 4;
           world[''+i+j].mon[k].name = 'player';
           world[''+i+j].mon[k].monType = mon[0][0];
 

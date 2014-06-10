@@ -14,8 +14,8 @@ function move(mon, player){
       mon.body.y += velY;     
 
       
-      if(distance <= 50){
-        attack(mon,player);
+      if(dist <= 50){
+        //attack(mon,player);
       }
       break;
     //run away
@@ -31,7 +31,7 @@ function move(mon, player){
       mon.body.y -= velY;     
 
       
-      if(distance <= 50){
+      if(dist <= 50){
         attack(mon,player);
       }
       break;      
@@ -41,7 +41,7 @@ function attack(mon, player){
   var monType = parseInt(mon.monType);
   switch(monType){
     case 1:        
-      //player.hp--;
+      player.hp--;
       //alert ("brains~~");
       break;
     case 1:        

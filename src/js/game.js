@@ -33,18 +33,20 @@
     create: function () {
       var x = this.game.width / 2
         , y = this.game.height / 2;
-      var posX = 0;
-      var posY = 0;
+      var posX = localStorage.getItem("heroStartX");
+      var posY = localStorage.getItem("heroStartY");
+      console.log(posX+posY);
       this.spriteGroup = this.add.group();
       this.shadowGroup = this.add.group();
       this.textGroup = this.add.group();
       this.bg = this.add.sprite(0, 0, ''+posX+posY);
       this.player = this.add.sprite(x, y, 'player');
       this.player.anchor.setTo(0.5, 0.5);
-      this.player.worldPosX=posX;
-      this.player.worldPosY=posY;
+      this.player.worldPosX=parseInt(posX);
+      this.player.worldPosY=parseInt(posY);
       this.player.width = 64;
       this.player.height = 64;
+      this.player.direction = 1;
       //custom object variables
       this.player.isRolling = 0;
       this.player.hp = 10;
@@ -52,6 +54,7 @@
       this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1');
 
       this.player.wep.dmg = 1;
+      this.player.wep.anchor.setTo(0.5, 0.5);
       //this.player.wep.visible = false;
       
       
@@ -213,15 +216,16 @@
       for(var i = 0; i < this.monster.length;i++){
         //this.playerHit;
         //monster action
-        if(this.monster[i].hp > 0){
-          
-          move(this.monster[i],this.player);
-        }
+
         if (this.monster[i].visible){
+          if(this.monster[i].hp > 0){
+
+            move(this.monster[i],this.player);
+          }          
           if(this.monster[i].hp <= 0){
             this.monster[i].visible = false;
           }
-          if(this.player.wep.visible == true){
+          if(this.player.wep.visible == true  && this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
             this.physics.overlap(this.player.wep, this.monster[i], this.monHit, null, this); 
           }
           
@@ -266,6 +270,7 @@
           this.reload();
         }
         else{
+          
           this.player.y = 600;
         }
         
@@ -318,10 +323,10 @@
       //controls\
       this.player.body.velocity.x = 0;
       this.player.body.velocity.y = 0;
-      if(this.player.isRolling == 0){
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.A) ){
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
         {
-            //this.player.angle = -90;
+            this.player.direction = 4;
             this.player.body.velocity.x = -this.speed;
 
         }
@@ -329,7 +334,7 @@
         
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
         {
-            //this.player.angle = 90;
+            this.player.direction  = 2;
             this.player.body.velocity.x = this.speed;
             
         }
@@ -337,52 +342,54 @@
 
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP))
         {
-            //this.player.angle = 0;
+            this.player.direction  = 1;
             this.player.body.velocity.y = -this.speed;
         }
 
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
         {
-            //this.player.angle = -180;
+            this.player.direction  = 3;
             this.player.body.velocity.y = this.speed;
         }
-      
-        //attack
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.A) ){
-
-          this.player.wep.visible = true;
-          this.player.wep.angle = this.player.angle;
-          switch(this.player.angle){
-            case 0:
-              this.player.wep.body.x = this.player.x+this.player.wep.width + 5;this.player.wep.body.x = this.player.x+this.player.wep.width + 5;
-              this.player.wep.body.y = this.player.y-(this.player.wep.height+16);
-              break;
-            case 90:
-              this.player.wep.body.x = this.player.x+(this.player.wep.height+16);
-              this.player.wep.body.y = this.player.y; 
-              break;
-            case -90:
-              this.player.wep.body.x = this.player.x-(this.player.wep.height+16);
-              this.player.wep.body.y = this.player.y; 
-              break;
-            case -180:
-              this.player.wep.body.x = this.player.x+this.player.wep.width + 5;
-              this.player.wep.body.y = this.player.y+(this.player.wep.height+16);
-              break;
-            default:
-              break;
-          }
-        }
-        else{
-              this.player.wep.body.x = this.player.x+this.player.wep.width + 5;
-              this.player.wep.body.y = this.player.y-this.player.wep.height+25;
-        }       
-        //roll
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.D) ){
-          this.player.isRolling = 20;
-          this.player.wep.visible = false;
-        }         
       }
+      //attack
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.A) ){
+
+        this.player.wep.visible = true;
+        this.player.wep.angle = this.player.angle;
+        console.log(this.player.direction);
+        switch(this.player.direction){
+          case 1:
+
+            this.player.wep.body.x = this.player.x;
+            this.player.wep.body.y = this.player.y-(this.player.wep.height+16);
+            break;
+          case 2:
+            this.player.wep.body.x = this.player.x+this.player.wep.width+ 32;
+            this.player.wep.body.y = this.player.y-this.player.wep.width-8; 
+            this.player.wep.angle = 90;
+            break;
+          case 3:
+            this.player.wep.body.x = this.player.x;
+            this.player.wep.body.y = this.player.y+8;
+            this.player.wep.angle = 180;
+            break;
+          case 4:
+            this.player.wep.body.x = this.player.x-this.player.width-8;
+            this.player.wep.body.y = this.player.y-this.player.wep.width-8;
+            this.player.wep.angle = -90;
+            break;
+          default:
+            break;
+        }
+      }
+      else{
+          this.player.wep.body.x = this.player.x+this.player.wep.width + 5;
+          this.player.wep.body.y = this.player.y-this.player.wep.height+25;
+          this.player.wep.angle = 0;
+      }       
+      
+      
       
         
 
@@ -405,27 +412,7 @@
         default:
           break;
       }      */
-      
-      //roll logic
-      if(this.player.isRolling > 0){
-        this.player.isRolling--;
-        switch(this.player.angle){
-          case 0:
-            this.player.y -= this.speed*2;
-            break;
-          case 90:
-            this.player.x += this.speed*2;
-            break;
-          case -90:
-            this.player.x -= this.speed*2;
-            break;
-          case -180:
-            this.player.y += this.speed*2;
-            break;
-          default:
-            break;
-        }
-      }
+
       //player death
       if(this.player.hp <= 0){
         this.game.state.start('menu');
@@ -455,6 +442,7 @@
   
     },    
     playerHit: function (obj1, obj2) {  
+      attack(obj2,obj1);
 
     },
 
@@ -525,6 +513,11 @@
       //hide monsters
       for(var i = 0; i < this.monster.length; i++){
         this.monster[i].visible = false;  
+      }
+      var startPos = localStorage.getItem("heroStartX")+localStorage.getItem("heroStartY");
+      //starting room is empty
+      if(this.currentMap == startPos){
+        world[this.currentMap].monCount = 0;
       }
       //load new monsters
       for(var i = 0; i < world[this.currentMap].monCount;i++){

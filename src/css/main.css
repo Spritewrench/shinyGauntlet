@@ -12,18 +12,24 @@ html, body {
 }
 
 #titleScreen{
-  padding-top: 180px;
+  padding-top: 200px;
   text-align: center;
   font-family: 'chunkfiveroman';
-  font-size: 42px;
+  font-size: 24px;
   background-image:url('../assets/titleScreen.png');
   background-repeat:no-repeat;
-  background-position: center 0px;
+  background-position: 380px 0px;
 }
 input{
   display : block; 
   margin : auto;  
   text-align: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border:none;
+    -webkit-border-radius: 5px; 
+    -moz-border-radius: 5px; //For Mozilla, etc.
+    border-radius: 5px; //CSS3 Feature  
 }
 .game {
 
