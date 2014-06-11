@@ -25,12 +25,20 @@
     var y = seed[1];
     var worldLimitX = x;
     var worldLimitY = y;
-    var monQue = seed.substr(2, seed.length);
-    localStorage.setItem("heroStartX",''+Math.floor((Math.random()*worldLimitX)+0));
-    localStorage.setItem("heroStartY",''+Math.floor((Math.random()*worldLimitY)+0));
+    var monQue = seed.substr(6, seed.length);
+    localStorage.setItem("heroStartX",''+seed[2]);
+    localStorage.setItem("heroStartY",''+seed[3]);
+    localStorage.setItem("winX",''+seed[4]-1);
+    localStorage.setItem("winY",''+seed[5]-1);
+    if(seed[4] >= x){
+      localStorage.setItem("winX",''+x-1);
+    }
+    if(seed[5] >= y){
+      localStorage.setItem("winY",''+y-1);
+    }       
     var mon = [];
-    mon = monQue.match(new RegExp(".{1,2}", "g"));        
-    
+    mon = monQue.match(new RegExp(".{1,1}", "g"));        
+
     
     for(var i =0; i < x; i++){
       for(var j =0; j < y; j++){
@@ -40,7 +48,7 @@
         world[''+i+j].posY = 0;
         world[''+i+j].light = 800;
 
-        world[''+i+j].msg = 'How do I get out of here?';
+        
         
         // # of monsters on screen
         world[''+i+j].monCount = 1;
@@ -50,15 +58,65 @@
           world[''+i+j].mon[k] = new Object();
           world[''+i+j].mon[k].x = 400;
           world[''+i+j].mon[k].y = 300;
-          world[''+i+j].mon[k].hp = 1;
-          world[''+i+j].mon[k].speed = 4;
+          world[''+i+j].mon[k].hp = 3;
+          world[''+i+j].mon[k].speed = 2;
           world[''+i+j].mon[k].name = 'player';
           world[''+i+j].mon[k].monType = mon[0][0];
-
-          world[''+i+j].mon[k].prefix = mon[0][1];
+          world[''+i+j].mon[k].def = 0;
+          world[''+i+j].mon[k].size = 128;
+          world[''+i+j].mon[k].prefix = parseInt(mon[0][1]);
+          var prefix = "";
+          //prefix system
+          switch(world[''+i+j].mon[k].prefix){
+              default:
+                //normal
+                break;              
+              case 1:
+                //iron
+                prefix = "Iron";
+                world[''+i+j].mon[k].def = 2;
+                break;
+              case 2:
+                //wimpy
+                prefix = "Wimpy";
+                world[''+i+j].mon[k].def = -2;
+                break;
+              case 3:
+                //hulking
+                prefix = "Hulking";
+                 world[''+i+j].mon[k].hp += 2;
+                break;
+              case 4:
+                //wounded
+                prefix = "Wounded";
+                world[''+i+j].mon[k].hp -= 2;
+                break;
+              case 5:
+                //hasty
+                prefix = "Hasty";
+                world[''+i+j].mon[k].speed++;
+                break;
+              case 6:
+                //lazy
+                prefix = "Lazy";
+                world[''+i+j].mon[k].speed--;
+                break;     
+              case 7:
+                //titanic
+                prefix = "Titanic";
+                world[''+i+j].mon[k].size = world[''+i+j].mon[k].size*2;
+                break;
+              case 8:
+                //impish
+                prefix = "Impish";
+                world[''+i+j].mon[k].size = world[''+i+j].mon[k].size/2;
+                break;              
+          }
+          world[''+i+j].msg = prefix+' Monster';
         }      
       }    
-    }    
+    } 
+
   </script>
   <script src="js/lib/phaser.js"></script>
   <script src="js/boot.js"></script>

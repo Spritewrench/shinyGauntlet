@@ -41,7 +41,7 @@ function attack(mon, player){
   var monType = parseInt(mon.monType);
   switch(monType){
     case 1:        
-      player.hp--;
+      player.hp = 0;
       //alert ("brains~~");
       break;
     case 1:        
@@ -54,5 +54,11 @@ function attack(mon, player){
       break;      
       
   }
+}
+function getHit(mon, damage){
+    
+    dmgTaken = damage + (-1*mon.def);  
+    //mon.monType = 2;
+    return dmgTaken;
 }
 

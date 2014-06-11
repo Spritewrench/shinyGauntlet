@@ -35,7 +35,6 @@
         , y = this.game.height / 2;
       var posX = localStorage.getItem("heroStartX");
       var posY = localStorage.getItem("heroStartY");
-      console.log(posX+posY);
       this.spriteGroup = this.add.group();
       this.shadowGroup = this.add.group();
       this.textGroup = this.add.group();
@@ -135,7 +134,7 @@
     //in game messages
     var style = { font: '24px nunitolight', fill: '#fff', align: 'center' };
       
-    this.txt = this.add.text(x, this.txtTar, world[this.currentMap].msg, style) ;
+    this.txt = this.add.text(x, this.txtTar, "", style) ;
     this.dmg = this.add.text(x, y, "",style) ;
 
     this.txt.anchor.setTo(0.5, 0.5);
@@ -224,6 +223,8 @@
           }          
           if(this.monster[i].hp <= 0){
             this.monster[i].visible = false;
+            
+
           }
           if(this.player.wep.visible == true  && this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
             this.physics.overlap(this.player.wep, this.monster[i], this.monHit, null, this); 
@@ -357,7 +358,6 @@
 
         this.player.wep.visible = true;
         this.player.wep.angle = this.player.angle;
-        console.log(this.player.direction);
         switch(this.player.direction){
           case 1:
 
@@ -431,14 +431,21 @@
     monHit: function (obj1, obj2) {
 
       //this.game.state.start('menu');
-    
-      obj2.hp -= this.player.wep.dmg;
+      var damage = getHit(obj2,this.player.wep.dmg)
+      if(damage > 0){
+        obj2.hp -= damage;
+      }
       
-      this.dmg.setText(this.player.wep.dmg);
+      
+      this.dmg.setText(damage);
       this.dmg.x = obj2.x;
       this.dmg.y = obj2.y;
       this.dmg.alpha = 5;
-      this.dmg.anchor.setTo(0.5, 0.5);      
+      this.dmg.anchor.setTo(0.5, 0.5);
+      if(obj2.monType == "win"){
+        
+        this.game.state.start('menu');
+      }      
   
     },    
     playerHit: function (obj1, obj2) {  
@@ -453,7 +460,7 @@
       this.currentMap = ''+this.player.worldPosX+this.player.worldPosY;
       this.bg.loadTexture('map');
       this.textCounter = 200;
-      this.txt.setText(world[this.currentMap].msg);
+      
       
       //place walls
       if(this.player.worldPosX ===0){
@@ -515,26 +522,55 @@
         this.monster[i].visible = false;  
       }
       var startPos = localStorage.getItem("heroStartX")+localStorage.getItem("heroStartY");
+      var winPos = localStorage.getItem("winX")+localStorage.getItem("winY");
       //starting room is empty
       if(this.currentMap == startPos){
         world[this.currentMap].monCount = 0;
+        world[this.currentMap].msg = "";
       }
+    
+
+      
       //load new monsters
       for(var i = 0; i < world[this.currentMap].monCount;i++){
           var x = world[this.currentMap].mon[i].x;
           var y = world[this.currentMap].mon[i].y;
-        
-          this.monster[i] = this.add.sprite(x, y, 'test');
-          this.monster[i].anchor.setTo(0.5, 0.5);
-          this.monster[i].width = 32;
-          this.monster[i].height = 32;    
-          this.monster[i].monType = world[this.currentMap].mon[i].monType;
-          this.monster[i].hp = world[this.currentMap].mon[i].hp;
-          this.monster[i].speed = world[this.currentMap].mon[i].speed;
-          this.monster[i].body.immovable = true;
+        //win over ride 
+          if(this.currentMap == winPos){
+            this.monster[i] = this.add.sprite(x, y, 'test');
+            this.monster[i].anchor.setTo(0.5, 0.5);
+            this.monster[i].width = 32;
+            this.monster[i].height = 32;    
+            this.monster[i].monType = "win";
+            this.monster[i].hp = 1;
+            this.monster[i].def = 0;
+            this.monster[i].speed = world[this.currentMap].mon[i].speed;
+            this.monster[i].body.immovable = true;   
+            world[this.currentMap].msg ="The way out";
+                
+          } 
+          else{
+            this.monster[i] = this.add.sprite(x, y, 'test');
+            this.monster[i].anchor.setTo(0.5, 0.5);
+            this.monster[i].width = world[this.currentMap].mon[i].size;
+            this.monster[i].height = world[this.currentMap].mon[i].size;    
+            this.monster[i].monType = world[this.currentMap].mon[i].monType;
+            this.monster[i].hp = world[this.currentMap].mon[i].hp;
+            this.monster[i].def = world[this.currentMap].mon[i].def;
+            this.monster[i].speed = world[this.currentMap].mon[i].speed;
+            this.monster[i].body.immovable = true;            
+          }
+
           //this.monster[i].visible = false;   
           this.spriteGroup.add(this.monster[i]);
+          //alert(this.monster[0].monType);
+          
+          
+         
+        
       }
+
+      this.txt.setText(world[this.currentMap].msg);
         
 
     },
