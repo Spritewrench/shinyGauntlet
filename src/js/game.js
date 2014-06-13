@@ -225,7 +225,7 @@
             move(this.monster[i],this.player);
             if(this.monster[i].monType == 2 && this.monster[i].attackCD <= 0){
               var key = this.monster.length;
-              this.spawn(key,10,this.monster[i].body.x+this.monster[i].width/2,this.monster[i].body.y+this.monster[i].width/2,32,1,0,1);
+              this.spawn(key,10,this.monster[i].body.x+this.monster[i].width/2,this.monster[i].body.y+this.monster[i].width/2,this.monster[i].height,1,0,this.monster[i].speed);
               this.monster[i].attackCD = 100;
             }
           }          
@@ -447,7 +447,7 @@
 
       var chance = Math.floor((Math.random()*this.player.wep.critChance)+1);
       if(chance == 1){
-        damage = getHit(obj2,this.player.wep.dmg*this.player.wep.critMul, this.player.wep.knockback);
+        damage = getHit(obj2,this.player.wep.dmg*this.player.wep.critMul, this.player.wep.knockback*this.player.wep.critMul);
         var style ={ font: '32px nunitolight', fill: 'red', align: 'center' };;
         this.dmg.setStyle(style);
       }
@@ -562,7 +562,7 @@
           var y = world[this.currentMap].mon[i].y;
         //win over ride 
           if(this.currentMap == winPos){
-            this.spawn(i,"win",x,y,world[this.currentMap].mon[i].size,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);   
+            this.spawn(i,"win",x,y,16,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);   
             world[this.currentMap].msg ="The way out";
                 
           } 
