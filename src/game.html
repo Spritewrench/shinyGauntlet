@@ -64,10 +64,10 @@
           world[''+i+j].mon[k] = new Object();
           world[''+i+j].mon[k].x = 400;
           world[''+i+j].mon[k].y = 300;
-          world[''+i+j].mon[k].hp = 10;
+          world[''+i+j].mon[k].hp = 3;
           world[''+i+j].mon[k].speed = 2;
           world[''+i+j].mon[k].name = 'player';
-          world[''+i+j].mon[k].monType = mon[monKey][0];
+          world[''+i+j].mon[k].monType = parseInt(mon[monKey][0]);
           world[''+i+j].mon[k].def = 0;
           world[''+i+j].mon[k].size = 128;
           world[''+i+j].mon[k].prefix = parseInt(mon[monKey][1]);

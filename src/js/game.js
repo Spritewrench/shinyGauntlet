@@ -225,7 +225,7 @@
             move(this.monster[i],this.player);
             if(this.monster[i].monType == 2 && this.monster[i].attackCD <= 0){
               var key = this.monster.length;
-              this.spawn(key,10,this.monster[i].body.x+this.monster[i].width/2,this.monster[i].body.y+this.monster[i].width/2,this.monster[i].height,1,0,this.monster[i].speed);
+              this.spawn(key,10,this.monster[i].body.x+this.monster[i].width/2,this.monster[i].body.y+this.monster[i].width/2,32,1,0,this.monster[i].speed);
               this.monster[i].attackCD = 100;
             }
           }          
