@@ -53,6 +53,9 @@
       this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1');
 
       this.player.wep.dmg = 1;
+      this.player.wep.knockback = 10;
+      this.player.wep.critChance = 10;
+      this.player.wep.critMul = 2;
       this.player.wep.anchor.setTo(0.5, 0.5);
       //this.player.wep.visible = false;
       
@@ -220,13 +223,22 @@
           if(this.monster[i].hp > 0){
 
             move(this.monster[i],this.player);
+            if(this.monster[i].monType == 2 && this.monster[i].attackCD <= 0){
+              var key = this.monster.length;
+              this.spawn(key,10,this.monster[i].body.x+this.monster[i].width/2,this.monster[i].body.y+this.monster[i].width/2,32,1,0,1);
+              this.monster[i].attackCD = 100;
+            }
           }          
           if(this.monster[i].hp <= 0){
             this.monster[i].visible = false;
             
 
           }
-          if(this.player.wep.visible == true  && this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
+          //attack cooldown
+          if(this.monster[i].attackCD > 0){
+            this.monster[i].attackCD--;
+          }
+          if(this.player.wep.visible == true  && this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.monster[i].knockback <= 0){
             this.physics.overlap(this.player.wep, this.monster[i], this.monHit, null, this); 
           }
           
@@ -431,11 +443,22 @@
     monHit: function (obj1, obj2) {
 
       //this.game.state.start('menu');
-      var damage = getHit(obj2,this.player.wep.dmg)
+      var damage = 0;
+
+      var chance = Math.floor((Math.random()*this.player.wep.critChance)+1);
+      if(chance == 1){
+        damage = getHit(obj2,this.player.wep.dmg*this.player.wep.critMul, this.player.wep.knockback);
+        var style ={ font: '32px nunitolight', fill: 'red', align: 'center' };;
+        this.dmg.setStyle(style);
+      }
+      else{
+        damage = getHit(obj2,this.player.wep.dmg, this.player.wep.knockback);
+        var style ={ font: '24px nunitolight', fill: '#fff', align: 'center' };;
+        this.dmg.setStyle(style);        
+      }
       if(damage > 0){
         obj2.hp -= damage;
-      }
-      
+      }      
       
       this.dmg.setText(damage);
       this.dmg.x = obj2.x;
@@ -444,13 +467,15 @@
       this.dmg.anchor.setTo(0.5, 0.5);
       if(obj2.monType == "win"){
         
-        this.game.state.start('menu');
+        this.game.state.start('win');
       }      
   
     },    
     playerHit: function (obj1, obj2) {  
       attack(obj2,obj1);
-
+      if(obj2.monType == "win"){        
+        this.game.state.start('win');
+      }    
     },
 
     
@@ -537,32 +562,18 @@
           var y = world[this.currentMap].mon[i].y;
         //win over ride 
           if(this.currentMap == winPos){
-            this.monster[i] = this.add.sprite(x, y, 'test');
-            this.monster[i].anchor.setTo(0.5, 0.5);
-            this.monster[i].width = 32;
-            this.monster[i].height = 32;    
-            this.monster[i].monType = "win";
-            this.monster[i].hp = 1;
-            this.monster[i].def = 0;
-            this.monster[i].speed = world[this.currentMap].mon[i].speed;
-            this.monster[i].body.immovable = true;   
+            this.spawn(i,"win",x,y,world[this.currentMap].mon[i].size,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);   
             world[this.currentMap].msg ="The way out";
                 
           } 
           else{
-            this.monster[i] = this.add.sprite(x, y, 'test');
-            this.monster[i].anchor.setTo(0.5, 0.5);
-            this.monster[i].width = world[this.currentMap].mon[i].size;
-            this.monster[i].height = world[this.currentMap].mon[i].size;    
-            this.monster[i].monType = world[this.currentMap].mon[i].monType;
-            this.monster[i].hp = world[this.currentMap].mon[i].hp;
-            this.monster[i].def = world[this.currentMap].mon[i].def;
-            this.monster[i].speed = world[this.currentMap].mon[i].speed;
-            this.monster[i].body.immovable = true;            
+            this.spawn(i,world[this.currentMap].mon[i].monType,x,y,world[this.currentMap].mon[i].size,
+                     world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);
+
           }
 
           //this.monster[i].visible = false;   
-          this.spriteGroup.add(this.monster[i]);
+          
           //alert(this.monster[0].monType);
           
           
@@ -575,7 +586,27 @@
 
     },
 
+    spawn: function (key,monType,x,y,size,hp,def,speed){
+      if(monType == 10){
+        this.monster[key] = this.add.sprite(x, y, 'bulletBob');
+      }
+      else{
+        this.monster[key] = this.add.sprite(x, y, 'test');
+      }
 
+      this.monster[key].anchor.setTo(0.5, 0.5);
+      this.monster[key].width = size;
+      this.monster[key].height = size;    
+      this.monster[key].monType = monType;
+      this.monster[key].hp = hp;
+      this.monster[key].def = def;
+      this.monster[key].speed = speed;
+      this.monster[key].body.immovable = true;    
+      this.monster[key].knockback = 0;
+      this.monster[key].attackCD = 0;
+      this.spriteGroup.add(this.monster[key]);
+
+    },
     onInputDown: function () {
       //this.game.state.start('menu');
     }

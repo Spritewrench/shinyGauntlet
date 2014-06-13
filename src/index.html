@@ -17,7 +17,7 @@
 
     <br/>
     Dungeon Code:
-    <input id="seed" type="text" value="440033LLL" readonly>
+    <input id="seed" type="text" value="4400331612" readonly>
     <input id="clickMe" type="button" value="retry" onclick="retry();" />
     Item Code:
     <input type="text">    
@@ -30,7 +30,7 @@
 
   <!-- build:js main.min.js -->
   <script>
-    
+    retry();
     function genDungeon(){
 
       var seed = document.getElementById('seed').value;
@@ -41,15 +41,19 @@
       
       var seed = "";
       var x = ""+Math.floor((Math.random()*9)+1);
-      seed += x;
       var y = ""+Math.floor((Math.random()*9)+1);
-      seed +=y;
+      var startX = ""+Math.floor((Math.random()*x-1)+1);
+      var startY = ""+Math.floor((Math.random()*y-1)+1);
+      var winX   = ""+Math.floor((Math.random()*x-1)+1);
+      var winY   = ""+Math.floor((Math.random()*y-1)+1);
+      seed += x+y+startX+startY+winX+winY;
       var monNum = Math.floor((Math.random()*9)+1);
       
       for(var i =0; i < monNum; i++){
-        var monCode = ""+Math.floor((Math.random()*9)+1);
+        var monCode = ""+Math.floor((Math.random()*2)+1);
         var monPrefix = ""+Math.floor((Math.random()*9)+1);
         seed += monCode+monPrefix;
+        
       }
       
       document.getElementById('seed').value = seed;

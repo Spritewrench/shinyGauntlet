@@ -1,41 +1,63 @@
 function move(mon, player){
   var monType = parseInt(mon.monType);
-  switch(monType){
-    //chase
-    case 1:        
+  //knockback
+  if(mon.knockback <= 0){
+    switch(monType){
+      //chase
+      case 1:        
 
-      var tx = player.x - mon.x,
-          ty = player.y - mon.y,
-          dist = Math.sqrt(tx*tx+ty*ty);
+        var tx = player.x - mon.x,
+            ty = player.y - mon.y,
+            dist = Math.sqrt(tx*tx+ty*ty);
 
-      velX = (tx/dist)*mon.speed;
-      velY = (ty/dist)*mon.speed;     
-      mon.body.x += velX;
-      mon.body.y += velY;     
+        velX = (tx/dist)*mon.speed;
+        velY = (ty/dist)*mon.speed;     
+        mon.body.x += velX;
+        mon.body.y += velY;     
 
-      
-      if(dist <= 50){
-        //attack(mon,player);
-      }
-      break;
-    //run away
-    case 2:        
 
-      var tx = player.x - mon.x,
-          ty = player.y - mon.y,
-          dist = Math.sqrt(tx*tx+ty*ty);
+        if(dist <= 50){
+          //attack(mon,player);
+        }
+        break;
+       
+      //turret
+      case 2:        
 
-      velX = (tx/dist)*mon.speed;
-      velY = (ty/dist)*mon.speed;     
-      mon.body.x -= velX;
-      mon.body.y -= velY;     
+        break; 
+        //bullet
+      case 10:        
 
-      
-      if(dist <= 50){
-        attack(mon,player);
-      }
-      break;      
+        var tx = player.x - mon.x,
+            ty = player.y - mon.y,
+            dist = Math.sqrt(tx*tx+ty*ty);
+
+        velX = (tx/dist)*mon.speed;
+        velY = (ty/dist)*mon.speed;     
+        mon.body.x += velX;
+        mon.body.y += velY;     
+
+
+        if(dist <= 50){
+          //attack(mon,player);
+        }
+        break;         
+    }    
   }
+  else if(mon.monType != 2){
+    var tx = player.x - mon.x,
+        ty = player.y - mon.y,
+        dist = Math.sqrt(tx*tx+ty*ty);
+
+    velX = (tx/dist)*mon.speed;
+    velY = (ty/dist)*mon.speed;     
+    mon.body.x -= velX;
+    mon.body.y -= velY;     
+  }
+  if(mon.knockback > 0){
+    mon.knockback--;
+  }
+
 }
 function attack(mon, player){
   var monType = parseInt(mon.monType);
@@ -44,20 +66,18 @@ function attack(mon, player){
       player.hp = 0;
       //alert ("brains~~");
       break;
-    case 1:        
-      mon.y += (player.y - mon.y)*0.01;
-      mon.x += (player.x - mon.x)*0.01;
+    case 10:        
+      player.hp = 0;
       break;
-    case 1:        
-      mon.y += (player.y - mon.y)*0.01;
-      mon.x += (player.x - mon.x)*0.01;
-      break;      
+    
       
   }
 }
-function getHit(mon, damage){
+
+function getHit(mon, damage, knockback){
     
     dmgTaken = damage + (-1*mon.def);  
+    mon.knockback = knockback;
     //mon.monType = 2;
     return dmgTaken;
 }
