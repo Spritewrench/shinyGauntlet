@@ -31,6 +31,7 @@
   Game.prototype = {
 
     create: function () {
+      this.game.world.setBounds(0, 0, 2000, 2000);
       var x = this.game.width / 2
         , y = this.game.height / 2;
       var posX = localStorage.getItem("heroStartX");
@@ -41,21 +42,26 @@
       this.bg = this.add.sprite(0, 0, ''+posX+posY);
       this.player = this.add.sprite(x, y, 'player');
       this.player.anchor.setTo(0.5, 0.5);
+      
       this.player.worldPosX=parseInt(posX);
       this.player.worldPosY=parseInt(posY);
       this.player.width = 64;
       this.player.height = 64;
+      this.player.body.setSize(this.player.width-14,this.player.width/2,0,this.player.width/4);
       this.player.direction = 1;
       //custom object variables
       this.player.isRolling = 0;
       this.player.hp = 10;
       this.player.wepType = 1;
+
       this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1');
 
       this.player.wep.dmg = 1;
       this.player.wep.knockback = 10;
       this.player.wep.critChance = 10;
       this.player.wep.critMul = 2;
+      this.player.wep.attackCD = 10;
+      this.player.wep.attackCDVal = 10;      
       this.player.wep.anchor.setTo(0.5, 0.5);
       //this.player.wep.visible = false;
       
@@ -137,9 +143,8 @@
     //in game messages
     var style = { font: '24px nunitolight', fill: '#fff', align: 'center' };
       
-    this.txt = this.add.text(x, this.txtTar, "", style) ;
-    this.dmg = this.add.text(x, y, "",style) ;
 
+    this.txt = this.add.text(x, this.txtTar, "", style) ;
     this.txt.anchor.setTo(0.5, 0.5);
       
       
@@ -147,10 +152,12 @@
       
     //groups
     this.spriteGroup.add(this.bg);
+    this.spriteGroup.add(this.topWall);
+    this.spriteGroup.add(this.topWall2);
     this.spriteGroup.add(this.player);
     this.shadowGroup.add(lightSprite);
     this.textGroup.add(this.txt); 
-    this.textGroup.add(this.dmg); 
+
           
       
     // load
@@ -164,10 +171,7 @@
       this.txt.y += (this.txtTar - this.txt.y)*0.1;
       
       
-      if(this.dmg.alpha > 0){
-        this.dmg.y--;
-      }
-      this.dmg.alpha += (0 - this.dmg.alpha)*0.1;
+
       //hide text
       if(this.textCounter > 0){
         this.txtTar = 500
@@ -205,7 +209,7 @@
       
       this.shadowTexture.dirty = true;
       
-  
+
       
       //flicker
       var lightLimit =  world[this.currentMap].light;
@@ -220,23 +224,40 @@
         //monster action
 
         if (this.monster[i].visible){
-          if(this.monster[i].hp > 0){
-
+         
+          if(this.monster[i].hp > 0 && this.player.hp > 0 ){
+            
             move(this.monster[i],this.player);
-            if(this.monster[i].monType == 2 && this.monster[i].attackCD <= 0){
-              var key = this.monster.length;
-              this.spawn(key,10,this.monster[i].body.x+this.monster[i].width/2,this.monster[i].body.y+this.monster[i].width/2,32,1,0,this.monster[i].speed);
-              this.monster[i].attackCD = 100;
+            
+            if(this.monster[i].knockback > 0){
+              if(this.monster[i].crited){
+                this.monster[i].loadTexture(this.monster[i].name+'Crit');
+              }
+              else{
+                this.monster[i].loadTexture(this.monster[i].name+'Hit');
+              }
+              
+            }
+            else{
+              this.monster[i].crited =false;
+              this.monster[i].loadTexture(this.monster[i].name);
             }
           }          
-          if(this.monster[i].hp <= 0){
-            this.monster[i].visible = false;
+          if(this.monster[i].hp <= 0 ){
+            //this.monster[i].visible = false;
+              if(this.monster[i].crited){
+                this.monster[i].loadTexture(this.monster[i].name+'Crit');
+               
+              }
+              else{
+                this.monster[i].loadTexture(this.monster[i].name+'Hit');
+              }
+             this.monster[i].alpha += (0 -  this.monster[i].alpha)*0.1;
+            if( this.monster[i].alpha <= 0.1){
+               this.monster[i].visible = false;
+            }
             
 
-          }
-          //attack cooldown
-          if(this.monster[i].attackCD > 0){
-            this.monster[i].attackCD--;
           }
           if(this.player.wep.visible == true  && this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.monster[i].knockback <= 0){
             this.physics.overlap(this.player.wep, this.monster[i], this.monHit, null, this); 
@@ -334,12 +355,23 @@
         //this.bg.x = 700;
       }       
       //controls\
-      this.player.body.velocity.x = 0;
-      this.player.body.velocity.y = 0;
-      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.A) ){
+      if(this.player.body.velocity.x > 0 ){
+        this.player.body.velocity.x-= 5;
+      }
+      if(this.player.body.velocity.x < 0 ){
+        this.player.body.velocity.x+= 5;
+      }      
+      if(this.player.body.velocity.y > 0){
+        this.player.body.velocity.y-= 5;
+      } 
+      if(this.player.body.velocity.y < 0){
+        this.player.body.velocity.y+= 5;
+      }       
+
+      if(this.player.hp > 0){
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
         {
-            this.player.direction = 4;
+            this.player.direction = 4;            
             this.player.body.velocity.x = -this.speed;
 
         }
@@ -365,11 +397,16 @@
             this.player.body.velocity.y = this.speed;
         }
       }
-      //attack
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.A) ){
 
+      
+      //attack
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.A)  && this.player.wep.attackCD > 0 && this.player.hp > 0){
+
+        this.player.wep.attackCD--;
+        
         this.player.wep.visible = true;
         this.player.wep.angle = this.player.angle;
+        //this.player.wep.attackCD = this.player.wep.attackCDVal;
         switch(this.player.direction){
           case 1:
 
@@ -400,7 +437,10 @@
           this.player.wep.body.y = this.player.y-this.player.wep.height+25;
           this.player.wep.angle = 0;
       }       
-      
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
+         this.player.wep.attackCD = this.player.wep.attackCDVal;
+      }
+ 
       
       
         
@@ -427,8 +467,14 @@
 
       //player death
       if(this.player.hp <= 0){
-        this.game.state.start('menu');
-        this.player.hp = 10;
+        this.player.loadTexture('mon1Hit');
+        this.player.alpha += (0 -  this.player.alpha)*0.1;
+        if( this.player.alpha <= 0.1){
+          this.game.state.start('menu');
+          this.player.hp = 10
+        }        
+        
+        ;
       }
       
       
@@ -447,24 +493,17 @@
 
       var chance = Math.floor((Math.random()*this.player.wep.critChance)+1);
       if(chance == 1){
-        damage = getHit(obj2,this.player.wep.dmg*this.player.wep.critMul, this.player.wep.knockback*this.player.wep.critMul);
-        var style ={ font: '32px nunitolight', fill: 'red', align: 'center' };;
-        this.dmg.setStyle(style);
+        damage = getHit(obj2,this.player.wep.dmg*this.player.wep.critMul, this.player.wep.knockback);
+        obj2.crited = true;
       }
       else{
         damage = getHit(obj2,this.player.wep.dmg, this.player.wep.knockback);
-        var style ={ font: '24px nunitolight', fill: '#fff', align: 'center' };;
-        this.dmg.setStyle(style);        
+        
       }
       if(damage > 0){
         obj2.hp -= damage;
       }      
       
-      this.dmg.setText(damage);
-      this.dmg.x = obj2.x;
-      this.dmg.y = obj2.y;
-      this.dmg.alpha = 5;
-      this.dmg.anchor.setTo(0.5, 0.5);
       if(obj2.monType == "win"){
         
         this.game.state.start('win');
@@ -560,20 +599,17 @@
       for(var i = 0; i < world[this.currentMap].monCount;i++){
           var x = world[this.currentMap].mon[i].x;
           var y = world[this.currentMap].mon[i].y;
-        //win over ride 
+       //win over ride 
           if(this.currentMap == winPos){
-            this.spawn(i,"win",x,y,16,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);   
+            this.spawn(i,"win","win",x,y,16,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,0);   
             world[this.currentMap].msg ="The way out";
                 
           } 
           else{
-            this.spawn(i,world[this.currentMap].mon[i].monType,x,y,world[this.currentMap].mon[i].size,
+            this.spawn(i,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].name,x,y,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);
 
           }
-
-          //this.monster[i].visible = false;   
-          
           //alert(this.monster[0].monType);
           
           
@@ -585,28 +621,42 @@
         
 
     },
-
-    spawn: function (key,monType,x,y,size,hp,def,speed){
+    spawn: function (key,monType,name,x,y,size,hp,def,speed){
+      
       if(monType == 10){
         this.monster[key] = this.add.sprite(x, y, 'bulletBob');
       }
       else{
-        this.monster[key] = this.add.sprite(x, y, 'test');
+        this.monster[key] = this.add.sprite(x, y, name);
       }
 
       this.monster[key].anchor.setTo(0.5, 0.5);
       this.monster[key].width = size;
       this.monster[key].height = size;    
-      this.monster[key].monType = monType;
+      this.monster[key].monType = parseInt(monType);
       this.monster[key].hp = hp;
       this.monster[key].def = def;
       this.monster[key].speed = speed;
       this.monster[key].body.immovable = true;    
       this.monster[key].knockback = 0;
       this.monster[key].attackCD = 0;
+      this.monster[key].name = name;
+      this.monster[key].crited = false;
+      //this.monster[key].body.setSize(this.monster[key].width,16,0,0);
+      switch(this.monster[key].monType){
+          default:
+            this.monster[key].tarX = 0;
+            this.monster[key].tarY = 0;
+            break;
+          case 1:
+            this.monster[key].tarX = this.player.x;
+            this.monster[key].tarY = this.player.y;
+            break;          
+      }
       this.spriteGroup.add(this.monster[key]);
 
     },
+
     onInputDown: function () {
       //this.game.state.start('menu');
     }
