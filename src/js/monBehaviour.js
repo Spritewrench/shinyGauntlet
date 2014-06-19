@@ -57,7 +57,11 @@ function attack(mon, player){
     default:        
       player.hp = 0;
       //alert ("brains~~");
-      break;     
+      break;
+    case 99:        
+      //player.hp = 0;
+      //alert ("brains~~");
+      break;      
       
   }
 }

@@ -12,6 +12,8 @@
     this.txt = null;
     this.textCounter = 200;
     this.txtTar = 500;
+    this.shine = null;
+    this.peekShine =null;
     
     this.topWall = null;
     this.botWall = null;
@@ -40,6 +42,18 @@
       this.shadowGroup = this.add.group();
       this.textGroup = this.add.group();
       this.bg = this.add.sprite(0, 0, ''+posX+posY);
+      
+      this.shine = this.add.sprite(x, y, 'shine');
+      this.shine.anchor.setTo(0.5, 0.5);
+      this.shine.width = 64;
+      this.shine.height = 64;
+      this.shine.visible = false;
+      
+      
+      this.peekShine = this.add.sprite(0, 0, 'peekShine');
+      this.peekShine.anchor.setTo(0.5, 0.5);
+      this.peekShine.visible = false;      
+      
       this.player = this.add.sprite(x, y, 'player');
       this.player.anchor.setTo(0.5, 0.5);
       
@@ -152,6 +166,7 @@
       
     //groups
     this.spriteGroup.add(this.bg);
+    this.spriteGroup.add(this.shine);  
     this.spriteGroup.add(this.topWall);
     this.spriteGroup.add(this.topWall2);
     this.spriteGroup.add(this.player);
@@ -170,7 +185,10 @@
       
       this.txt.y += (this.txtTar - this.txt.y)*0.1;
       
-      
+      //victory spin!
+      if(this.shine.visible == true){
+        this.shine.angle++;
+      }
 
       //hide text
       if(this.textCounter > 0){
@@ -474,7 +492,7 @@
           this.player.hp = 10
         }        
         
-        ;
+        
       }
       
       
@@ -503,8 +521,8 @@
       if(damage > 0){
         obj2.hp -= damage;
       }      
-      
-      if(obj2.monType == "win"){
+      console.log(obj2.monType);
+      if(obj2.monType == 99){
         
         this.game.state.start('win');
       }      
@@ -512,7 +530,7 @@
     },    
     playerHit: function (obj1, obj2) {  
       attack(obj2,obj1);
-      if(obj2.monType == "win"){        
+      if(obj2.monType == 99){        
         this.game.state.start('win');
       }    
     },
@@ -591,8 +609,40 @@
       if(this.currentMap == startPos){
         world[this.currentMap].monCount = 0;
         world[this.currentMap].msg = "";
+        this.shine.visible = false;
       }
-    
+      
+      //hint hint
+      if(this.currentMap != winPos){
+        this.peekShine.visible = true;
+        if(this.currentMap[0] - winPos[0] > 0){
+          this.peekShine.x = 25;
+          this.peekShine.angle = 90;
+          this.peekShine.y = 300;
+          this.peekShine.width = 175;
+        }
+        if(this.currentMap[0] - winPos[0] < 0){
+          this.peekShine.x = 775;
+          this.peekShine.angle = -90;
+          this.peekShine.y = 300;
+          this.peekShine.width = 175;        
+        }    
+        if(this.currentMap[1] - winPos[1] > 0){
+          this.peekShine.x = 400;
+          this.peekShine.angle = 180;
+          this.peekShine.y = 25;
+          this.peekShine.width = 175;
+        }
+        if(this.currentMap[1] - winPos[1] < 0 ){          
+          this.peekShine.x = 400;
+          this.peekShine.angle = 0;
+          this.peekShine.y = 575;
+          this.peekShine.width = 175;
+        }  
+      }
+      else{
+        this.peekShine.visible = false;
+      }
 
       
       //load new monsters
@@ -601,13 +651,17 @@
           var y = world[this.currentMap].mon[i].y;
        //win over ride 
           if(this.currentMap == winPos){
-            this.spawn(i,"win","win",x,y,16,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,0);   
+            this.shine.x = x;
+            this.shine.y = y;
+            this.shine.visible = true;
+            this.spawn(i,99,"win",x,y,16,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,0);   
             world[this.currentMap].msg ="The way out";
                 
           } 
           else{
             this.spawn(i,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].name,x,y,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);
+            this.shine.visible = false;
 
           }
           //alert(this.monster[0].monType);
