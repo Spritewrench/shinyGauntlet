@@ -696,6 +696,7 @@
       this.monster[key].attackCD = 0;
       this.monster[key].name = name;
       this.monster[key].crited = false;
+      
       //this.monster[key].body.setSize(this.monster[key].width,16,0,0);
       switch(this.monster[key].monType){
           default:
