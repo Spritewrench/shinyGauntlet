@@ -50,7 +50,15 @@
       var monNum = Math.floor((Math.random()*9)+1);
       
       for(var i =0; i < monNum; i++){
-        var monCode = ""+Math.floor((Math.random()*8)+1);
+        var wepCtrl = Math.floor((Math.random()*10)+1);
+        if(wepCtrl == 1 || wepCtrl == 2){
+          var monCode = ""+(Math.floor((Math.random()*3)+1)+5);
+          console.log(monCode);
+        }
+        else{
+          var monCode = ""+Math.floor((Math.random()*5)+1);
+        }
+        
         var monPrefix = ""+Math.floor((Math.random()*9)+1);
         seed += monCode+monPrefix;
         
