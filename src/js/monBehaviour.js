@@ -33,7 +33,14 @@ function move(mon, player){
           mon.tarX = player.x;
           mon.tarY = player.y;
 
-        }        
+        }
+        break;
+        case 6:
+          break;
+        case 7:
+          break;
+        case 8:
+          break;        
     }    
   }
   else{
@@ -61,7 +68,20 @@ function attack(mon, player){
     case 99:        
       //player.hp = 0;
       //alert ("brains~~");
+      break;
+    case 6:        
+      //player.hp = 0;
+      //alert ("brains~~");
+      break;
+    case 7:        
+      //player.hp = 0;
+      //alert ("brains~~");
+      break;
+    case 8:        
+      //player.hp = 0;
+      //alert ("brains~~");
       break;      
+      
       
   }
 }

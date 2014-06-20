@@ -14,6 +14,7 @@
     this.txtTar = 500;
     this.shine = null;
     this.peekShine =null;
+    this.lightLimit = 900;
     
     this.topWall = null;
     this.botWall = null;
@@ -66,17 +67,10 @@
       //custom object variables
       this.player.isRolling = 0;
       this.player.hp = 10;
-      this.player.wepType = 1;
-
-      this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1');
-
-      this.player.wep.dmg = 1;
-      this.player.wep.knockback = 10;
-      this.player.wep.critChance = 10;
-      this.player.wep.critMul = 2;
-      this.player.wep.attackCD = 10;
-      this.player.wep.attackCDVal = 10;      
-      this.player.wep.anchor.setTo(0.5, 0.5);
+      
+      this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1');   
+      this.setWep(1);     
+      
       //this.player.wep.visible = false;
       
       
@@ -176,6 +170,7 @@
           
       
     // load
+     
     this.reload();      
       
       
@@ -229,13 +224,8 @@
       
 
       
-      //flicker
-      var lightLimit =  world[this.currentMap].light;
-      var ran = Math.floor((Math.random()*3));
-      if(ran == 2){
-        lightLimit += 10;
-      }
-      this.lightSize += (lightLimit - this.lightSize)*0.1;
+      
+      this.lightSize += (this.lightLimit - this.lightSize)*0.1;
       //monster hurt
       for(var i = 0; i < this.monster.length;i++){
         //this.playerHit;
@@ -247,7 +237,7 @@
             
             move(this.monster[i],this.player);
             
-            if(this.monster[i].knockback > 0){
+            if(this.monster[i].knockback > 0 && this.monster[i].monType < 6){
               if(this.monster[i].crited){
                 this.monster[i].loadTexture(this.monster[i].name+'Crit');
               }
@@ -260,6 +250,11 @@
               this.monster[i].crited =false;
               this.monster[i].loadTexture(this.monster[i].name);
             }
+            if(this.player.wep.visible == true  && this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.monster[i].knockback <= 0){
+              this.physics.overlap(this.player.wep, this.monster[i], this.monHit, null, this); 
+            }
+
+            this.physics.collide(this.player, this.monster[i], this.playerHit, null, this);             
           }          
           if(this.monster[i].hp <= 0 ){
             //this.monster[i].visible = false;
@@ -277,11 +272,7 @@
             
 
           }
-          if(this.player.wep.visible == true  && this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.monster[i].knockback <= 0){
-            this.physics.overlap(this.player.wep, this.monster[i], this.monHit, null, this); 
-          }
-          
-          this.physics.collide(this.player, this.monster[i], this.playerHit, null, this);           
+                      
         }
           
       }
@@ -414,13 +405,28 @@
             this.player.direction  = 3;
             this.player.body.velocity.y = this.speed;
         }
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.C))
+        {
+            if(this.player.wepType == 1){
+              this.setWep(2);
+            }
+            else if(this.player.wepType == 2){
+              this.setWep(3);
+            }            
+            else if(this.player.wepType == 3){
+              this.setWep(1);
+            }  
+        }        
       }
 
       
       //attack
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.A)  && this.player.wep.attackCD > 0 && this.player.hp > 0){
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.A)  && this.player.hp > 0 && this.player.canAttack == true){
 
-        this.player.wep.attackCD--;
+        if(this.player.wep.attackCD > 0){
+          this.player.wep.attackCD--;
+        }
+        
         
         this.player.wep.visible = true;
         this.player.wep.angle = this.player.angle;
@@ -428,22 +434,22 @@
         switch(this.player.direction){
           case 1:
 
-            this.player.wep.body.x = this.player.x;
-            this.player.wep.body.y = this.player.y-(this.player.wep.height+16);
+            this.player.wep.x = this.player.x;
+            this.player.wep.y = this.player.y-this.player.height;
             break;
           case 2:
-            this.player.wep.body.x = this.player.x+this.player.wep.width+ 32;
-            this.player.wep.body.y = this.player.y-this.player.wep.width-8; 
+            this.player.wep.x = this.player.x+this.player.width;
+            this.player.wep.y = this.player.y; 
             this.player.wep.angle = 90;
             break;
           case 3:
-            this.player.wep.body.x = this.player.x;
-            this.player.wep.body.y = this.player.y+8;
+            this.player.wep.x = this.player.x;
+            this.player.wep.y = this.player.y+this.player.height;
             this.player.wep.angle = 180;
             break;
           case 4:
-            this.player.wep.body.x = this.player.x-this.player.width-8;
-            this.player.wep.body.y = this.player.y-this.player.wep.width-8;
+            this.player.wep.body.x = this.player.x-this.player.width;
+            this.player.wep.y = this.player.y;
             this.player.wep.angle = -90;
             break;
           default:
@@ -451,13 +457,40 @@
         }
       }
       else{
-          this.player.wep.body.x = this.player.x+this.player.wep.width + 5;
-          this.player.wep.body.y = this.player.y-this.player.wep.height+25;
-          this.player.wep.angle = 0;
+          this.player.wep.x = this.player.x+this.player.wep.width + 20;
+          this.player.wep.y = this.player.y;
+          this.player.wep.angle = 10;
       }       
-      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
-         this.player.wep.attackCD = this.player.wep.attackCDVal;
+      //auto attack
+      if(false){
+        if(!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.player.wep.attackCD != this.player.wep.attackCDVal ||  this.player.wep.attackCD <= 0 || this.player.canAttack == false){
+          if(this.player.canAttack){
+            this.player.canAttack = false;
+            this.player.wep.attackCD = 0;          
+          }
+
+          this.player.wep.attackCD++;
+          if(this.player.wep.attackCD >= this.player.wep.attackCDVal){
+            this.player.canAttack = true;
+          }        
+        } 
       }
+      else{
+        if(!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.player.wep.attackCD != this.player.wep.attackCDVal ||  this.player.wep.attackCD <= 0 ){
+          if(this.player.canAttack){
+            this.player.canAttack = false;
+            this.player.wep.attackCD = 0;          
+          }
+
+          this.player.wep.attackCD++;
+          if(this.player.wep.attackCD >= this.player.wep.attackCDVal){
+            this.player.canAttack = true;
+          }        
+        }       
+      }
+      
+      console.log(this.player.wep.attackCD);
+      
  
       
       
@@ -465,23 +498,7 @@
 
       //----------------------------------------------------------------------------
       
-      //determine weapon
-     /* switch(this.player.wepType){
-        case 1:
-          this.player.wep.loadTexture('player');
-          this.player.wep.width = 16;
-          this.player.wep.height = 32;
-          //this.player.wep.visible = false;
-          break;
-        case 2:
-          this.player.wep.loadTexture('player2');
-          this.player.wep.width = 16;
-          this.player.wep.height = 72;
-          //this.player.wep.visible = false;
-          break;          
-        default:
-          break;
-      }      */
+    
 
       //player death
       if(this.player.hp <= 0){
@@ -511,7 +528,7 @@
 
       var chance = Math.floor((Math.random()*this.player.wep.critChance)+1);
       if(chance == 1){
-        damage = getHit(obj2,this.player.wep.dmg*this.player.wep.critMul, this.player.wep.knockback);
+        damage = getHit(obj2,this.player.wep.dmg*this.player.wep.critMul, this.player.wep.knockback*this.player.wep.critMul);
         obj2.crited = true;
       }
       else{
@@ -521,18 +538,42 @@
       if(damage > 0){
         obj2.hp -= damage;
       }      
-      console.log(obj2.monType);
+      
       if(obj2.monType == 99){
         
         this.game.state.start('win');
-      }      
+      }   
+      if(obj2.monType == 6){        
+        this.setWep(1);
+        obj2.visible = false;
+      }
+      if(obj2.monType == 7){        
+        this.setWep(2);
+        obj2.visible = false;
+      }
+      if(obj2.monType == 8){        
+        this.setWep(3);
+        obj2.visible = false;
+      }        
   
     },    
     playerHit: function (obj1, obj2) {  
       attack(obj2,obj1);
       if(obj2.monType == 99){        
         this.game.state.start('win');
-      }    
+      }
+      if(obj2.monType == 6){        
+        this.setWep(1);
+        obj2.visible = false;
+      }
+      if(obj2.monType == 7){        
+        this.setWep(2);
+        obj2.visible = false;
+      }
+      if(obj2.monType == 8){        
+        this.setWep(3);
+        obj2.visible = false;
+      }      
     },
 
     
@@ -696,7 +737,6 @@
       this.monster[key].attackCD = 0;
       this.monster[key].name = name;
       this.monster[key].crited = false;
-      
       //this.monster[key].body.setSize(this.monster[key].width,16,0,0);
       switch(this.monster[key].monType){
           default:
@@ -706,12 +746,108 @@
           case 1:
             this.monster[key].tarX = this.player.x;
             this.monster[key].tarY = this.player.y;
-            break;          
+            break;    
+          case 6:
+            this.monster[key].width = 21;
+            this.monster[key].height = 64;
+            this.monster[key].speed = 0;
+            break;    
+          case 7:
+            this.monster[key].width = 21;
+            this.monster[key].height = 80;
+            this.monster[key].speed = 0;
+            break;    
+          case 8:
+            this.monster[key].width = 21;
+            this.monster[key].height = 32;
+            this.monster[key].speed = 0;
+            break;              
       }
       this.spriteGroup.add(this.monster[key]);
 
     },
-
+    //determine weapon
+    setWep: function (wepType) {
+      switch(wepType){
+          //sword
+        case 1:
+          this.player.wepType = 1;
+          this.player.canAttack = true;
+          this.player.wep.loadTexture('regSwrd1');
+          this.player.wep.anchor.setTo(0.5, 0.5);
+          this.player.wep.width = 21;
+          this.player.wep.height = 64;          
+          this.player.wep.dmg = 1;
+          this.player.wep.knockback = 10;
+          this.player.wep.critChance = 10;
+          this.player.wep.critMul = 2;
+          this.player.wep.attackCD = 5;
+          this.player.wep.attackCDVal = this.player.wep.attackCD;    
+          break;
+          //spear
+        case 2:
+          this.player.wepType = 2;
+          this.player.canAttack = true;
+          this.player.wep.loadTexture('regSpear1');
+          this.player.wep.anchor.setTo(0.8, 0.8);
+          this.player.wep.width = 21;
+          this.player.wep.height = 80;
+          this.player.wep.dmg = 1;
+          this.player.wep.knockback = 10;
+          this.player.wep.critChance = 10;
+          this.player.wep.critMul = 2;
+          this.player.wep.attackCD = 10;
+          this.player.wep.attackCDVal = this.player.wep.attackCD;    
+          break; 
+          //dagger
+        case 3:
+          this.player.wepType = 3;
+          this.player.canAttack = true;
+          this.player.wep.loadTexture('regDagger1');
+          this.player.wep.anchor.setTo(0.5, 0.5);
+          this.player.wep.width = 21;
+          this.player.wep.height = 32;        
+          this.player.wep.dmg = 1;
+          this.player.wep.knockback = 10;
+          this.player.wep.critChance = 3;
+          this.player.wep.critMul = 2;
+          this.player.wep.attackCD = 5;
+          this.player.wep.attackCDVal = this.player.wep.attackCD;     
+          break; 
+          //mace
+        case 4:
+          this.player.wepType = 4;
+          this.player.canAttack = true;
+          this.player.wep.loadTexture('regSwrd1');
+          this.player.wep.anchor.setTo(0.5, 0.5);
+          this.player.wep.width = 21;
+          this.player.wep.height = 64;        
+          this.player.wep.dmg = 1;
+          this.player.wep.knockback = 100;
+          this.player.wep.critChance = 10;
+          this.player.wep.critMul = 2;
+          this.player.wep.attackCD = 10;
+          this.player.wep.attackCDVal = this.player.wep.attackCD;   
+          break;  
+        case 5:
+          this.player.wepType = 5;
+          this.player.canAttack = true;
+          this.player.wep.loadTexture('regSwrd1');
+          this.player.wep.anchor.setTo(0.5, 0.5);
+          this.player.wep.width = 21;
+          this.player.wep.height = 64;       
+          this.player.wep.dmg = 1;
+          this.player.wep.knockback = 10;
+          this.player.wep.critChance = 10;
+          this.player.wep.critMul = 2;
+          this.player.wep.attackCD = 10;
+          this.player.wep.attackCDVal = this.player.wep.attackCD;      
+          break;           
+        default:
+          break;
+      }  
+    },  
+      
     onInputDown: function () {
       //this.game.state.start('menu');
     }
