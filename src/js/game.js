@@ -26,7 +26,7 @@
     this.leftWall2 = null;
     this.rightWall2 = null;    
     
-    
+    this.shakeTime = 0;
     this.lightSize = 20;
     
   }
@@ -179,7 +179,8 @@
     update: function () {
       
       this.txt.y += (this.txtTar - this.txt.y)*0.1;
-      
+      //screen shake
+      this.screenShake();
       //victory spin!
       if(this.shine.visible == true){
         this.shine.angle++;
@@ -489,7 +490,7 @@
         }       
       }
       
-      console.log(this.player.wep.attackCD);
+
       
  
       
@@ -530,6 +531,9 @@
       if(chance == 1){
         damage = getHit(obj2,this.player.wep.dmg*this.player.wep.critMul, this.player.wep.knockback*this.player.wep.critMul);
         obj2.crited = true;
+        //this.shakeTime = 5;
+        
+      
       }
       else{
         damage = getHit(obj2,this.player.wep.dmg, this.player.wep.knockback);
@@ -737,7 +741,7 @@
       this.monster[key].attackCD = 0;
       this.monster[key].name = name;
       this.monster[key].crited = false;
-      console.log(this.monster[key].name);
+
       //this.monster[key].body.setSize(this.monster[key].width,16,0,0);
       switch(this.monster[key].monType){
           default:
@@ -778,9 +782,9 @@
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 64;          
-          this.player.wep.dmg = 1;
+          this.player.wep.dmg = 10;
           this.player.wep.knockback = 10;
-          this.player.wep.critChance = 10;
+          this.player.wep.critChance = 1;
           this.player.wep.critMul = 2;
           this.player.wep.attackCD = 5;
           this.player.wep.attackCDVal = this.player.wep.attackCD;    
@@ -793,7 +797,7 @@
           this.player.wep.anchor.setTo(0.8, 0.8);
           this.player.wep.width = 21;
           this.player.wep.height = 80;
-          this.player.wep.dmg = 1;
+          this.player.wep.dmg = 10;
           this.player.wep.knockback = 10;
           this.player.wep.critChance = 10;
           this.player.wep.critMul = 2;
@@ -848,7 +852,26 @@
           break;
       }  
     },  
-      
+    screenShake: function () {
+
+        if(this.shakeTime > 0){
+          if(this.game.camera.x != 5){
+            this.game.camera.x = 5;
+          }
+          else{
+            this.game.camera.x = -5;
+          }
+          
+          this.shakeTime--;
+        }
+        else{
+          console.log(this.shakeTime);
+          this.game.camera.x = 0;
+          this.shakeTime = 0;
+        }
+
+      //this.game.state.start('menu');
+    },      
     onInputDown: function () {
       //this.game.state.start('menu');
     }
