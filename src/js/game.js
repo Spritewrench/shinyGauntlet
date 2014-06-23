@@ -71,6 +71,8 @@
       this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1');   
       this.setWep(1);     
       
+      this.player.shield = this.add.sprite(this.player.x, this.player.y, 'shield');
+      this.player.shield.anchor.setTo(0.5, 0.5);
       //this.player.wep.visible = false;
       
       
@@ -378,7 +380,7 @@
         this.player.body.velocity.y+= 5;
       }       
 
-      if(this.player.hp > 0){
+      if(this.player.hp > 0 && !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
         {
             this.player.direction = 4;            
@@ -490,6 +492,16 @@
         }       
       }
       
+      //block
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)  && this.player.hp > 0){
+
+        this.player.shield.x = this.player.x;
+        this.player.shield.y = this.player.y;
+      }
+      else{
+          this.player.shield.x = this.player.x-this.player.shield.width - 10;
+          this.player.shield.y = this.player.y;
+      }            
 
       
  
@@ -562,7 +574,13 @@
   
     },    
     playerHit: function (obj1, obj2) {  
-      attack(obj2,obj1);
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+        attack(obj2,obj1);
+      }
+      else{
+        getHit(obj2,0,50);
+      }
+      
       if(obj2.monType == 99){        
         this.game.state.start('win');
       }
