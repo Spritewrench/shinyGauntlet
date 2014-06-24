@@ -34,7 +34,6 @@
   Game.prototype = {
 
     create: function () {
-      this.game.world.setBounds(0, 0, 2000, 2000);
       var x = this.game.width / 2
         , y = this.game.height / 2;
       var posX = localStorage.getItem("heroStartX");
@@ -74,6 +73,7 @@
       this.player.shield = this.add.sprite(this.player.x, this.player.y, 'shield');
       this.player.shield.anchor.setTo(0.5, 0.5);
       //this.player.wep.visible = false;
+      
       
       
       //room walls
@@ -253,7 +253,7 @@
               this.monster[i].crited =false;
               this.monster[i].loadTexture(this.monster[i].name);
             }
-            if(this.player.wep.visible == true  && this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.monster[i].knockback <= 0){
+            if(this.player.wep.visible == true  && (this.game.input.keyboard.isDown(Phaser.Keyboard.A) || this.game.input.keyboard.isDown(Phaser.Keyboard.W) || this.game.input.keyboard.isDown(Phaser.Keyboard.S) ||this.game.input.keyboard.isDown(Phaser.Keyboard.D) ) && this.monster[i].knockback <= 0){
               this.physics.overlap(this.player.wep, this.monster[i], this.monHit, null, this); 
             }
 
@@ -281,28 +281,53 @@
       }
       //collide with walls
       if(this.topWall.visible == true){
-          this.physics.collide(this.player,this.topWall);
+        this.physics.collide(this.player,this.topWall);
+        for(var i = 0; i < this.monster.length;i++){
+          
+          this.physics.collide(this.monster[i],this.topWall);
+        }
       }
       if(this.botWall.visible == true){
-          this.physics.collide(this.player,this.botWall);
+        this.physics.collide(this.player,this.botWall);
+        for(var i = 0; i < this.monster.length;i++){
+          this.physics.collide(this.monster[i],this.botWall);
+        }        
       }
       if(this.leftWall.visible == true){
-          this.physics.collide(this.player,this.leftWall);
+        this.physics.collide(this.player,this.leftWall);
+        for(var i = 0; i < this.monster.length;i++){
+          this.physics.collide(this.monster[i],this.leftWall);
+        }        
       }      
       if(this.rightWall.visible == true){
-          this.physics.collide(this.player,this.rightWall);
+        this.physics.collide(this.player,this.rightWall);
+        for(var i = 0; i < this.monster.length;i++){
+          this.physics.collide(this.monster[i],this.rightWall);
+        }        
       }
       if(this.topWall2.visible == true){
-          this.physics.collide(this.player,this.topWall2);
+        this.physics.collide(this.player,this.topWall2);
+        for(var i = 0; i < this.monster.length;i++){
+          this.physics.collide(this.monster[i],this.topWall2);
+        }        
       }
       if(this.botWall2.visible == true){
-          this.physics.collide(this.player,this.botWall2);
+        this.physics.collide(this.player,this.botWall2);
+        for(var i = 0; i < this.monster.length;i++){
+          this.physics.collide(this.monster[i],this.botWall2);
+        }        
       }
       if(this.leftWall2.visible == true){
-          this.physics.collide(this.player,this.leftWall2);
+        this.physics.collide(this.player,this.leftWall2);
+        for(var i = 0; i < this.monster.length;i++){
+          this.physics.collide(this.monster[i],this.leftWall2);
+        }        
       }      
       if(this.rightWall2.visible == true){
-          this.physics.collide(this.player,this.rightWall2);
+        this.physics.collide(this.player,this.rightWall2);
+        for(var i = 0; i < this.monster.length;i++){
+          this.physics.collide(this.monster[i],this.rightWall2);
+        }        
       }      
       
       ///////////////////////////////////////////////////////////////////////////////////////////
@@ -423,8 +448,8 @@
       }
 
       
-      //attack
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.A)  && this.player.hp > 0 && this.player.canAttack == true){
+      //attack 
+      if((this.game.input.keyboard.isDown(Phaser.Keyboard.A) || this.game.input.keyboard.isDown(Phaser.Keyboard.W) || this.game.input.keyboard.isDown(Phaser.Keyboard.S) ||this.game.input.keyboard.isDown(Phaser.Keyboard.D) )  && this.player.hp > 0 && this.player.canAttack == true){
 
         if(this.player.wep.attackCD > 0){
           this.player.wep.attackCD--;
@@ -434,63 +459,46 @@
         this.player.wep.visible = true;
         this.player.wep.angle = this.player.angle;
         //this.player.wep.attackCD = this.player.wep.attackCDVal;
-        switch(this.player.direction){
-          case 1:
-
-            this.player.wep.x = this.player.x;
-            this.player.wep.y = this.player.y-this.player.height;
-            break;
-          case 2:
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
+          this.player.wep.body.x = this.player.x-this.player.width;
+          this.player.wep.y = this.player.y;
+          this.player.wep.angle = -90;          
+        }
+        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
+          this.player.wep.x = this.player.x;
+          this.player.wep.y = this.player.y-this.player.height;          
+        }
+        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.S)){
+          this.player.wep.x = this.player.x;
+          this.player.wep.y = this.player.y+this.player.height;
+          this.player.wep.angle = 180;          
+        }
+        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.D)){
             this.player.wep.x = this.player.x+this.player.width;
             this.player.wep.y = this.player.y; 
-            this.player.wep.angle = 90;
-            break;
-          case 3:
-            this.player.wep.x = this.player.x;
-            this.player.wep.y = this.player.y+this.player.height;
-            this.player.wep.angle = 180;
-            break;
-          case 4:
-            this.player.wep.body.x = this.player.x-this.player.width;
-            this.player.wep.y = this.player.y;
-            this.player.wep.angle = -90;
-            break;
-          default:
-            break;
-        }
+            this.player.wep.angle = 90;          
+        }        
+
+
       }
       else{
           this.player.wep.x = this.player.x+this.player.wep.width + 20;
           this.player.wep.y = this.player.y;
           this.player.wep.angle = 10;
       }       
-      //auto attack
-      if(false){
-        if(!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.player.wep.attackCD != this.player.wep.attackCDVal ||  this.player.wep.attackCD <= 0 || this.player.canAttack == false){
-          if(this.player.canAttack){
-            this.player.canAttack = false;
-            this.player.wep.attackCD = 0;          
-          }
+      if((!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && !this.game.input.keyboard.isDown(Phaser.Keyboard.W) && !this.game.input.keyboard.isDown(Phaser.Keyboard.S) && !this.game.input.keyboard.isDown(Phaser.Keyboard.D) ) && this.player.wep.attackCD != this.player.wep.attackCDVal ||  this.player.wep.attackCD <= 0 ){
+        if(this.player.canAttack){
+          this.player.canAttack = false;
+          this.player.wep.attackCD = 0;          
+        }
 
-          this.player.wep.attackCD++;
-          if(this.player.wep.attackCD >= this.player.wep.attackCDVal){
-            this.player.canAttack = true;
-          }        
-        } 
+        this.player.wep.attackCD++;
+        if(this.player.wep.attackCD >= this.player.wep.attackCDVal){
+          this.player.canAttack = true;
+        }        
       }
-      else{
-        if(!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.player.wep.attackCD != this.player.wep.attackCDVal ||  this.player.wep.attackCD <= 0 ){
-          if(this.player.canAttack){
-            this.player.canAttack = false;
-            this.player.wep.attackCD = 0;          
-          }
-
-          this.player.wep.attackCD++;
-          if(this.player.wep.attackCD >= this.player.wep.attackCDVal){
-            this.player.canAttack = true;
-          }        
-        }       
-      }
+      
+     
       
       //block
       if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)  && this.player.hp > 0){
@@ -553,7 +561,24 @@
       }
       if(damage > 0){
         obj2.hp -= damage;
-      }      
+      }
+      
+      
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
+        this.player.body.velocity.x = 100;
+      }
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.D)){
+        this.player.body.velocity.x = -100;
+      }
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
+        this.player.body.velocity.y = 100;
+      }
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.S)){
+        this.player.body.velocity.y = -100;
+      }             
+      
+      
+
       
       if(obj2.monType == 99){
         
@@ -574,6 +599,18 @@
   
     },    
     playerHit: function (obj1, obj2) {  
+      if(this.player.body.touching.left){
+        this.player.body.velocity.x = 200;
+      }
+      if(this.player.body.touching.right){
+        this.player.body.velocity.x = -200;
+      }
+      if(this.player.body.touching.up){
+        this.player.body.velocity.y = 200;
+      }
+      if(this.player.body.touching.down){
+        this.player.body.velocity.y = -200;
+      }      
       if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
         attack(obj2,obj1);
       }
@@ -759,7 +796,9 @@
       this.monster[key].attackCD = 0;
       this.monster[key].name = name;
       this.monster[key].crited = false;
-
+      this.monster[key].randomizer = 0;
+      this.monster[key].body.collideWorldBounds = true;
+      
       //this.monster[key].body.setSize(this.monster[key].width,16,0,0);
       switch(this.monster[key].monType){
           default:
@@ -767,8 +806,7 @@
             this.monster[key].tarY = 0;
             break;
           case 1:
-            this.monster[key].tarX = this.player.x;
-            this.monster[key].tarY = this.player.y;
+            this.monster[key].speed += 5;
             break;    
           case 6:
             this.monster[key].width = 21;
@@ -802,7 +840,7 @@
           this.player.wep.height = 64;          
           this.player.wep.dmg = 10;
           this.player.wep.knockback = 10;
-          this.player.wep.critChance = 1;
+          this.player.wep.critChance = 10;
           this.player.wep.critMul = 2;
           this.player.wep.attackCD = 5;
           this.player.wep.attackCDVal = this.player.wep.attackCD;    
@@ -815,7 +853,7 @@
           this.player.wep.anchor.setTo(0.8, 0.8);
           this.player.wep.width = 21;
           this.player.wep.height = 80;
-          this.player.wep.dmg = 10;
+          this.player.wep.dmg = 15;
           this.player.wep.knockback = 10;
           this.player.wep.critChance = 10;
           this.player.wep.critMul = 2;
@@ -883,7 +921,7 @@
           this.shakeTime--;
         }
         else{
-          console.log(this.shakeTime);
+          
           this.game.camera.x = 0;
           this.shakeTime = 0;
         }

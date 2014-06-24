@@ -20,7 +20,9 @@
     <input  id="seed" type="text" value="4400331612" readonly>
     <input id="clickMe" type="button" value="retry" onclick="retry();" />
     Item Code:
-    <input type="text">    
+    <input type="text">  
+    Difficulty:
+    <div id="diff"></div>
     <input id="clickMe" type="button" value="Play" onclick="genDungeon();" />
   </div>
 
@@ -30,7 +32,19 @@
 
   <!-- build:js main.min.js -->
   <script>
+    //gen dungeon seed
     retry();
+    //respond to space press
+    document.addEventListener('keydown', function(event) {
+        if(event.keyCode == 32) {
+            genDungeon();
+        }
+
+    });    
+    //gen difficult
+    var diff = localStorage.setItem("diff", 0 );
+
+   
     function genDungeon(){
 
       var seed = document.getElementById('seed').value;
@@ -40,6 +54,14 @@
     }
     function retry(){
       
+      var src = document.getElementsByTagName('img');
+      for (var i= document.images.length; i-->0;){
+        document.images[i].parentNode.removeChild(document.images[i]);  
+      }      
+   
+      
+      
+      var diff = 0;
       var seed = "";
       var x = Math.floor((Math.random()*9)+1);
       var y = Math.floor((Math.random()*9)+1);
@@ -79,15 +101,26 @@
         }
         else{
           var monCode = ""+Math.floor((Math.random()*5)+1);
+          diff++;
         }
         
         var monPrefix = ""+Math.floor((Math.random()*9)+1);
-        seed += monCode+monPrefix;
+        seed += 1+monPrefix;
         
       }
       
       document.getElementById('seed').value = seed;
       document.getElementById('seed').style.width= (seed.length*10)+"px";
+      
+      for(var i = 0; i < diff; i++){
+        var img = document.createElement("img");
+        img.src = "assets/player.png";
+        var src = document.getElementById("diff");
+        src.appendChild(img);       
+      }      
+
+              
+     
     }           
 
   </script>  

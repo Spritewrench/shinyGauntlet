@@ -8,11 +8,11 @@ html, body {
   height: 100%;
   overflow: hidden;
   margin: 0px;
-  background-color: #5b676d;
+  background-color: #3c868c;
 }
 
 #titleScreen{
-  padding-top: 200px;
+  padding-top: 250px;
   text-align: center;
   font-family: 'chunkfiveroman';
   font-size: 24px;
