@@ -24,11 +24,15 @@
     this.topWall2 = null;
     this.botWall2 = null;
     this.leftWall2 = null;
-    this.rightWall2 = null;    
+    this.rightWall2 = null;   
+    
+    this.door = [];
     
     this.shakeTime = 0;
     this.lightSize = 20;
     
+    this.tapped= 0;
+    this.prevTapped= -1;
   }
 
   Game.prototype = {
@@ -67,6 +71,7 @@
       this.player.isRolling = 0;
       this.player.hp = 10;
       
+      
       this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1');   
       this.setWep(1);     
       
@@ -74,7 +79,34 @@
       this.player.shield.anchor.setTo(0.5, 0.5);
       //this.player.wep.visible = false;
       
+      //door
+      this.door[0] = this.add.sprite(200,25, 'doorHor');
+      this.door[0].anchor.setTo(0.5, 0.5);
+      this.door[0].width = 200;
+      this.door[0].height = 50;     
+      this.door[0].tarX = 200;
       
+      this.door[1] = this.add.sprite(775,100, 'doorVer');
+      this.door[1].anchor.setTo(0.5, 0.5);
+      this.door[1].width = 50;
+      this.door[1].height = 200;     
+      this.door[1].tarY = 100;
+      
+      this.door[2] = this.add.sprite(25,100, 'doorVer');
+      this.door[2].anchor.setTo(0.5, 0.5);
+      this.door[2].width = 50;
+      this.door[2].height = 200;     
+      this.door[2].tarY = 100;      
+      
+      this.door[3] = this.add.sprite(200,575, 'doorHor');
+      this.door[3].anchor.setTo(0.5, 0.5);
+      this.door[3].width = 200;
+      this.door[3].height = 50;     
+      this.door[3].tarX = 200;      
+      
+      for(var i = 0; i < this.door.length; i++){
+        this.door[i].body.immovable = true;
+      }
       
       //room walls
       
@@ -134,6 +166,7 @@
 
       this.rightWall2.body.immovable = true;
       
+
       
       this.input.onDown.add(this.onInputDown, this);
       this.speed = 200;
@@ -162,7 +195,9 @@
       
     //groups
     this.spriteGroup.add(this.bg);
-    this.spriteGroup.add(this.shine);  
+    this.spriteGroup.add(this.shine); 
+    this.spriteGroup.add(this.peekShine); 
+    this.spriteGroup.add(this.door[0]);
     this.spriteGroup.add(this.topWall);
     this.spriteGroup.add(this.topWall2);
     this.spriteGroup.add(this.player);
@@ -181,8 +216,16 @@
     update: function () {
       
       this.txt.y += (this.txtTar - this.txt.y)*0.1;
-      //screen shake
-      this.screenShake();
+      
+      //close doors
+      // top and bot
+      this.door[0].x += (this.door[0].tarX - this.door[0].x)*0.1;
+      this.door[3].x += (this.door[3].tarX - this.door[3].x)*0.1;
+      
+      //left and right
+      this.door[1].y += (this.door[1].tarY - this.door[1].y)*0.1;   
+      this.door[2].y += (this.door[2].tarY - this.door[2].y)*0.1;
+      
       //victory spin!
       if(this.shine.visible == true){
         this.shine.angle++;
@@ -229,16 +272,65 @@
       
       
       this.lightSize += (this.lightLimit - this.lightSize)*0.1;
+      
+      //close doors
+      var monAlive = 0;
+      for(var i = 0; i < this.monster.length;i++){
+        if(this.monster[i].visible){
+          monAlive++;
+
+        }         
+
+        
+      }
+      if(monAlive > 0){
+        this.door[0].tarX = 400;
+        this.door[1].tarY = 300;
+        this.door[2].tarY = 300;
+        this.door[3].tarX = 400;        
+                
+      }
+      else{
+        this.door[0].tarX = 200;
+        this.door[1].tarY = 100;
+        this.door[2].tarY = 100;
+        this.door[3].tarX = 200;        
+      }
+ 
+     
+      
       //monster hurt
       for(var i = 0; i < this.monster.length;i++){
+        
         //this.playerHit;
         //monster action
 
         if (this.monster[i].visible){
-         
+
           if(this.monster[i].hp > 0 && this.player.hp > 0 ){
-            
+            //lich ice blast
+            if(this.monster[i].monType == 3 && this.monster[i].attackCD == 100){
+              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.monster[this.monster.length-1].width = 32;
+              this.monster[this.monster.length-1].height = 32;
+              this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
+              this.monster[this.monster.length-1].attackCD = Math.floor((Math.random()*40)+10);
+              this.monster[this.monster.length-1].tarX = this.monster[i].x;
+              this.monster[this.monster.length-1].tarY = this.monster[i].y;
+              this.monster[i].attackCD = 1;
+              var randomizer = Math.floor((Math.random()*5)-2);
+              
+              this.monster[this.monster.length-1].x +=randomizer;
+              randomizer = Math.floor((Math.random()*5)-2);
+              this.monster[this.monster.length-1].y+=randomizer;   
+
+
+              
+              
+              
+            }            
             move(this.monster[i],this.player);
+
             
             if(this.monster[i].knockback > 0 && this.monster[i].monType < 6){
               if(this.monster[i].crited){
@@ -253,7 +345,7 @@
               this.monster[i].crited =false;
               this.monster[i].loadTexture(this.monster[i].name);
             }
-            if(this.player.wep.visible == true  && (this.game.input.keyboard.isDown(Phaser.Keyboard.A) || this.game.input.keyboard.isDown(Phaser.Keyboard.W) || this.game.input.keyboard.isDown(Phaser.Keyboard.S) ||this.game.input.keyboard.isDown(Phaser.Keyboard.D) ) && this.monster[i].knockback <= 0){
+            if(this.player.wep.visible == true  && (this.game.input.keyboard.isDown(Phaser.Keyboard.A) || this.game.input.keyboard.isDown(Phaser.Keyboard.W) || this.game.input.keyboard.isDown(Phaser.Keyboard.S) ||this.game.input.keyboard.isDown(Phaser.Keyboard.D) )&& !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) &&  this.player.canAttack == true && this.monster[i].knockback <= 0){
               this.physics.overlap(this.player.wep, this.monster[i], this.monHit, null, this); 
             }
 
@@ -277,51 +369,41 @@
           }
                       
         }
+
           
+      }
+      //collide with doors
+      for(var i= 0; i < this.door.length; i++){
+        this.physics.collide(this.player,this.door[i]);
       }
       //collide with walls
       if(this.topWall.visible == true){
         this.physics.collide(this.player,this.topWall);
-        for(var i = 0; i < this.monster.length;i++){
-          
-          this.physics.collide(this.monster[i],this.topWall);
-        }
+
       }
       if(this.botWall.visible == true){
         this.physics.collide(this.player,this.botWall);
-        for(var i = 0; i < this.monster.length;i++){
-          this.physics.collide(this.monster[i],this.botWall);
-        }        
+       
       }
       if(this.leftWall.visible == true){
         this.physics.collide(this.player,this.leftWall);
-        for(var i = 0; i < this.monster.length;i++){
-          this.physics.collide(this.monster[i],this.leftWall);
-        }        
+        
       }      
       if(this.rightWall.visible == true){
         this.physics.collide(this.player,this.rightWall);
-        for(var i = 0; i < this.monster.length;i++){
-          this.physics.collide(this.monster[i],this.rightWall);
-        }        
+       
       }
       if(this.topWall2.visible == true){
         this.physics.collide(this.player,this.topWall2);
-        for(var i = 0; i < this.monster.length;i++){
-          this.physics.collide(this.monster[i],this.topWall2);
-        }        
+      
       }
       if(this.botWall2.visible == true){
         this.physics.collide(this.player,this.botWall2);
-        for(var i = 0; i < this.monster.length;i++){
-          this.physics.collide(this.monster[i],this.botWall2);
-        }        
+     
       }
       if(this.leftWall2.visible == true){
         this.physics.collide(this.player,this.leftWall2);
-        for(var i = 0; i < this.monster.length;i++){
-          this.physics.collide(this.monster[i],this.leftWall2);
-        }        
+       
       }      
       if(this.rightWall2.visible == true){
         this.physics.collide(this.player,this.rightWall2);
@@ -392,64 +474,78 @@
         //this.bg.x = 700;
       }       
       //controls\
+      var slowx = this.player.body.velocity.x/25;
+      var slowy = this.player.body.velocity.y/25;
       if(this.player.body.velocity.x > 0 ){
-        this.player.body.velocity.x-= 5;
+        this.player.body.velocity.x-= slowx;
       }
       if(this.player.body.velocity.x < 0 ){
-        this.player.body.velocity.x+= 5;
+        this.player.body.velocity.x-= slowx;
       }      
       if(this.player.body.velocity.y > 0){
-        this.player.body.velocity.y-= 5;
+        this.player.body.velocity.y-= slowy;
       } 
       if(this.player.body.velocity.y < 0){
-        this.player.body.velocity.y+= 5;
+        this.player.body.velocity.y-= slowy;
       }       
 
+
       if(this.player.hp > 0 && !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
+        
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
         {
             this.player.direction = 4;            
             this.player.body.velocity.x = -this.speed;
-
+            if(this.tapCtrl > 0){
+              this.tapCtrl--;
+            }
+            
+          
         }
         
-        
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
         {
             this.player.direction  = 2;
             this.player.body.velocity.x = this.speed;
             
         }
-      
-
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP))
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
         {
             this.player.direction  = 1;
             this.player.body.velocity.y = -this.speed;
         }
 
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
         {
             this.player.direction  = 3;
             this.player.body.velocity.y = this.speed;
         }
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.C))
-        {
-            if(this.player.wepType == 1){
-              this.setWep(2);
-            }
-            else if(this.player.wepType == 2){
-              this.setWep(3);
-            }            
-            else if(this.player.wepType == 3){
-              this.setWep(1);
-            }  
+    
+        ////
+        
+        if(this.game.input.keyboard.justPressed(Phaser.Keyboard.A)){
+          this.tapped = 4;
+        }
+        if(this.game.input.keyboard.justPressed(Phaser.Keyboard.W)){
+          this.tapped = 1;
+        }
+        if(this.game.input.keyboard.justPressed(Phaser.Keyboard.S)){
+          this.tapped = 3;
+        }
+        if(this.game.input.keyboard.justPressed(Phaser.Keyboard.D)){
+          this.tapped = 2;
         }        
+        
+        if(this.prevTapped == this.tapped){
+         
+        }
+        
+        
       }
 
       
       //attack 
-      if((this.game.input.keyboard.isDown(Phaser.Keyboard.A) || this.game.input.keyboard.isDown(Phaser.Keyboard.W) || this.game.input.keyboard.isDown(Phaser.Keyboard.S) ||this.game.input.keyboard.isDown(Phaser.Keyboard.D) )  && this.player.hp > 0 && this.player.canAttack == true){
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) ||this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) )  && this.player.hp > 0 && this.player.canAttack == true){
 
         if(this.player.wep.attackCD > 0){
           this.player.wep.attackCD--;
@@ -459,21 +555,21 @@
         this.player.wep.visible = true;
         this.player.wep.angle = this.player.angle;
         //this.player.wep.attackCD = this.player.wep.attackCDVal;
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
           this.player.wep.body.x = this.player.x-this.player.width;
           this.player.wep.y = this.player.y;
           this.player.wep.angle = -90;          
         }
-        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
+        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP)){
           this.player.wep.x = this.player.x;
           this.player.wep.y = this.player.y-this.player.height;          
         }
-        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.S)){
+        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)){
           this.player.wep.x = this.player.x;
           this.player.wep.y = this.player.y+this.player.height;
           this.player.wep.angle = 180;          
         }
-        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.D)){
+        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
             this.player.wep.x = this.player.x+this.player.width;
             this.player.wep.y = this.player.y; 
             this.player.wep.angle = 90;          
@@ -486,7 +582,7 @@
           this.player.wep.y = this.player.y;
           this.player.wep.angle = 10;
       }       
-      if((!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && !this.game.input.keyboard.isDown(Phaser.Keyboard.W) && !this.game.input.keyboard.isDown(Phaser.Keyboard.S) && !this.game.input.keyboard.isDown(Phaser.Keyboard.D) ) && this.player.wep.attackCD != this.player.wep.attackCDVal ||  this.player.wep.attackCD <= 0 ){
+      if((!this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && !this.game.input.keyboard.isDown(Phaser.Keyboard.UP) && !this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) && !this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) ) && this.player.wep.attackCD != this.player.wep.attackCDVal ||  this.player.wep.attackCD <= 0 ){
         if(this.player.canAttack){
           this.player.canAttack = false;
           this.player.wep.attackCD = 0;          
@@ -501,7 +597,7 @@
      
       
       //block
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)  && this.player.hp > 0){
+      if( this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.player.hp > 0){
 
         this.player.shield.x = this.player.x;
         this.player.shield.y = this.player.y;
@@ -559,8 +655,37 @@
         damage = getHit(obj2,this.player.wep.dmg, this.player.wep.knockback);
         
       }
+      obj2.tarX = this.player.x;
+      obj2.tarY = this.player.y ;
       if(damage > 0){
-        obj2.hp -= damage;
+        //split
+        if(obj2.monType == 2  && obj2.hp > 50 ){
+          var size = obj2.width/2;
+          if(size < 32){
+            size = 32;
+          }
+
+          this.spawn(this.monster.length,obj2.monType,'mon2',obj2.x,obj2.y,size,obj2.hp/2,obj2.def,obj2.speed);
+          obj2.hp = obj2.hp/2;
+          if (size == 32){
+            obj2.hp = 1;
+            this.monster[this.monster.length-1].hp = 1;
+            
+          }
+          obj2.width = size;
+          obj2.height = size;
+          this.monster[this.monster.length-1].attackCD = 100;
+          this.monster[this.monster.length-1].knockback =this.player.wep.knockback;
+          obj2.knockback = this.player.wep.knockback;
+          obj2.tarX = this.player.x;
+          obj2.tarY = this.player.y;
+          this.monster[this.monster.length-1].tarX = 0;
+          this.monster[this.monster.length-1].tarY = 0;
+
+        }
+        else{
+          obj2.hp -= damage;
+        }
       }
       
       
@@ -642,7 +767,7 @@
       this.currentMap = ''+this.player.worldPosX+this.player.worldPosY;
       this.bg.loadTexture('map');
       this.textCounter = 200;
-      
+      this.lightSize = 0;
       
       //place walls
       if(this.player.worldPosX ===0){
@@ -783,7 +908,7 @@
       else{
         this.monster[key] = this.add.sprite(x, y, name);
       }
-
+      this.monster[key].visible = true;
       this.monster[key].anchor.setTo(0.5, 0.5);
       this.monster[key].width = size;
       this.monster[key].height = size;    
@@ -806,8 +931,12 @@
             this.monster[key].tarY = 0;
             break;
           case 1:
-            this.monster[key].speed += 5;
-            break;    
+            this.monster[key].speed += 2;
+            break;  
+          case 2:
+                      
+
+            break;            
           case 6:
             this.monster[key].width = 21;
             this.monster[key].height = 64;
@@ -822,7 +951,13 @@
             this.monster[key].width = 21;
             this.monster[key].height = 32;
             this.monster[key].speed = 0;
-            break;              
+            break;     
+          case 11:
+            //this.game.physics.p2.enable(this.monster[key], true);
+            this.monster[key].speed = 10;
+            this.monster[key].hp = 200;
+            break;               
+          
       }
       this.spriteGroup.add(this.monster[key]);
 
@@ -838,7 +973,7 @@
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 64;          
-          this.player.wep.dmg = 10;
+          this.player.wep.dmg = 50;
           this.player.wep.knockback = 10;
           this.player.wep.critChance = 10;
           this.player.wep.critMul = 2;
@@ -850,7 +985,7 @@
           this.player.wepType = 2;
           this.player.canAttack = true;
           this.player.wep.loadTexture('regSpear1');
-          this.player.wep.anchor.setTo(0.8, 0.8);
+          this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 80;
           this.player.wep.dmg = 15;

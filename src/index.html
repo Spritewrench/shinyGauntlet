@@ -91,7 +91,7 @@
       
       seed += ""+x+y+startX+startY+winX+winY;
       var monNum = Math.floor((Math.random()*9)+1);
-      var wepRate = 10;
+      var wepRate = 5;
       for(var i =0; i < monNum; i++){
          
         var wepCtrl = Math.floor((Math.random()*wepRate)+1);
@@ -100,12 +100,12 @@
           wepRate = wepRate *10;
         }
         else{
-          var monCode = ""+Math.floor((Math.random()*5)+1);
+          var monCode = ""+Math.floor((Math.random()*3)+1);
           diff++;
         }
         
         var monPrefix = ""+Math.floor((Math.random()*9)+1);
-        seed += 1+monPrefix;
+        seed += monCode+monPrefix;
         
       }
       

@@ -26,6 +26,11 @@
       this.load.image('mon3','assets/monsters/mon3.png');
       this.load.image('mon4','assets/monsters/mon4.png');
       this.load.image('mon5','assets/monsters/mon5.png');
+      
+      //projectiles
+      this.load.image('ice','assets/monsters/iceShard.png');
+      
+      //weps
       this.load.image('mon6','assets/regSwrd1.png');  
       this.load.image('mon7','assets/regSpear1.png');  
       this.load.image('mon8','assets/regDagger1.png');  
@@ -50,6 +55,8 @@
       
       
       this.load.image('map', 'assets/world/00.png');
+      this.load.image('doorVer', 'assets/world/door.png');
+      this.load.image('doorHor', 'assets/world/door.png');
       this.load.image('wall', 'assets/wall.png');
       this.load.image('player', 'assets/player.png');
       this.load.image('regSwrd1', 'assets/regSwrd1.png');
