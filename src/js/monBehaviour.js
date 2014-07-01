@@ -29,8 +29,8 @@ function move(mon, player){
           
           velX = (tx/dist)*mon.speed;
           velY = (ty/dist)*mon.speed;     
-          mon.body.velocity.x += velX;
-          mon.body.velocity.y += velY;     
+          mon.body.x += velX;
+          mon.body.y += velY;     
           if(dist <= mon.width){
             var randomizer = Math.floor((Math.random()*10-mon.randomizer)+1);
             if( randomizer == 1){
@@ -70,7 +70,7 @@ function move(mon, player){
             }       
 
             break;
-          //pully
+          //shotty
           case 3:
             
             if(mon.attackCD >= 0 ){
@@ -98,7 +98,20 @@ function move(mon, player){
                    
 
             break;
+          //pully
           case 4:
+            if(mon.speed < 6){
+              mon.speed++;
+            }
+            
+            var tx = mon.x - player.x,
+                ty = mon.y - player.y,
+                dist = Math.sqrt(tx*tx+ty*ty);
+
+            velX = (tx/dist)*mon.speed;
+            velY = (ty/dist)*mon.speed;     
+            player.body.x += velX;
+            player.body.y += velY;               
             break; 
           case 5:
             break;        
@@ -169,6 +182,11 @@ function move(mon, player){
           case 3:
                 //mon.tarX = Math.floor((Math.random()*600)+100);
                 //mon.tarY = Math.floor((Math.random()*400)+100);       
+          break;  
+          case 4:
+                mon.body.x = Math.floor((Math.random()*600)+100);
+                mon.body.y = Math.floor((Math.random()*400)+100);   
+                mon.speed = 0;
           break;            
       }
              

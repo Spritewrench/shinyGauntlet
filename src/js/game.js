@@ -31,8 +31,9 @@
     this.shakeTime = 0;
     this.lightSize = 20;
     
-    this.tapped= 0;
-    this.prevTapped= -1;
+    this.dashTime= 25;
+
+    
   }
 
   Game.prototype = {
@@ -271,7 +272,7 @@
 
       
       
-      this.lightSize += (this.lightLimit - this.lightSize)*0.1;
+      this.lightSize += (this.lightLimit - this.lightSize)*0.03;
       
       //close doors
       var monAlive = 0;
@@ -345,7 +346,7 @@
               this.monster[i].crited =false;
               this.monster[i].loadTexture(this.monster[i].name);
             }
-            if(this.player.wep.visible == true  && (this.game.input.keyboard.isDown(Phaser.Keyboard.A) || this.game.input.keyboard.isDown(Phaser.Keyboard.W) || this.game.input.keyboard.isDown(Phaser.Keyboard.S) ||this.game.input.keyboard.isDown(Phaser.Keyboard.D) )&& !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) &&  this.player.canAttack == true && this.monster[i].knockback <= 0){
+            if(this.player.wep.visible == true  && (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) ||this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) )&& !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) &&  this.player.canAttack == true && this.monster[i].knockback <= 0 ){
               this.physics.overlap(this.player.wep, this.monster[i], this.monHit, null, this); 
             }
 
@@ -474,8 +475,8 @@
         //this.bg.x = 700;
       }       
       //controls\
-      var slowx = this.player.body.velocity.x/25;
-      var slowy = this.player.body.velocity.y/25;
+      var slowx = this.player.body.velocity.x* 0.10;
+      var slowy = this.player.body.velocity.y* 0.10;
       if(this.player.body.velocity.x > 0 ){
         this.player.body.velocity.x-= slowx;
       }
@@ -494,11 +495,10 @@
         
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
         {
-            this.player.direction = 4;            
+            this.player.direction = 4;
+
             this.player.body.velocity.x = -this.speed;
-            if(this.tapCtrl > 0){
-              this.tapCtrl--;
-            }
+
             
           
         }
@@ -520,27 +520,48 @@
             this.player.direction  = 3;
             this.player.body.velocity.y = this.speed;
         }
-    
-        ////
+
         
-        if(this.game.input.keyboard.justPressed(Phaser.Keyboard.A)){
-          this.tapped = 4;
-        }
-        if(this.game.input.keyboard.justPressed(Phaser.Keyboard.W)){
-          this.tapped = 1;
-        }
-        if(this.game.input.keyboard.justPressed(Phaser.Keyboard.S)){
-          this.tapped = 3;
-        }
-        if(this.game.input.keyboard.justPressed(Phaser.Keyboard.D)){
-          this.tapped = 2;
-        }        
+      }
+      
+      //dash
+      if(this.player.hp > 0 && this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.dashTime == 25){
         
-        if(this.prevTapped == this.tapped){
-         
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
+        {
+            this.player.direction = 4;
+
+            this.player.body.velocity.x = -this.speed*5;
+            this.dashTime = 0;
+            
+          
         }
         
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
+        {
+            this.player.direction  = 2;
+            this.player.body.velocity.x = this.speed*5;
+          this.dashTime = 0;
+            
+        }
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
+        {
+            this.player.direction  = 1;
+            this.player.body.velocity.y = -this.speed*5;
+          this.dashTime = 0;
+        }
+
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
+        {
+            this.player.direction  = 3;
+            this.player.body.velocity.y = this.speed*5;
+         this.dashTime = 0;
+        }
+
         
+      }
+      if(this.dashTime < 25 && ( (!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && !this.game.input.keyboard.isDown(Phaser.Keyboard.W) && !this.game.input.keyboard.isDown(Phaser.Keyboard.S)  && !this.game.input.keyboard.isDown(Phaser.Keyboard.D)) || !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))  ){
+        this.dashTime++;
       }
 
       
@@ -597,7 +618,7 @@
      
       
       //block
-      if( this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.player.hp > 0){
+      if( this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.player.hp > 0 && this.dashTime >= 10){
 
         this.player.shield.x = this.player.x;
         this.player.shield.y = this.player.y;
@@ -736,7 +757,7 @@
       if(this.player.body.touching.down){
         this.player.body.velocity.y = -200;
       }      
-      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || this.dashTime != 25){
         attack(obj2,obj1);
       }
       else{
@@ -973,7 +994,7 @@
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 64;          
-          this.player.wep.dmg = 50;
+          this.player.wep.dmg = 10;
           this.player.wep.knockback = 10;
           this.player.wep.critChance = 10;
           this.player.wep.critMul = 2;
