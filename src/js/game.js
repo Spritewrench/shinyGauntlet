@@ -324,12 +324,23 @@
               this.monster[this.monster.length-1].x +=randomizer;
               randomizer = Math.floor((Math.random()*5)-2);
               this.monster[this.monster.length-1].y+=randomizer;   
-
-
+            }      
+            //scion blast
+            if(this.monster[i].monType == 4 && this.monster[i].attackCD == 50){
+              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.monster[this.monster.length-1].width = 32;
+              this.monster[this.monster.length-1].height = 32;
+              this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
+              this.monster[this.monster.length-1].attackCD = Math.floor((Math.random()*40)+10);
+              this.monster[this.monster.length-1].tarX = this.monster[i].x;
+              this.monster[this.monster.length-1].tarY = this.monster[i].y;
+              this.monster[i].attackCD = 1;
+              var randomizer = Math.floor((Math.random()*5)-2);
               
-              
-              
-            }            
+              this.monster[this.monster.length-1].x +=randomizer;
+              randomizer = Math.floor((Math.random()*5)-2);
+              this.monster[this.monster.length-1].y+=randomizer;   
+            }              
             move(this.monster[i],this.player);
 
             

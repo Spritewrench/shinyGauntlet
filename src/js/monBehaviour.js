@@ -103,7 +103,16 @@ function move(mon, player){
             if(mon.speed < 3){
               mon.speed++;
             }
-            
+            if(mon.attackCD >= 0 ){
+              mon.attackCD--;
+              
+              if(mon.attackCD == 0){
+                mon.attackCD = 75;
+                mon.body.x = Math.floor((Math.random()*600)+100);
+                mon.body.y = Math.floor((Math.random()*400)+100);   
+                mon.speed = 0;                
+              }
+            }            
             var tx = mon.x - player.x,
                 ty = mon.y - player.y,
                 dist = Math.sqrt(tx*tx+ty*ty);
