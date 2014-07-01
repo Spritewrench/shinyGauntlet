@@ -618,7 +618,7 @@
      
       
       //block
-      if( this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.player.hp > 0 && this.dashTime >= 10){
+      if( this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.player.hp > 0){
 
         this.player.shield.x = this.player.x;
         this.player.shield.y = this.player.y;
@@ -757,7 +757,7 @@
       if(this.player.body.touching.down){
         this.player.body.velocity.y = -200;
       }      
-      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || this.dashTime != 25){
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)  ){
         attack(obj2,obj1);
       }
       else{

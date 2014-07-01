@@ -100,7 +100,7 @@ function move(mon, player){
             break;
           //pully
           case 4:
-            if(mon.speed < 6){
+            if(mon.speed < 3){
               mon.speed++;
             }
             
@@ -143,7 +143,7 @@ function move(mon, player){
     }    
 
   }
-  else{
+  else if(mon.monType != 4){
     var tx = mon.tarX - mon.x,
         ty = mon.tarY - mon.y,
         dist = Math.sqrt(tx*tx+ty*ty);
@@ -230,6 +230,7 @@ function getHit(mon, damage, knockback){
     }
     dmgTaken = damage + (-1*mon.def);  
     mon.knockback = knockback;
+
     if(mon.monType > 10 && mon.monType < 99 ){
       mon.hp = 0;
       
