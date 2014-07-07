@@ -310,36 +310,51 @@
 
           if(this.monster[i].hp > 0 && this.player.hp > 0 ){
             //lich ice blast
-            if(this.monster[i].monType == 3 && this.monster[i].attackCD == 100){
+            if(this.monster[i].monType == 3 && this.monster[i].attackCD == 25){
               this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
               this.monster[this.monster.length-1].height = 32;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
-              this.monster[this.monster.length-1].attackCD = Math.floor((Math.random()*40)+10);
-              this.monster[this.monster.length-1].tarX = this.monster[i].x;
+              this.monster[this.monster.length-1].attackCD = 5;
+              this.monster[this.monster.length-1].tarX = this.monster[i].x+1;
               this.monster[this.monster.length-1].tarY = this.monster[i].y;
-              this.monster[i].attackCD = 1;
-              var randomizer = Math.floor((Math.random()*5)-2);
               
-              this.monster[this.monster.length-1].x +=randomizer;
-              randomizer = Math.floor((Math.random()*5)-2);
-              this.monster[this.monster.length-1].y+=randomizer;   
+              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.monster[this.monster.length-1].width = 32;
+              this.monster[this.monster.length-1].height = 32;
+              this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
+              this.monster[this.monster.length-1].attackCD = 5;
+              this.monster[this.monster.length-1].tarX = this.monster[i].x;
+              this.monster[this.monster.length-1].tarY = this.monster[i].y+1;
+              
+              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.monster[this.monster.length-1].width = 32;
+              this.monster[this.monster.length-1].height = 32;
+              this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
+              this.monster[this.monster.length-1].attackCD = 5;
+              this.monster[this.monster.length-1].tarX = this.monster[i].x-1;
+              this.monster[this.monster.length-1].tarY = this.monster[i].y;
+              
+              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.monster[this.monster.length-1].width = 32;
+              this.monster[this.monster.length-1].height = 32;
+              this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
+              this.monster[this.monster.length-1].attackCD = 5;
+              this.monster[this.monster.length-1].tarX = this.monster[i].x;
+              this.monster[this.monster.length-1].tarY = this.monster[i].y-1;              
+              
+              this.monster[i].attackCD = 1;
+               
             }      
             //scion blast
-            if(this.monster[i].monType == 4 && this.monster[i].attackCD == 50){
-              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
-              this.monster[this.monster.length-1].width = 32;
-              this.monster[this.monster.length-1].height = 32;
+            if(this.monster[i].monType == 4 && this.monster[i].attackCD > 75 &&  this.monster[i].knockback <= 0){
+              this.spawn(this.monster.length,12,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.monster[this.monster.length-1].width = 10;
+              this.monster[this.monster.length-1].height = 10;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
-              this.monster[this.monster.length-1].attackCD = Math.floor((Math.random()*40)+10);
-              this.monster[this.monster.length-1].tarX = this.monster[i].x;
-              this.monster[this.monster.length-1].tarY = this.monster[i].y;
-              this.monster[i].attackCD = 1;
-              var randomizer = Math.floor((Math.random()*5)-2);
-              
-              this.monster[this.monster.length-1].x +=randomizer;
-              randomizer = Math.floor((Math.random()*5)-2);
-              this.monster[this.monster.length-1].y+=randomizer;   
+              this.monster[this.monster.length-1].attackCD = 25;
+              this.monster[this.monster.length-1].tarX = this.monster[i].tarX;
+              this.monster[this.monster.length-1].tarY = this.monster[i].tarY;
             }              
             move(this.monster[i],this.player);
 
@@ -691,7 +706,7 @@
       obj2.tarY = this.player.y ;
       if(damage > 0){
         //split
-        if(obj2.monType == 2  && obj2.hp > 50 ){
+        if(obj2.monType == 2  && obj2.hp > 25 ){
           var size = obj2.width/2;
           if(size < 32){
             size = 32;
@@ -715,6 +730,9 @@
           this.monster[this.monster.length-1].tarY = 0;
 
         }
+        else if(obj2.monType == 2  && obj2.hp <= 25 ){
+          obj2.hp = 0;
+        }        
         else{
           obj2.hp -= damage;
         }
@@ -986,8 +1004,8 @@
             break;     
           case 11:
             //this.game.physics.p2.enable(this.monster[key], true);
-            this.monster[key].speed = 10;
-            this.monster[key].hp = 200;
+
+            this.monster[key].hp = 100;
             break;               
           
       }
