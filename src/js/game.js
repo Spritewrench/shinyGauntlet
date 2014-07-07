@@ -310,7 +310,7 @@
 
           if(this.monster[i].hp > 0 && this.player.hp > 0 ){
             //lich ice blast
-            if(this.monster[i].monType == 3 && this.monster[i].attackCD == 25){
+            if(this.monster[i].monType == 3 && this.monster[i].attackCD == 100){
               this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
               this.monster[this.monster.length-1].height = 32;
@@ -318,6 +318,14 @@
               this.monster[this.monster.length-1].attackCD = 5;
               this.monster[this.monster.length-1].tarX = this.monster[i].x+1;
               this.monster[this.monster.length-1].tarY = this.monster[i].y;
+              
+              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.monster[this.monster.length-1].width = 32;
+              this.monster[this.monster.length-1].height = 32;
+              this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
+              this.monster[this.monster.length-1].attackCD = 5;
+              this.monster[this.monster.length-1].tarX = this.monster[i].x+1;
+              this.monster[this.monster.length-1].tarY = this.monster[i].y+1;              
               
               this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
@@ -333,6 +341,14 @@
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
               this.monster[this.monster.length-1].attackCD = 5;
               this.monster[this.monster.length-1].tarX = this.monster[i].x-1;
+              this.monster[this.monster.length-1].tarY = this.monster[i].y+1;                  
+              
+              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.monster[this.monster.length-1].width = 32;
+              this.monster[this.monster.length-1].height = 32;
+              this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
+              this.monster[this.monster.length-1].attackCD = 5;
+              this.monster[this.monster.length-1].tarX = this.monster[i].x-1;
               this.monster[this.monster.length-1].tarY = this.monster[i].y;
               
               this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
@@ -340,10 +356,26 @@
               this.monster[this.monster.length-1].height = 32;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
               this.monster[this.monster.length-1].attackCD = 5;
-              this.monster[this.monster.length-1].tarX = this.monster[i].x;
-              this.monster[this.monster.length-1].tarY = this.monster[i].y-1;              
+              this.monster[this.monster.length-1].tarX = this.monster[i].x+1;
+              this.monster[this.monster.length-1].tarY = this.monster[i].y-1;                  
               
-              this.monster[i].attackCD = 1;
+              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.monster[this.monster.length-1].width = 32;
+              this.monster[this.monster.length-1].height = 32;
+              this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
+              this.monster[this.monster.length-1].attackCD = 5;
+              this.monster[this.monster.length-1].tarX = this.monster[i].x;
+              this.monster[this.monster.length-1].tarY = this.monster[i].y-1;      
+              
+              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.monster[this.monster.length-1].width = 32;
+              this.monster[this.monster.length-1].height = 32;
+              this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
+              this.monster[this.monster.length-1].attackCD = 5;
+              this.monster[this.monster.length-1].tarX = this.monster[i].x-1;
+              this.monster[this.monster.length-1].tarY = this.monster[i].y-1;                  
+              
+              this.monster[i].attackCD = 75;
                
             }      
             //scion blast
