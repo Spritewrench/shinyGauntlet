@@ -57,7 +57,7 @@
         
         // # of monsters on screen
         world[''+i+j].monCount = 1;
-        world[''+i+j].mon = []
+        world[''+i+j].mon = [];
         for(var k = 0; k < world[''+i+j].monCount; k ++){
           //monster stats
           var monKey = Math.floor((Math.random()*mon.length)+0);
@@ -84,21 +84,29 @@
               break;
             case 1:
               monName = "Minotaur";
-              world[''+i+j].mon[k].hp = 150;
+              world[''+i+j].mon[k].hp = 100;
               break;
             case 2:
-              monName = "Vampire";
-              world[''+i+j].mon[k].hp = 150;
+              monName = "SLime";
+              world[''+i+j].mon[k].hp = 100;
+              world[''+i+j].mon[k].def = -10;
+              world[''+i+j].mon[k].speed = 4;
               break;   
             case 3:
               monName = "Lich";
-              world[''+i+j].mon[k].hp = 150;
+              world[''+i+j].mon[k].hp = 100;
               break;  
             case 4:
               monName = "Scion";
-              world[''+i+j].mon[k].hp = 150;
+              world[''+i+j].mon[k].hp = 100;
               
-              break;                               
+              break;
+            case 5:
+              monName = "Dragon";
+              world[''+i+j].mon[k].hp = 100;
+              world[''+i+j].mon[k].speed = 1;
+              
+              break;              
             case 6:
               monName = "Sword";
               break;

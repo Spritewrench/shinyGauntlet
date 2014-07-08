@@ -28,7 +28,7 @@ function move(mon, player){
           }
           //rage mode
           if(mon.hp <= 50){
-            mon.speed = 10
+            mon.speed = 15;
           }
           var tx = mon.tarX - mon.x,
               ty = mon.tarY - mon.y,
@@ -56,9 +56,19 @@ function move(mon, player){
           break;
           //splitty
           case 2:
-            mon.hp++;
-            mon.width++;
-            mon.height++;
+            console.log(mon.attackCD);
+
+            if(mon.attackCD >= 0 ){
+               mon.attackCD-= mon.speed;
+              
+
+            }
+            
+            if(mon.attackCD == 0){
+              mon.attackCD = 200;
+            }              
+            
+            
             var tx = mon.tarX - mon.x,
                 ty = mon.tarY - mon.y,
                 dist = Math.sqrt(tx*tx+ty*ty);
@@ -89,9 +99,9 @@ function move(mon, player){
 
             }
             
-              if(mon.attackCD == 0){
-                mon.attackCD = 100;
-              }          
+            if(mon.attackCD == 0){
+              mon.attackCD = 100;
+            }          
             var tx = mon.tarX - mon.x,
                   ty = mon.tarY - mon.y,
                   dist = Math.sqrt(tx*tx+ty*ty);
@@ -127,7 +137,43 @@ function move(mon, player){
             }          
 
             break; 
+          //dragon
           case 5:
+
+            if(mon.attackCD > 1 ){
+              mon.attackCD-= mon.speed;
+              
+
+            }           
+            if(mon.attackCD <= 1){
+              mon.attackCD = 100
+              mon.tarX = player.x;
+              mon.tarY = player.y+3;
+            }    
+            mon.tarX = player.x;
+            mon.tarY= player.y;
+            var tx = mon.tarX - mon.x,
+                ty = mon.tarY - mon.y,
+                dist = Math.sqrt(tx*tx+ty*ty);
+
+            velX = (tx/dist)*mon.speed;
+            velY = (ty/dist)*mon.speed; 
+            if(mon.attackCD >  75){
+              mon.body.x += velX;
+              mon.body.y += velY;               
+            }
+            else{
+              var randomizer = Math.floor((Math.random()*10)-5);
+               mon.body.x += randomizer;
+              randomizer = Math.floor((Math.random()*10)-5);
+              mon.body.y += randomizer;              
+            }
+            if(dist <= 200){
+               //mon.attackCD = 100;
+
+
+            }              
+              
             break;        
           case 6:
             break;
@@ -138,7 +184,7 @@ function move(mon, player){
           //ice shards
           case 11:
           mon.hp--;
-          mon.speed = 3;
+          mon.speed = 1;
           var tx = mon.tarX - mon.x,
                 ty = mon.tarY - mon.y,
                 dist = Math.sqrt(tx*tx+ty*ty);
@@ -165,10 +211,10 @@ function move(mon, player){
               mon.hp = 0;
             }                 
             //return new createjs.Point(rotatedX,rotatedY);
-            break;    
+            break;  
+          //dragon fire
           case 13:
-
-          mon.speed = 3;
+          mon.speed = 10;
           var tx = mon.tarX - mon.x,
                 ty = mon.tarY - mon.y,
                 dist = Math.sqrt(tx*tx+ty*ty);
@@ -176,8 +222,11 @@ function move(mon, player){
             velX = (tx/dist)*mon.speed;
             velY = (ty/dist)*mon.speed;     
             mon.body.x += velX;
-            mon.body.y += velY;   
-            //return new createjs.Point(rotatedX,rotatedY);
+            mon.body.y += velY;
+            if(dist <= 10){
+              mon.hp = 0;
+            }    
+
             break;              
       }        
     }
@@ -222,8 +271,8 @@ function move(mon, player){
             mon.tarY = Math.floor((Math.random()*400)+100);           
           break;
           case 3:
-                //mon.tarX = Math.floor((Math.random()*600)+100);
-                //mon.tarY = Math.floor((Math.random()*400)+100);       
+                mon.tarX = Math.floor((Math.random()*600)+100);
+                mon.tarY = Math.floor((Math.random()*400)+100);       
           break;  
           case 4:
                 mon. 
@@ -274,9 +323,22 @@ function getHit(mon, damage, knockback){
     }
     dmgTaken = damage + (-1*mon.def);  
     mon.knockback = knockback;
+    switch(mon.monType){
+        case 2:
+          mon.knockback += 25;
+          break;        
+        case 3:
+          mon.knockback += 5;
+          break;
+    }
+
 
     if(mon.monType > 10 && mon.monType < 99 ){
-      mon.hp = 0;
+      //mon.hp = 0;
+      mon.knockback = 0;
+      dmgTaken = 0;
+      
+      
       
     }
   

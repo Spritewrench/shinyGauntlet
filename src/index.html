@@ -97,15 +97,15 @@
         var wepCtrl = Math.floor((Math.random()*wepRate)+1);
         if(wepCtrl == 1){
           var monCode = ""+(Math.floor((Math.random()*3)+1)+5);
-          wepRate = wepRate *10;
+          
         }
         else{
-          var monCode = ""+Math.floor((Math.random()*3)+1);
+          var monCode = ""+Math.floor((Math.random()*4)+1);
           diff++;
         }
         
         var monPrefix = ""+Math.floor((Math.random()*9)+1);
-        seed += 3+monPrefix;
+        seed += 2+monPrefix;
         
       }
       
