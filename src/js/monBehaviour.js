@@ -126,11 +126,11 @@ function move(mon, player){
               mon.speed++;
             }
             if(mon.attackCD > 1 ){
-              mon.attackCD-=mon.speed;
+              mon.attackCD--;
               
 
             }           
-            if(mon.attackCD == 1){
+            if(mon.attackCD <= 1){
               mon.attackCD = 100;
               mon.tarX = player.x;
               mon.tarY = player.y+3;
