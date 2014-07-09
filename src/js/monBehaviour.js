@@ -146,7 +146,7 @@ function move(mon, player){
 
             }           
             if(mon.attackCD <= 1){
-              mon.attackCD = 100
+              mon.attackCD = 200
               mon.tarX = player.x;
               mon.tarY = player.y+3;
             }    
@@ -260,6 +260,8 @@ function move(mon, player){
     }
     //knockback end
     if(mon.knockback == 0 ){
+      //shield bash wear off
+      mon.hurtByShield = false;
       switch(mon.monType){
           case 1:
             mon.speed = 0;
@@ -275,7 +277,7 @@ function move(mon, player){
                 mon.tarY = Math.floor((Math.random()*400)+100);       
           break;  
           case 4:
-                mon. 
+
           break;  
           case 12:
             mon.tarX = Math.floor((Math.random()*600)+100);

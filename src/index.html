@@ -19,6 +19,8 @@
     Dungeon Code:
     <input  id="seed" type="text" value="4400331612" readonly>
     <input id="clickMe" type="button" value="retry" onclick="retry();" />
+    <a id ="tweet" href="https://twitter.com/intent/tweet?text=">Tweet</a>
+    <br/>
     Item Code:
     <input type="text">  
     Difficulty:
@@ -30,7 +32,9 @@
 
 
 
+
   <!-- build:js main.min.js -->
+  <script type="text/javascript" src="js\lib\widgets.js"></script>
   <script>
     //gen dungeon seed
     retry();
@@ -90,26 +94,21 @@
       }      
       
       seed += ""+x+y+startX+startY+winX+winY;
-      var monNum = Math.floor((Math.random()*9)+1);
-      var wepRate = 5;
-      for(var i =0; i < monNum; i++){
-         
-        var wepCtrl = Math.floor((Math.random()*wepRate)+1);
-        if(wepCtrl == 1){
-          var monCode = ""+(Math.floor((Math.random()*3)+1)+5);
-          
-        }
-        else{
-          var monCode = ""+Math.floor((Math.random()*4)+1);
-          diff++;
-        }
-        
-        var monPrefix = ""+Math.floor((Math.random()*9)+1);
-        seed += 4+monPrefix;
-        
-      }
+      var mon1Pref = Math.floor((Math.random()*9));
+      var mon2Pref = Math.floor((Math.random()*9));
+      var mon3Pref = Math.floor((Math.random()*9));
+      var mon4Pref = Math.floor((Math.random()*9));
+      var mon5Pref = Math.floor((Math.random()*9));
+      var wep = (Math.floor((Math.random()*3)+1)+5);
+      var wepPref =Math.floor((Math.random()*9));
+      
+      
+       seed += ""+1+mon1Pref+2+mon2Pref+3+mon3Pref+4+mon4Pref+5+mon5Pref+wep+wepPref;
+      
+      diff = 3;
       
       document.getElementById('seed').value = seed;
+      document.getElementById('tweet').href = "https://twitter.com/intent/tweet?text=Dungeon Code: "+seed+" Generated!&hashtags=shinygauntlet";
       document.getElementById('seed').style.width= (seed.length*10)+"px";
       
       for(var i = 0; i < diff; i++){

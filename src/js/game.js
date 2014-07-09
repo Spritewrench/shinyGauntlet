@@ -311,7 +311,7 @@
           if(this.monster[i].hp > 0 && this.player.hp > 0 ){
             //slime
             if(this.monster[i].monType == 2 && this.monster[i].attackCD <= 5 &&  this.monster[i].attackCD > 0 && this.monster[i].knockback <= 0 ){
-              this.spawn(this.monster.length,this.monster[i].monType,this.monster[i].name,this.monster[i].x,this.monster[i].y,this.monster[i].width,50,0,this.monster[i].speed);
+              this.spawn(this.monster.length,this.monster[i].monType,11,this.monster[i].name,this.monster[i].x,this.monster[i].y,this.monster[i].width,50,0,this.monster[i].speed);
               this.monster[this.monster.length-1].attackCD = 1000;
               this.monster[this.monster.length-1].tarX = Math.floor((Math.random()*600)+100);
               this.monster[this.monster.length-1].tarY = Math.floor((Math.random()*400)+100);         
@@ -319,7 +319,7 @@
             }
             //lich ice blast 1
           if(this.monster[i].monType == 3 && this.monster[i].attackCD == 100 && this.monster[i].knockback <= 0 ){
-              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.spawn(this.monster.length,11,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
               this.monster[this.monster.length-1].height = 32;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -328,7 +328,7 @@
               this.monster[this.monster.length-1].tarY = this.monster[i].y;
               
               
-              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.spawn(this.monster.length,11,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
               this.monster[this.monster.length-1].height = 32;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -337,7 +337,7 @@
               this.monster[this.monster.length-1].tarY = this.monster[i].y+1;
                            
               
-              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.spawn(this.monster.length,11,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
               this.monster[this.monster.length-1].height = 32;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -346,7 +346,7 @@
               this.monster[this.monster.length-1].tarY = this.monster[i].y;
               
               
-              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.spawn(this.monster.length,11,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
               this.monster[this.monster.length-1].height = 32;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -361,7 +361,7 @@
             //lich blast 2
             if(this.monster[i].monType == 3 && this.monster[i].attackCD == 50){
               
-              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.spawn(this.monster.length,11,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
               this.monster[this.monster.length-1].height = 32;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -370,7 +370,7 @@
               this.monster[this.monster.length-1].tarY = this.monster[i].y+1;              
 
               
-              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.spawn(this.monster.length,11,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
               this.monster[this.monster.length-1].height = 32;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -379,7 +379,7 @@
               this.monster[this.monster.length-1].tarY = this.monster[i].y+1;                  
               
               
-              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.spawn(this.monster.length,11,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
               this.monster[this.monster.length-1].height = 32;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -388,7 +388,7 @@
               this.monster[this.monster.length-1].tarY = this.monster[i].y-1;                  
                 
               
-              this.spawn(this.monster.length,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.spawn(this.monster.length,11,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
               this.monster[this.monster.length-1].height = 32;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -401,7 +401,7 @@
             }                  
             //scion blast
             if(this.monster[i].monType == 4 && this.monster[i].attackCD > 75 &&  this.monster[i].knockback <= 0){
-              this.spawn(this.monster.length,12,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
+              this.spawn(this.monster.length,12,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 10;
               this.monster[this.monster.length-1].height = 10;
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -411,7 +411,7 @@
             } 
             //dragon
             if(this.monster[i].monType == 5 && this.monster[i].attackCD > 25 && this.monster[i].attackCD <= 75 &&  this.monster[i].knockback <= 0){
-              this.spawn(this.monster.length,13,'ice',this.monster[i].x,this.monster[i].y,64,3,0,2);
+              this.spawn(this.monster.length,13,11,'ice',this.monster[i].x,this.monster[i].y,64,3,0,2);
 
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
               this.monster[this.monster.length-1].attackCD = 25;
@@ -421,7 +421,7 @@
             move(this.monster[i],this.player);
 
             
-            if(this.monster[i].knockback > 0 && this.monster[i].monType < 6){
+            if(this.monster[i].knockback > 0 && this.monster[i].monType < 6 && this.monster[i].hurtByShield == false){
               if(this.monster[i].crited){
                 this.monster[i].loadTexture(this.monster[i].name+'Crit');
               }
@@ -820,13 +820,15 @@
       }
       if(this.player.body.touching.down){
         this.player.body.velocity.y = -200;
-      }      
+      }   
+      //blocking
       if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)  ){
         attack(obj2,obj1);
       }
       else{
         obj2.tarX = this.player.x;
         obj2.tarY = this.player.y;
+        obj2.hurtByShield = true;
         getHit(obj2,0,50);
       }
       
@@ -958,20 +960,26 @@
 
       
       //load new monsters
+      //only one win portal
+      if(this.currentMap == winPos){
+        world[this.currentMap].monCount = 1;
+      }
       for(var i = 0; i < world[this.currentMap].monCount;i++){
           var x = world[this.currentMap].mon[i].x;
           var y = world[this.currentMap].mon[i].y;
        //win over ride 
           if(this.currentMap == winPos){
+            x = this.game.width / 2
+            , y = this.game.height / 2;            
             this.shine.x = x;
             this.shine.y = y;
             this.shine.visible = true;
-            this.spawn(i,99,"win",x,y,16,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,0);   
+            this.spawn(i,99,99,"win",x,y,16,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,0);   
             world[this.currentMap].msg ="The way out";
                 
           } 
           else{
-            this.spawn(i,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].name,x,y,world[this.currentMap].mon[i].size,
+            this.spawn(i,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].pref,world[this.currentMap].mon[i].name,x,y,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);
             this.shine.visible = false;
 
@@ -987,19 +995,16 @@
         
 
     },
-    spawn: function (key,monType,name,x,y,size,hp,def,speed){
+    spawn: function (key,monType,pref,name,x,y,size,hp,def,speed){
       
-      if(monType == 10){
-        this.monster[key] = this.add.sprite(x, y, 'bulletBob');
-      }
-      else{
-        this.monster[key] = this.add.sprite(x, y, name);
-      }
+
+      this.monster[key] = this.add.sprite(x, y, name);
       this.monster[key].visible = true;
       this.monster[key].anchor.setTo(0.5, 0.5);
       this.monster[key].width = size;
       this.monster[key].height = size;    
       this.monster[key].monType = parseInt(monType);
+      this.monster[key].pref = pref;
       this.monster[key].hp = hp;
       this.monster[key].def = def;
       this.monster[key].speed = speed;
@@ -1011,6 +1016,8 @@
       this.monster[key].randomizer = 0;
       this.monster[key].body.collideWorldBounds = true;
       
+      this.monster[key].hurtByShield = false;
+      
       //this.monster[key].body.setSize(this.monster[key].width,16,0,0);
       switch(this.monster[key].monType){
           default:
@@ -1018,7 +1025,6 @@
             this.monster[key].tarY = 0;
             break;
           case 1:
-            this.monster[key].speed += 2;
             break;  
           case 2:
                       
