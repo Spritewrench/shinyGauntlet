@@ -19,10 +19,12 @@
     Dungeon Code:
     <input  id="seed" type="text" value="4400331612" readonly>
     <input id="clickMe" type="button" value="retry" onclick="retry();" />
-    <a id ="tweet" href="https://twitter.com/intent/tweet?text=">Tweet</a>
+    <a id ="tweet" href="https://twitter.com/intent/tweet?text=">
+      test
+    </a>
+    
     <br/>
-    Item Code:
-    <input type="text">  
+    
     Difficulty:
     <div id="diff"></div>
     <input id="clickMe" type="button" value="Play" onclick="genDungeon();" />
@@ -94,6 +96,13 @@
       }      
       
       seed += ""+x+y+startX+startY+winX+winY;
+      
+      var mon1Type = Math.floor((Math.random()*8)+1);
+      var mon2Type = Math.floor((Math.random()*8)+1);
+      var mon3Type = Math.floor((Math.random()*8)+1);
+      var mon4Type = Math.floor((Math.random()*8)+1);
+      var mon5Type = Math.floor((Math.random()*8)+1);  
+      
       var mon1Pref = Math.floor((Math.random()*9));
       var mon2Pref = Math.floor((Math.random()*9));
       var mon3Pref = Math.floor((Math.random()*9));
@@ -103,7 +112,7 @@
       var wepPref =Math.floor((Math.random()*9));
       
       
-       seed += ""+1+mon1Pref+2+mon2Pref+3+mon3Pref+4+mon4Pref+5+mon5Pref+wep+wepPref;
+       seed += ""+mon1Type+mon1Pref+mon2Type+mon2Pref+mon2Type+wep+wepPref+mon3Pref+mon4Type+mon4Pref+mon5Type+mon5Pref;
       
       diff = 3;
       
@@ -113,7 +122,7 @@
       
       for(var i = 0; i < diff; i++){
         var img = document.createElement("img");
-        img.src = "assets/player.png";
+        img.src = "assets/starBronze.png";
         var src = document.getElementById("diff");
         src.appendChild(img);       
       }      

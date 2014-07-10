@@ -51,7 +51,6 @@
       
       this.load.image('win','assets/monsters/win.png');
       this.load.image('shine','assets/monsters/shine.png');
-      this.load.image('peekShine','assets/world/roomShine.png');
       
       
       this.load.image('map', 'assets/world/00.png');

@@ -13,7 +13,6 @@
     this.textCounter = 200;
     this.txtTar = 500;
     this.shine = null;
-    this.peekShine =null;
     this.lightLimit = 900;
     
     this.topWall = null;
@@ -54,10 +53,7 @@
       this.shine.height = 64;
       this.shine.visible = false;
       
-      
-      this.peekShine = this.add.sprite(0, 0, 'peekShine');
-      this.peekShine.anchor.setTo(0.5, 0.5);
-      this.peekShine.visible = false;      
+   
       
       this.player = this.add.sprite(x, y, 'player');
       this.player.anchor.setTo(0.5, 0.5);
@@ -197,7 +193,7 @@
     //groups
     this.spriteGroup.add(this.bg);
     this.spriteGroup.add(this.shine); 
-    this.spriteGroup.add(this.peekShine); 
+ 
     this.spriteGroup.add(this.door[0]);
     this.spriteGroup.add(this.topWall);
     this.spriteGroup.add(this.topWall2);
@@ -277,7 +273,7 @@
       //close doors
       var monAlive = 0;
       for(var i = 0; i < this.monster.length;i++){
-        if(this.monster[i].visible){
+        if(this.monster[i].visible && this.monster[i].monType != 6 && this.monster[i].monType != 7  && this.monster[i].monType != 8 && this.monster[i].monType != 99 ){
           monAlive++;
 
         }         
@@ -309,12 +305,14 @@
         if (this.monster[i].visible){
 
           if(this.monster[i].hp > 0 && this.player.hp > 0 ){
-            //slime
+
+            
+            //slime split
             if(this.monster[i].monType == 2 && this.monster[i].attackCD <= 5 &&  this.monster[i].attackCD > 0 && this.monster[i].knockback <= 0 ){
-              this.spawn(this.monster.length,this.monster[i].monType,11,this.monster[i].name,this.monster[i].x,this.monster[i].y,this.monster[i].width,50,0,this.monster[i].speed);
-              this.monster[this.monster.length-1].attackCD = 1000;
-              this.monster[this.monster.length-1].tarX = Math.floor((Math.random()*600)+100);
-              this.monster[this.monster.length-1].tarY = Math.floor((Math.random()*400)+100);         
+              //this.spawn(this.monster.length,this.monster[i].monType,11,this.monster[i].name,this.monster[i].x,this.monster[i].y,this.monster[i].width,50,0,this.monster[i].speed);
+              //this.monster[this.monster.length-1].attackCD = 1000;
+              //this.monster[this.monster.length-1].tarX = Math.floor((Math.random()*600)+100);
+              //this.monster[this.monster.length-1].tarY = Math.floor((Math.random()*400)+100);         
               
             }
             //lich ice blast 1
@@ -748,6 +746,12 @@
       
     },
     monHit: function (obj1, obj2) {
+      if(obj2.attackCD <= 0 ){
+        for(var i =0; i < this.monster.length; i++){
+          this.monster[i].attackCD = 100;
+          
+        }        
+      }
 
       //this.game.state.start('menu');
       var damage = 0;
@@ -835,6 +839,10 @@
       if(obj2.monType == 99){        
         this.game.state.start('win');
       }
+      ///////////////////////////////////
+      // weapon pick ups
+      //////////////////////////////////
+      var weapon = obj2.monType+obj2.prefix
       if(obj2.monType == 6){        
         this.setWep(1);
         obj2.visible = false;
@@ -854,12 +862,13 @@
       //alert(this.player.worldPosX+" "+this.player.worldPosY);
       
       this.currentMap = ''+this.player.worldPosX+this.player.worldPosY;
+      
       this.bg.loadTexture('map');
       this.textCounter = 200;
       this.lightSize = 0;
       
       //place walls
-      if(this.player.worldPosX ===0){
+      if(world[this.currentMap].dir[3] === 0){
         this.leftWall.height = 600;
         this.leftWall.y = 0;
         this.leftWall2.height = 600;
@@ -873,7 +882,7 @@
         
       }
       
-      if(this.player.worldPosY ===0){
+      if(world[this.currentMap].dir[0] === 0){
         this.topWall.width = 800;
         this.topWall.x = 0;
         this.topWall2.width = 800;        
@@ -886,7 +895,7 @@
         this.topWall2.x = 500;
       }     
 
-      if(this.player.worldPosX == worldLimitX-1){
+      if(world[this.currentMap].dir[1] === 0){
         this.rightWall.height = 600;
         this.rightWall.y = 0;
         this.rightWall2.height = 600;
@@ -899,7 +908,7 @@
         this.rightWall2.y = 400;
       }
       
-      if(this.player.worldPosY == worldLimitY-1){
+      if(world[this.currentMap].dir[2] === 0){
         this.botWall.width = 800;
         this.botWall.x = 0;
         this.botWall2.width = 800;        
@@ -911,6 +920,8 @@
         this.botWall2.width = 300;        
         this.botWall2.x = 500;
       }      
+      
+      
       
       
       //hide monsters
@@ -926,37 +937,7 @@
         this.shine.visible = false;
       }
       
-      //hint hint
-      if(this.currentMap != winPos){
-        this.peekShine.visible = true;
-        if(this.currentMap[0] - winPos[0] > 0){
-          this.peekShine.x = 25;
-          this.peekShine.angle = 90;
-          this.peekShine.y = 300;
-          this.peekShine.width = 175;
-        }
-        if(this.currentMap[0] - winPos[0] < 0){
-          this.peekShine.x = 775;
-          this.peekShine.angle = -90;
-          this.peekShine.y = 300;
-          this.peekShine.width = 175;        
-        }    
-        if(this.currentMap[1] - winPos[1] > 0){
-          this.peekShine.x = 400;
-          this.peekShine.angle = 180;
-          this.peekShine.y = 25;
-          this.peekShine.width = 175;
-        }
-        if(this.currentMap[1] - winPos[1] < 0 ){          
-          this.peekShine.x = 400;
-          this.peekShine.angle = 0;
-          this.peekShine.y = 575;
-          this.peekShine.width = 175;
-        }  
-      }
-      else{
-        this.peekShine.visible = false;
-      }
+
 
       
       //load new monsters
@@ -979,8 +960,22 @@
                 
           } 
           else{
-            this.spawn(i,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].pref,world[this.currentMap].mon[i].name,x,y,world[this.currentMap].mon[i].size,
+            this.spawn(i,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,x,y,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);
+            //king me
+            if(world[this.currentMap].mon[i].prefix == 0){
+                
+                var x = 200;
+                for(var j = 0; j < 2; j++){
+  
+                  this.spawn(this.monster.length,world[this.currentMap].mon[i].monType,11,world[this.currentMap].mon[i].name,x,300,32,50,0,2);
+                  this.monster[this.monster.length-1].tarX = Math.floor((Math.random()*600)+100);
+                  this.monster[this.monster.length-1].tarY = Math.floor((Math.random()*400)+100);   
+                  x = 600;
+                                
+                }
+
+            }
             this.shine.visible = false;
 
           }
@@ -1017,6 +1012,9 @@
       this.monster[key].body.collideWorldBounds = true;
       
       this.monster[key].hurtByShield = false;
+      
+      this.monster[key].tarX = Math.floor((Math.random()*600)+100);   ;
+      this.monster[key].tarY = Math.floor((Math.random()*400)+100);   ;
       
       //this.monster[key].body.setSize(this.monster[key].width,16,0,0);
       switch(this.monster[key].monType){

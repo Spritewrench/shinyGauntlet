@@ -20,7 +20,7 @@ function move(mon, player){
             //attack(mon,player);
           }
           break;  
-        //chargy
+        //mino
         case 1:        
           //varied spped
           if(mon.speed < 8){
@@ -54,10 +54,8 @@ function move(mon, player){
 
           }
           break;
-          //splitty
+          //slime
           case 2:
-            console.log(mon.attackCD);
-
             if(mon.attackCD >= 0 ){
                mon.attackCD-= mon.speed;
               
@@ -92,7 +90,7 @@ function move(mon, player){
             break;
           //lich
           case 3:
-            mon.speed = 3;
+            
             if(mon.attackCD >= 0 ){
               mon.attackCD--;
               
@@ -120,7 +118,7 @@ function move(mon, player){
                    
 
             break;
-          //pully
+          //scion
           case 4:
             if(mon.speed < 3){
               mon.speed++;
@@ -227,7 +225,8 @@ function move(mon, player){
               mon.hp = 0;
             }    
 
-            break;              
+            break;  
+      
       }        
     }
     else{
@@ -241,9 +240,15 @@ function move(mon, player){
     var tx = mon.tarX - mon.x,
         ty = mon.tarY - mon.y,
         dist = Math.sqrt(tx*tx+ty*ty);
-
-    velX = (tx/dist)*mon.speed;
-    velY = (ty/dist)*mon.speed;     
+    if(mon.monType == 3){
+      velX = (tx/dist)*7;
+      velY = (ty/dist)*7;          
+    }
+    else{
+      velX = (tx/dist)*mon.speed;
+      velY = (ty/dist)*mon.speed;          
+    }
+       
     if(true){
       mon.body.x -= velX;
       mon.body.y -= velY;       
@@ -255,9 +260,7 @@ function move(mon, player){
       
   if(mon.knockback > 0){
     mon.knockback--;
-    if(mon.monType == 3){
-      mon.speed = 7;
-    }
+
     //knockback end
     if(mon.knockback == 0 ){
       //shield bash wear off
@@ -317,12 +320,7 @@ function attack(mon, player){
   }
 }
 function getHit(mon, damage, knockback){
-    if(mon.attackCD < 100){
-      mon.attackCD = 100;
-      //mon.tarX = Math.floor((Math.random()*600)+100);
-      //mon.tarY = Math.floor((Math.random()*400)+100);               
 
-    }
     dmgTaken = damage + (-1*mon.def);  
     mon.knockback = knockback;
     switch(mon.monType){
