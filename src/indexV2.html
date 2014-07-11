@@ -17,7 +17,7 @@
 
     <br/>
     Dungeon Code:
-    <input id="seed"  value=""  maxlength="16" onkeypress="return validate(event)">
+    <input id="seed"  value=""  maxlength="16" onkeypress="return validate(event)" onblur="updateDiff(3)">
     <input id="clickMe" type="button" value="retry" onclick="retry();" />
     <a id ="tweet" href="https://twitter.com/intent/tweet?text=">
       <img src="assets/twitter.png" />
@@ -124,6 +124,31 @@
       }  
       return diff;
     }
+    function setDiff(diff){
+      for (var i= document.images.length; i-->0;){
+        document.images[i].parentNode.removeChild(document.images[i]);  
+      }            
+      for(var i = 0; i < diff; i++){
+        var img = document.createElement("img");
+        img.src = "assets/starBronze.png";
+        var src = document.getElementById("diff");
+        src.appendChild(img);       
+      }      
+    }
+    
+    function updateDiff(val){
+      var diff = val;
+      var seed = document.getElementById('seed').value;
+      var monQue = seed.substr(6, seed.length);
+      mon = monQue.match(new RegExp(".{1,2}", "g")); 
+      //console.log(mon);
+      for(var i = 0; i < mon.length; i++){
+        //console.log(mon[i][1]);
+        diff = checkDiff(mon[i][1],diff);
+      }   
+      setDiff(diff);
+    }    
+    
     function retry(){
       
       var src = document.getElementsByTagName('img');
@@ -204,12 +229,7 @@
       document.getElementById('tweet').href = "https://twitter.com/intent/tweet?text=Dungeon Code: "+seed+" Generated!&hashtags=shinygauntlet";
       document.getElementById('seed').style.width= (seed.length*10)+"px";
       
-      for(var i = 0; i < diff; i++){
-        var img = document.createElement("img");
-        img.src = "assets/starBronze.png";
-        var src = document.getElementById("diff");
-        src.appendChild(img);       
-      }      
+      setDiff(diff);
 
               
      
