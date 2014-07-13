@@ -31,7 +31,7 @@
     this.lightSize = 20;
     
     this.dashTime= 25;
-
+    this.emitter;
     
   }
 
@@ -190,6 +190,18 @@
       
       
       
+    
+    this.emitter = this.game.add.emitter(this.player.x,this.player.y, 100);
+    this.emitter.makeParticles('trusty');
+    this.emitter.width =16;
+   
+    
+    this.emitter.start(false, 500, 20);
+    this.emitter.gravity = 0;
+      
+      
+      
+      
     //groups
     this.spriteGroup.add(this.bg);
     this.spriteGroup.add(this.shine); 
@@ -197,7 +209,10 @@
     this.spriteGroup.add(this.door[0]);
     this.spriteGroup.add(this.topWall);
     this.spriteGroup.add(this.topWall2);
+
     this.spriteGroup.add(this.player);
+    this.spriteGroup.add(this.player.shield);
+    this.spriteGroup.add(this.player.wep);
     this.shadowGroup.add(lightSprite);
     this.textGroup.add(this.txt); 
 
@@ -213,6 +228,11 @@
     update: function () {
       
       this.txt.y += (this.txtTar - this.txt.y)*0.1;
+      
+      //fade out particles
+      this.emitter.forEachAlive(function(p){
+        p.alpha= p.lifespan / 500;
+      });
       
       //close doors
       // top and bot
@@ -561,7 +581,10 @@
         }
         //this.bg.x = 700;
       }       
-      //controls\
+      //controls
+      this.emitter.x = this.player.wep.x;
+      this.emitter.y = this.player.wep.y;this.emitter.x = this.player.wep.x;
+      this.emitter.y = this.player.wep.y;
       var slowx = this.player.body.velocity.x* 0.10;
       var slowy = this.player.body.velocity.y* 0.10;
       if(this.player.body.velocity.x > 0 ){
@@ -686,6 +709,7 @@
 
       }
       else{
+          
           this.player.wep.x = this.player.x+this.player.wep.width + 20;
           this.player.wep.y = this.player.y;
           this.player.wep.angle = 10;

@@ -53,6 +53,9 @@
       this.load.image('shine','assets/monsters/shine.png');
       
       
+      this.load.image('trusty','assets/particleEmitter/trusty.png');
+      
+      
       this.load.image('map', 'assets/world/00.png');
       this.load.image('doorVer', 'assets/world/door.png');
       this.load.image('doorHor', 'assets/world/door.png');
