@@ -291,7 +291,8 @@
         this.door[0].tarX = 200;
         this.door[1].tarY = 100;
         this.door[2].tarY = 100;
-        this.door[3].tarX = 200;        
+        this.door[3].tarX = 200;  
+        world[this.currentMap].cleared = true;
       }
  
      
@@ -862,9 +863,10 @@
       //alert(this.player.worldPosX+" "+this.player.worldPosY);
       
       this.currentMap = ''+this.player.worldPosX+this.player.worldPosY;
-      
+      this.textCounter = 0;
+      this.txt.y = 800;
       this.bg.loadTexture('map');
-      this.textCounter = 200;
+      
       this.lightSize = 0;
       
       //place walls
@@ -942,6 +944,7 @@
       
       //load new monsters
       //only one win portal
+      
       if(this.currentMap == winPos){
         world[this.currentMap].monCount = 1;
       }
@@ -959,7 +962,9 @@
             world[this.currentMap].msg ="The way out";
                 
           } 
-          else{
+          else if(world[this.currentMap].cleared == false){
+            this.textCounter = 200;
+            
             this.spawn(i,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,x,y,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);
             //king me

@@ -17,7 +17,7 @@
 
     <br/>
     Dungeon Code:
-    <input id="seed"  value=""  maxlength="16" onkeypress="return validate(event)">
+    <input id="seed"  value=""  maxlength="16" onkeypress="return validate(event)" onblur="updateDiff(3)" onkeydown="updateDiff(3)">
     <input id="clickMe" type="button" value="retry" onclick="retry();" />
     <a id ="tweet" href="https://twitter.com/intent/tweet?text=">
       <img src="assets/twitter.png" />
@@ -122,8 +122,35 @@
           break;      
 
       }  
+      
       return diff;
     }
+    function setDiff(diff){
+      for (var i= document.images.length; i-->0;){
+        document.images[i].parentNode.removeChild(document.images[i]);  
+      }            
+      for(var i = 0; i < diff; i++){
+        var img = document.createElement("img");
+        img.src = "assets/starBronze.png";
+        var src = document.getElementById("diff");
+        src.appendChild(img);       
+      }      
+    }
+    
+    function updateDiff(val){
+      var diff = val;
+      var seed = document.getElementById('seed').value;
+      var monQue = seed.substr(6, seed.length);
+      mon = monQue.match(new RegExp(".{1,2}", "g")); 
+      //console.log(mon);
+      for(var i = 0; i < mon.length; i++){
+        
+        diff = checkDiff(parseInt(mon[i][1]),diff);
+        
+      }   
+      setDiff(diff);
+    }    
+    
     function retry(){
       
       var src = document.getElementsByTagName('img');
@@ -162,40 +189,34 @@
       }      
       
       seed += ""+x+y+startX+startY+winX+winY;
-      diff = 3;
-      var monType = Math.floor((Math.random()*5)+1);
-      var monPref = Math.floor((Math.random()*9));
 
+
+      
+      var wepchance = 0;
       var wep = (Math.floor((Math.random()*3)+1)+5);
       var wepPref =Math.floor((Math.random()*9));
       
       
 
-      
-      seed += ""+wep+wepPref;
-      wep = (Math.floor((Math.random()*3)+1)+5);
-      wepPref =Math.floor((Math.random()*9));
-      
-      seed += ""+monType+monPref;
-      diff = checkDiff(monPref,diff);
-      monType = Math.floor((Math.random()*5)+1);
-      monPref = Math.floor((Math.random()*9));    
-      
-      seed += ""+wep+wepPref;      
-      
-      seed += ""+monType+monPref;
-      diff = checkDiff(monPref,diff);
-      monType = Math.floor((Math.random()*5)+1);
-      monPref = Math.floor((Math.random()*9));
-      
-      seed += ""+monType+monPref;
-      diff = checkDiff(monPref,diff);
-      
-      
-     //set difficulty
-      if(diff <= 0){
-        diff = 3;
+      //gen monsters
+      for(var i = 0; i < 5; i++){
+        var randomizer = Math.floor((Math.random()*10+wepchance)+1);
+        if(randomizer <=5 ){
+          var monType = Math.floor((Math.random()*3)+6);
+          var monPref = Math.floor((Math.random()*10));    
+          wepchance+=5;    
+        }
+        else{
+          var monType = Math.floor((Math.random()*5)+1);
+          var monPref = Math.floor((Math.random()*10));        
+        }
+        seed+=""+monType+monPref;
       }
+
+
+      
+      
+
                
       
       
@@ -204,12 +225,7 @@
       document.getElementById('tweet').href = "https://twitter.com/intent/tweet?text=Dungeon Code: "+seed+" Generated!&hashtags=shinygauntlet";
       document.getElementById('seed').style.width= (seed.length*10)+"px";
       
-      for(var i = 0; i < diff; i++){
-        var img = document.createElement("img");
-        img.src = "assets/starBronze.png";
-        var src = document.getElementById("diff");
-        src.appendChild(img);       
-      }      
+      updateDiff(3);
 
               
      

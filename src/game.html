@@ -96,9 +96,47 @@
       localStorage.setItem("winY",''+holderY);      
     }
 
+function lost(x,y){
+   var randomizer = Math.floor((Math.random()*3));
+   
+
+   world[''+x+y].dir[randomizer]++;
+   switch(randomizer){
+     case 0:
+       y--;
+       break;
+     case 1:
+       x++;
+       break;
+     case 2:
+       y++;
+       break;              
+     case 3:
+       x--;
+       break;       
+   }
+   if(randomizer - 2 >= 0){
+     world[''+x+y].dir[randomizer-2]++;
+   }
+   else{
+     world[''+x+y].dir[randomizer+2]++;
+   }
+   var monType = Math.floor((Math.random()*9)+1);
+   var monPref = Math.floor((Math.random()*9));
 
    
+    for(var k = 0; k < world[''+x+y].monCount; k ++){
+      //monster stats          
+      placeMon(x,y,monType,monType,k);
+
+    }   
+  
+   
+   
+}
+   
 function grow(key){
+  lost(holderX,holderY);
   switch(key){
 /////////////////////////////////////////////////////    
     //NESW
@@ -493,16 +531,18 @@ function grow(key){
      
       break;
 /////////////////////////////////////////////////////
-  }   
+  }  
+   
   
 }
    
  function placeMon(i,j,monType,monPref,k){
-   
+       
       world[''+i+j].mon[k] = new Object();
       world[''+i+j].mon[k].x = 400;
       world[''+i+j].mon[k].y = 300;
-
+      world[''+i+j].cleared = false;
+      
       if(world[''+i+j].monCount == 2){
         world[''+i+j].mon[0].x = 300;
         world[''+i+j].mon[0].y = 300;
@@ -531,27 +571,26 @@ function grow(key){
           break;
         case 1:
           monName = "Minotaur";
-          world[''+i+j].mon[k].hp = 100;
+          world[''+i+j].mon[k].hp = 30;
           break;
         case 2:
           monName = "Slime";
-          world[''+i+j].mon[k].hp = 100;
-          world[''+i+j].mon[k].def = -10;
+          world[''+i+j].mon[k].hp = 30;
           world[''+i+j].mon[k].speed = 4;
           break;   
         case 3:
           monName = "Lich";
-          world[''+i+j].mon[k].hp = 100;
+          world[''+i+j].mon[k].hp = 30;
           world[''+i+j].mon[k].speed = 3;
           break;  
         case 4:
           monName = "Scion";
-          world[''+i+j].mon[k].hp = 100;
+          world[''+i+j].mon[k].hp = 30;
 
           break;
         case 5:
           monName = "Dragon";
-          world[''+i+j].mon[k].hp = 100;
+          world[''+i+j].mon[k].hp = 30;
           world[''+i+j].mon[k].speed = 1;
 
           break;              
@@ -601,12 +640,12 @@ function grow(key){
           //hulking
           case 6:
             prefix = "Hulking";
-            world[''+i+j].mon[k].hp += 50;
+            world[''+i+j].mon[k].hp += 20;
             break; 
           //wounded
           case 7:
             prefix = "Wounded";
-            world[''+i+j].mon[k].hp -= 50;
+            world[''+i+j].mon[k].hp -= 20;
             break;      
           //Titanic
           case 8:
@@ -678,7 +717,7 @@ function grow(key){
       }
 
       world[''+i+j].msg = "A "+prefix+" "+monName;
-              
+
     }   
    
   </script>
