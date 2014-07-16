@@ -53,7 +53,10 @@
       this.load.image('shine','assets/monsters/shine.png');
       
       
-      this.load.image('trusty','assets/particleEmitter/trusty.png');
+      for(var i =0; i<10;i++){
+        this.load.image(''+i,'assets/particleEmitter/'+i+'.png');
+      }
+      
       
       
       this.load.image('map', 'assets/world/00.png');

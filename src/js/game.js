@@ -31,7 +31,9 @@
     this.lightSize = 20;
     
     this.dashTime= 25;
-    this.emitter;
+    this.emitter = null;
+    
+   this.spriteGroup = null;
     
   }
 
@@ -53,6 +55,11 @@
       this.shine.height = 64;
       this.shine.visible = false;
       
+      
+      this.emitter = this.game.add.emitter(x,y, 100);
+      this.emitter.makeParticles('0');
+      this.emitter.start(false, 500, 20);
+      this.emitter.gravity = 0;      
    
       
       this.player = this.add.sprite(x, y, 'player');
@@ -69,8 +76,9 @@
       this.player.hp = 10;
       
       
-      this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1');   
-      this.setWep(1);     
+      this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1'); 
+      this.player.wep.prefix = 0;
+      this.setWep(1,0);     
       
       this.player.shield = this.add.sprite(this.player.x, this.player.y, 'shield');
       this.player.shield.anchor.setTo(0.5, 0.5);
@@ -191,14 +199,8 @@
       
       
     
-    this.emitter = this.game.add.emitter(this.player.x,this.player.y, 100);
-    this.emitter.makeParticles('trusty');
-    this.emitter.width =16;
-   
+
     
-    this.emitter.start(false, 500, 20);
-    this.emitter.gravity = 0;
-      
       
       
       
@@ -209,7 +211,7 @@
     this.spriteGroup.add(this.door[0]);
     this.spriteGroup.add(this.topWall);
     this.spriteGroup.add(this.topWall2);
-
+    
     this.spriteGroup.add(this.player);
     this.spriteGroup.add(this.player.shield);
     this.spriteGroup.add(this.player.wep);
@@ -229,10 +231,18 @@
       
       this.txt.y += (this.txtTar - this.txt.y)*0.1;
       
+      
       //fade out particles
-      this.emitter.forEachAlive(function(p){
-        p.alpha= p.lifespan / 500;
-      });
+      for(var i =0; i < this.emitter.length;i++){
+        this.emitter.getAt(i).alpha = this.emitter.getAt(i).lifespan / 200;
+        this.emitter.add(this.player.wep);
+        //console.log(this.spriteGroup.l);
+      }
+
+
+       //this.game.world.swap(this.player.wep,this.emitter.getAt(this.emitter.length));
+      //console.log(this.emitter.getAt(this.emitter.length).x);
+      
       
       //close doors
       // top and bot
@@ -293,7 +303,7 @@
       //close doors
       var monAlive = 0;
       for(var i = 0; i < this.monster.length;i++){
-        if(this.monster[i].visible && this.monster[i].monType != 6 && this.monster[i].monType != 7  && this.monster[i].monType != 8 && this.monster[i].monType != 99 ){
+        if(this.monster[i].visible &&  this.monster[i].monType != 99 ){
           monAlive++;
 
         }         
@@ -823,18 +833,13 @@
         
         this.game.state.start('win');
       }   
-      if(obj2.monType == 6){        
-        this.setWep(1);
+      ///////////////////////////////////
+      // weapon pick ups
+      //////////////////////////////////
+      if(obj2.monType > 5 &&  obj2.monType < 10){
         obj2.visible = false;
-      }
-      if(obj2.monType == 7){        
-        this.setWep(2);
-        obj2.visible = false;
-      }
-      if(obj2.monType == 8){        
-        this.setWep(3);
-        obj2.visible = false;
-      }        
+        this.setWep(obj2.monType-5,obj2.prefix);
+      }     
   
     },    
     playerHit: function (obj1, obj2) {  
@@ -867,19 +872,10 @@
       ///////////////////////////////////
       // weapon pick ups
       //////////////////////////////////
-      var weapon = obj2.monType+obj2.prefix
-      if(obj2.monType == 6){        
-        this.setWep(1);
+      if(obj2.monType > 5 &&  obj2.monType < 10){
         obj2.visible = false;
-      }
-      if(obj2.monType == 7){        
-        this.setWep(2);
-        obj2.visible = false;
-      }
-      if(obj2.monType == 8){        
-        this.setWep(3);
-        obj2.visible = false;
-      }      
+        this.setWep(obj2.monType-5,obj2.prefix);
+      }     
     },
 
     
@@ -1028,7 +1024,7 @@
       this.monster[key].width = size;
       this.monster[key].height = size;    
       this.monster[key].monType = parseInt(monType);
-      this.monster[key].pref = pref;
+      this.monster[key].prefix = pref;
       this.monster[key].hp = hp;
       this.monster[key].def = def;
       this.monster[key].speed = speed;
@@ -1088,7 +1084,16 @@
 
     },
     //determine weapon
-    setWep: function (wepType) {
+    setWep: function (wepType,prefix) {
+      this.emitter.kill();
+      this.emitter = this.game.add.emitter(x,y, 100);
+      this.emitter.makeParticles(''+prefix);
+      
+      this.emitter.start(false, 500, 20);
+      this.emitter.gravity = 0;    
+      
+
+      
       switch(wepType){
           //sword
         case 1:
@@ -1128,9 +1133,9 @@
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 32;        
-          this.player.wep.dmg = 1;
+          this.player.wep.dmg = 5;
           this.player.wep.knockback = 10;
-          this.player.wep.critChance = 3;
+          this.player.wep.critChance = 10;
           this.player.wep.critMul = 2;
           this.player.wep.attackCD = 5;
           this.player.wep.attackCDVal = this.player.wep.attackCD;     
@@ -1143,30 +1148,75 @@
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 64;        
-          this.player.wep.dmg = 1;
+          this.player.wep.dmg = 20;
           this.player.wep.knockback = 100;
           this.player.wep.critChance = 10;
           this.player.wep.critMul = 2;
-          this.player.wep.attackCD = 10;
+          this.player.wep.attackCD = 15;
           this.player.wep.attackCDVal = this.player.wep.attackCD;   
           break;  
-        case 5:
-          this.player.wepType = 5;
-          this.player.canAttack = true;
-          this.player.wep.loadTexture('regSwrd1');
-          this.player.wep.anchor.setTo(0.5, 0.5);
-          this.player.wep.width = 21;
-          this.player.wep.height = 64;       
-          this.player.wep.dmg = 1;
-          this.player.wep.knockback = 10;
-          this.player.wep.critChance = 10;
-          this.player.wep.critMul = 2;
-          this.player.wep.attackCD = 10;
-          this.player.wep.attackCDVal = this.player.wep.attackCD;      
-          break;           
+        
         default:
           break;
       }  
+      switch(prefix){
+          default:
+            break;
+          //trusty
+          case 0:
+
+            break;               
+          //Heavy
+          case 1:
+
+            this.player.wep.attackCD += 10;
+            break;
+          //Light
+          case 2:
+
+            this.player.wep.attackCD -= 10;
+            if(this.player.wep.attackCD < 0){
+              this.player.wep.attackCD = 0;
+            }
+            break;  
+          //Keen
+          case 3:
+          this.player.wep.critMul = 5;
+
+           
+            break;
+          //dull
+          case 4:
+          this.player.wep.critMul = 0;
+
+            
+            break;
+          //lucky
+          case 5:
+          this.player.wep.critChance = 5;            
+            break;                
+          //unlucky
+          case 6:
+          this.player.wep.critChance = 20;
+            
+            break; 
+          //wounded
+          case 7:
+
+            
+            break;      
+          //Titanic
+          case 8:
+
+           
+            break;      
+          //Vorpal
+          case 9:
+
+           
+            break;       
+                  
+      }
     },  
     screenShake: function () {
 
