@@ -550,6 +550,10 @@ function grow(key){
         world[''+i+j].mon[1].x = 500;
         world[''+i+j].mon[1].y = 300;            
       }
+      else{
+        world[''+i+j].mon[k].x = 400;
+        world[''+i+j].mon[k].y = 300;        
+      }
 
       world[''+i+j].mon[k].hp = 30;
       world[''+i+j].mon[k].speed = 2;
@@ -602,7 +606,10 @@ function grow(key){
           break;
         case 8:
           monName = "Dagger";
-          break;                            
+          break;  
+        case 9:
+          monName = "Mace";
+          break;            
       }
       if(world[''+i+j].mon[k].monType < 6){
         switch( world[''+i+j].mon[k].prefix){
@@ -615,7 +622,7 @@ function grow(key){
           //twin
           case 1:
             prefix = "Twin";
-            world[''+i+j].monCount = 2;
+            
             break;
           //Lazy
           case 2:
@@ -658,7 +665,13 @@ function grow(key){
             world[''+i+j].mon[k].size -= 50;
             break;      
 
-        }          
+        }  
+        if(world[''+i+j].mon[k].prefix == 1){
+          world[''+i+j].monCount = 2;
+        }
+        else{
+          world[''+i+j].monCount = 1;
+        }
       }
       else{
         switch( world[''+i+j].mon[k].prefix){
@@ -700,12 +713,12 @@ function grow(key){
             break; 
           //wounded
           case 7:
-            prefix = "Wounded";
+            prefix = "Blessed";
             
             break;      
           //Titanic
           case 8:
-            prefix = "Titanic";
+            prefix = "Cursed";
            
             break;      
           //Impish

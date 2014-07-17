@@ -10,6 +10,7 @@
     this.currentMap ='';
     this.dmg = null;
     this.txt = null;
+    this.seedTxt = null;
     this.textCounter = 200;
     this.txtTar = 500;
     this.shine = null;
@@ -74,6 +75,9 @@
       //custom object variables
       this.player.isRolling = 0;
       this.player.hp = 10;
+      this.player.blockCount= 25;
+      this.player.blockTime = 0;
+      
       
       
       this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1'); 
@@ -195,6 +199,10 @@
     this.txt = this.add.text(x, this.txtTar, "", style) ;
     this.txt.anchor.setTo(0.5, 0.5);
       
+    //show dungeon code 
+    style = { font: '18px nunitolight', fill: '#fff', align: 'center' };
+    this.seedTxt = this.add.text(400, 25, "#"+localStorage.getItem("dungeonSeed"), style) ;
+    this.seedTxt.anchor.setTo(0.5, 0.5);
       
       
       
@@ -321,8 +329,10 @@
         this.door[0].tarX = 200;
         this.door[1].tarY = 100;
         this.door[2].tarY = 100;
-        this.door[3].tarX = 200;  
+        this.door[3].tarX = 200;
         world[this.currentMap].cleared = true;
+        
+        
       }
  
      
@@ -466,6 +476,7 @@
             if(this.player.wep.visible == true  && (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) ||this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) )&& !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) &&  this.player.canAttack == true && this.monster[i].knockback <= 0 ){
               this.physics.overlap(this.player.wep, this.monster[i], this.monHit, null, this); 
             }
+
 
             this.physics.collide(this.player, this.monster[i], this.playerHit, null, this);             
           }          
@@ -739,15 +750,26 @@
      
       
       //block
-      if( this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.player.hp > 0){
+      if( this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.player.hp > 0 && this.player.wep.prefix != 8 && this.player.blockCount > 0){
 
         this.player.shield.x = this.player.x;
         this.player.shield.y = this.player.y;
+        this.player.blockCount--;
       }
       else{
           this.player.shield.x = this.player.x-this.player.shield.width - 10;
           this.player.shield.y = this.player.y;
+          if(this.player.blockCount <= 0){
+            this.player.blockTime++;
+          }
+          
+          if(this.player.blockTime == 10){
+            this.player.blockTime = 0;
+            this.player.blockCount = 25;
+          }
+        console.log(this.player.blockTime);
       }            
+
 
       
  
@@ -832,7 +854,12 @@
       if(obj2.monType == 99){
         
         this.game.state.start('win');
-      }   
+      }
+      if(obj2.monType == 98){
+        
+        obj2.visible = false;
+        this.player.blockCount= 1;
+      }      
       ///////////////////////////////////
       // weapon pick ups
       //////////////////////////////////
@@ -856,10 +883,13 @@
         this.player.body.velocity.y = -200;
       }   
       //blocking
-      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)  ){
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || this.player.wep.prefix == 8 || this.player.blockCount <= 0 ){
         attack(obj2,obj1);
       }
       else{
+  
+
+        
         obj2.tarX = this.player.x;
         obj2.tarY = this.player.y;
         obj2.hurtByShield = true;
@@ -869,6 +899,11 @@
       if(obj2.monType == 99){        
         this.game.state.start('win');
       }
+      if(obj2.monType == 98){
+        
+        obj2.visible = false;
+        this.player.blockCount= 1;
+      }           
       ///////////////////////////////////
       // weapon pick ups
       //////////////////////////////////
@@ -1091,7 +1126,7 @@
       
       this.emitter.start(false, 500, 20);
       this.emitter.gravity = 0;    
-      
+      this.player.wep.prefix = prefix;
 
       
       switch(wepType){
@@ -1200,14 +1235,15 @@
           this.player.wep.critChance = 20;
             
             break; 
-          //wounded
+          //Blessed
           case 7:
+          
 
             
             break;      
-          //Titanic
+          //Cursed
           case 8:
-
+            this.player.wep.dmg += 20;
            
             break;      
           //Vorpal

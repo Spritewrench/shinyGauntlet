@@ -19,7 +19,19 @@ function move(mon, player){
           if(dist <= 50){
             //attack(mon,player);
           }
-          break;  
+          break;
+        case 98:      
+
+          var tx = mon.tarX - mon.x,
+              ty = mon.tarY - mon.y,
+              dist = Math.sqrt(tx*tx+ty*ty);
+
+          velX = (tx/dist)*mon.speed;
+          velY = (ty/dist)*mon.speed;     
+          mon.body.x += velX;
+          mon.body.y += velY;     
+
+          break;          
         //mino
         case 1:        
           //varied spped
@@ -28,7 +40,7 @@ function move(mon, player){
           }
           //rage mode
           if(mon.hp <= 50){
-            mon.speed = 15;
+            //mon.speed = 15;
           }
           var tx = mon.tarX - mon.x,
               ty = mon.tarY - mon.y,
@@ -179,6 +191,8 @@ function move(mon, player){
             break;
           case 8:
             break;
+          case 9:
+            break;          
           //ice shards
           case 11:
           mon.hp--;
@@ -225,12 +239,13 @@ function move(mon, player){
               mon.hp = 0;
             }    
 
-            break;  
+            break;
+          
       
       }        
     }
     else{
-      if(mon.monType > 10 && mon.monType <99){
+      if(mon.monType > 10 && mon.monType <98){
         mon.hp--;
       }
     }    
@@ -303,6 +318,10 @@ function attack(mon, player){
       //player.hp = 0;
       //alert ("brains~~");
       break;
+    case 98:        
+      //player.hp = 0;
+      //alert ("brains~~");
+      break;       
     case 6:        
       //player.hp = 0;
       //alert ("brains~~");
@@ -314,7 +333,11 @@ function attack(mon, player){
     case 8:        
       //player.hp = 0;
       //alert ("brains~~");
-      break;      
+      break; 
+    case 9:        
+      //player.hp = 0;
+      //alert ("brains~~");
+      break;       
       
       
   }
@@ -333,7 +356,7 @@ function getHit(mon, damage, knockback){
     }
 
 
-    if(mon.monType > 10 && mon.monType < 99 ){
+    if(mon.monType > 10 && mon.monType < 98 ){
       //mon.hp = 0;
       mon.knockback = 0;
       dmgTaken = 0;
