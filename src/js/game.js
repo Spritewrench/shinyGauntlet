@@ -34,6 +34,8 @@
     this.dashTime= 25;
     this.emitter = null;
     
+    this.shieldTimer = null;
+    
    this.spriteGroup = null;
     
   }
@@ -75,7 +77,7 @@
       //custom object variables
       this.player.isRolling = 0;
       this.player.hp = 10;
-      this.player.blockCount= 50;
+      this.player.blockCount= 150;
       this.player.blockTime = 0;
       
       
@@ -86,6 +88,11 @@
       
       this.player.shield = this.add.sprite(this.player.x, this.player.y, 'shield');
       this.player.shield.anchor.setTo(0.5, 0.5);
+      
+      this.player.shieldTimer = this.add.sprite(this.player.x, this.player.y-48, 'timer'); 
+      this.player.shieldTimer.visible = false;
+      this.player.shieldTimer.anchor.setTo(0.5, 0.5);
+      this.player.shieldTimer.width = (this.player.blockCount / 150)*100;;
       //this.player.wep.visible = false;
       
       //door
@@ -239,7 +246,12 @@
       
       this.txt.y += (this.txtTar - this.txt.y)*0.1;
       
-      
+      //show shield timer
+      if(this.player.shieldTimer.visible){
+        this.player.shieldTimer.width = (this.player.blockCount / 150)*100;
+        this.player.shieldTimer.x = this.player.x;
+        this.player.shieldTimer.y = this.player.y-48;
+      }
       //fade out particles
       for(var i =0; i < this.emitter.length;i++){
         this.emitter.getAt(i).alpha = this.emitter.getAt(i).lifespan / 200;
@@ -754,7 +766,12 @@
 
         this.player.shield.x = this.player.x;
         this.player.shield.y = this.player.y;
-        this.player.blockCount--;
+        //blessed
+        if(this.player.wep.prefix != 7){
+          this.player.blockCount--;
+        }
+        
+        this.player.shieldTimer.visible = true;
       }
       else{
           this.player.shield.x = this.player.x-this.player.shield.width - 10;
@@ -762,10 +779,11 @@
           if(this.player.blockCount <= 0){
             this.player.blockTime++;
           }
-          
-          if(this.player.blockTime == 25){
+          this.player.shieldTimer.visible = false;
+          if(this.player.blockTime == 50){
             this.player.blockTime = 0;
-            this.player.blockCount = 50;
+            this.player.blockCount = 150;
+            this.player.shieldTimer.width = 100;
           }
         console.log(this.player.blockTime);
       }            
@@ -1237,12 +1255,15 @@
             break; 
           //Blessed
           case 7:
-          
+            //can block forever
+            this.player.wep.dmg = 5;
+            
 
             
             break;      
           //Cursed
           case 8:
+          //can no longer block
             this.player.wep.dmg += 20;
            
             break;      

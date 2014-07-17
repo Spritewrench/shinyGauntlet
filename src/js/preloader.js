@@ -53,6 +53,9 @@
       this.load.image('win','assets/monsters/win.png');
       this.load.image('shine','assets/monsters/shine.png');
       
+      //UI
+      this.load.image('timer','assets/timer.png'); 
+      
       
       for(var i =0; i<10;i++){
         this.load.image(''+i,'assets/particleEmitter/'+i+'.png');
