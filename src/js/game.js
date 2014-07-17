@@ -75,7 +75,7 @@
       //custom object variables
       this.player.isRolling = 0;
       this.player.hp = 10;
-      this.player.blockCount= 25;
+      this.player.blockCount= 50;
       this.player.blockTime = 0;
       
       
@@ -763,9 +763,9 @@
             this.player.blockTime++;
           }
           
-          if(this.player.blockTime == 10){
+          if(this.player.blockTime == 25){
             this.player.blockTime = 0;
-            this.player.blockCount = 25;
+            this.player.blockCount = 50;
           }
         console.log(this.player.blockTime);
       }            
