@@ -89,8 +89,9 @@
       this.player.shield = this.add.sprite(this.player.x, this.player.y, 'shield');
       this.player.shield.anchor.setTo(0.5, 0.5);
       
-      this.player.shieldTimer = this.add.sprite(this.player.x, this.player.y-48, 'timer'); 
-      this.player.shieldTimer.visible = false;
+      this.player.shieldTimer = this.add.sprite(this.player.x, this.player.y-40, 'timer'); 
+      //this.player.shieldTimer.visible = false;
+      this.player.shieldTimer.height= 5;
       this.player.shieldTimer.anchor.setTo(0.5, 0.5);
       this.player.shieldTimer.width = (this.player.blockCount / 150)*100;;
       //this.player.wep.visible = false;
@@ -248,10 +249,18 @@
       
       //show shield timer
       if(this.player.shieldTimer.visible){
-        this.player.shieldTimer.width = (this.player.blockCount / 150)*100;
-        this.player.shieldTimer.x = this.player.x;
-        this.player.shieldTimer.y = this.player.y-48;
+        var newTimer = (this.player.blockCount / 150)*50;
+        if(newTimer < 0){
+          newTimer =0;
+        }
+        this.player.shieldTimer.width += (newTimer - this.player.shieldTimer.width)*0.1; 
+        if(this.player.blockCount >= 150){
+          this.player.shieldTimer.alpha += (0 - this.player.shieldTimer.alpha)*0.05; 
+        }
+        
       }
+      this.player.shieldTimer.x = this.player.x;
+      this.player.shieldTimer.y = this.player.y-40;      
       //fade out particles
       for(var i =0; i < this.emitter.length;i++){
         this.emitter.getAt(i).alpha = this.emitter.getAt(i).lifespan / 200;
@@ -323,7 +332,7 @@
       //close doors
       var monAlive = 0;
       for(var i = 0; i < this.monster.length;i++){
-        if(this.monster[i].visible &&  this.monster[i].monType != 99 ){
+        if(this.monster[i].visible &&  this.monster[i].monType != 99  &&  this.monster[i].monType <= 5  ){
           monAlive++;
 
         }         
@@ -344,9 +353,13 @@
         this.door[3].tarX = 200;
         world[this.currentMap].cleared = true;
         
-        
       }
- 
+      //respawn weapons
+      for(var i = 0; i < this.monster.length;i++){
+        if(this.monster[i].monType > 5  &&  this.monster[i].monType < 10 ){
+          world[this.currentMap].cleared = false;
+        }
+      }
      
       
       //monster hurt
@@ -763,29 +776,27 @@
       
       //block
       if( this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.player.hp > 0 && this.player.wep.prefix != 8 && this.player.blockCount > 0){
-
+        
         this.player.shield.x = this.player.x;
         this.player.shield.y = this.player.y;
         //blessed
-        if(this.player.wep.prefix != 7){
-          this.player.blockCount--;
-        }
+        this.player.shieldTimer.alpha = 1;
+
         
-        this.player.shieldTimer.visible = true;
+        //this.player.shieldTimer.visible = true;
       }
       else{
           this.player.shield.x = this.player.x-this.player.shield.width - 10;
           this.player.shield.y = this.player.y;
-          if(this.player.blockCount <= 0){
-            this.player.blockTime++;
-          }
-          this.player.shieldTimer.visible = false;
-          if(this.player.blockTime == 50){
-            this.player.blockTime = 0;
-            this.player.blockCount = 150;
-            this.player.shieldTimer.width = 100;
-          }
-        console.log(this.player.blockTime);
+
+          //this.player.shieldTimer.visible = false;
+
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+          if(this.player.blockCount <= 150){
+            this.player.blockCount++;
+          }        
+      }
+        console.log(this.player.blockCount);
       }            
 
 
@@ -906,7 +917,9 @@
       }
       else{
   
-
+        if(this.player.blockCount > 0 && this.player.wep.prefix != 7){
+          this.player.blockCount-= 50;
+        }
         
         obj2.tarX = this.player.x;
         obj2.tarY = this.player.y;
@@ -1120,7 +1133,12 @@
             this.monster[key].width = 21;
             this.monster[key].height = 32;
             this.monster[key].speed = 0;
-            break;     
+            break;               
+          case 9:
+            this.monster[key].width = 21;
+            this.monster[key].height = 64;
+            this.monster[key].speed = 0;
+            break;              
           case 11:
             //this.game.physics.p2.enable(this.monster[key], true);
 
@@ -1138,7 +1156,7 @@
     },
     //determine weapon
     setWep: function (wepType,prefix) {
-      this.emitter.kill();
+      this.emitter.removeAll();
       this.emitter = this.game.add.emitter(x,y, 100);
       this.emitter.makeParticles(''+prefix);
       
@@ -1158,7 +1176,7 @@
           this.player.wep.height = 64;          
           this.player.wep.dmg = 10;
           this.player.wep.knockback = 10;
-          this.player.wep.critChance = 10;
+          this.player.wep.critChance = 15;
           this.player.wep.critMul = 2;
           this.player.wep.attackCD = 5;
           this.player.wep.attackCDVal = this.player.wep.attackCD;    
@@ -1172,9 +1190,9 @@
           this.player.wep.width = 21;
           this.player.wep.height = 80;
           this.player.wep.dmg = 15;
-          this.player.wep.knockback = 10;
-          this.player.wep.critChance = 10;
-          this.player.wep.critMul = 2;
+          this.player.wep.knockback = 15;
+          this.player.wep.critChance = 20;
+          this.player.wep.critMul = 3;
           this.player.wep.attackCD = 10;
           this.player.wep.attackCDVal = this.player.wep.attackCD;    
           break; 
@@ -1187,23 +1205,23 @@
           this.player.wep.width = 21;
           this.player.wep.height = 32;        
           this.player.wep.dmg = 5;
-          this.player.wep.knockback = 10;
+          this.player.wep.knockback = 5;
           this.player.wep.critChance = 10;
           this.player.wep.critMul = 2;
-          this.player.wep.attackCD = 5;
+          this.player.wep.attackCD = 2;
           this.player.wep.attackCDVal = this.player.wep.attackCD;     
           break; 
           //mace
         case 4:
           this.player.wepType = 4;
           this.player.canAttack = true;
-          this.player.wep.loadTexture('regSwrd1');
+          this.player.wep.loadTexture('regMace1');
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 64;        
           this.player.wep.dmg = 20;
-          this.player.wep.knockback = 100;
-          this.player.wep.critChance = 10;
+          this.player.wep.knockback = 20;
+          this.player.wep.critChance = 25;
           this.player.wep.critMul = 2;
           this.player.wep.attackCD = 15;
           this.player.wep.attackCDVal = this.player.wep.attackCD;   
@@ -1223,6 +1241,7 @@
           case 1:
 
             this.player.wep.attackCD += 10;
+            
             break;
           //Light
           case 2:
@@ -1231,26 +1250,30 @@
             if(this.player.wep.attackCD < 0){
               this.player.wep.attackCD = 0;
             }
+            
             break;  
           //Keen
           case 3:
-          this.player.wep.critMul = 5;
+          this.player.wep.critMul -= 5;
 
            
             break;
           //dull
           case 4:
-          this.player.wep.critMul = 0;
+          this.player.wep.critMul += 5;
 
             
             break;
           //lucky
           case 5:
-          this.player.wep.critChance = 5;            
+            this.player.wep.critChance -= 10;   
+            if(this.player.wep.critChance <0 ){
+              this.player.wep.critChance = 0;
+            }
             break;                
           //unlucky
           case 6:
-          this.player.wep.critChance = 20;
+            this.player.wep.critChance += 10;
             
             break; 
           //Blessed
@@ -1268,8 +1291,10 @@
            
             break;      
           //Vorpal
+          //snicker snak
           case 9:
-
+            this.player.wep.critChance = 25;
+            this.player.wep.critMul += 10;
            
             break;       
                   

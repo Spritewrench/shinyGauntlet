@@ -34,7 +34,7 @@
       this.load.image('mon6','assets/regSwrd1.png');  
       this.load.image('mon7','assets/regSpear1.png');  
       this.load.image('mon8','assets/regDagger1.png');
-      this.load.image('mon9','assets/regDagger1.png');
+      this.load.image('mon9','assets/regMace1.png');
       
       //Hit
       this.load.image('mon1Hit','assets/monsters/mon1Hit.png');
@@ -71,6 +71,7 @@
       this.load.image('regSwrd1', 'assets/regSwrd1.png');
       this.load.image('regSpear1', 'assets/regSpear1.png');
       this.load.image('regDagger1', 'assets/regDagger1.png');
+      this.load.image('regMace1', 'assets/regMace1.png');
       this.load.image('shield', 'assets/shield.png');
       this.load.image('player2', 'assets/player.png');
       this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.xml');
