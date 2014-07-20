@@ -72,6 +72,7 @@
       this.load.image('regSpear1', 'assets/regSpear1.png');
       this.load.image('regDagger1', 'assets/regDagger1.png');
       this.load.image('regMace1', 'assets/regMace1.png');
+      this.load.image('spinMace', 'assets/spinMace.png');
       this.load.image('shield', 'assets/shield.png');
       this.load.image('player2', 'assets/player.png');
       this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.xml');

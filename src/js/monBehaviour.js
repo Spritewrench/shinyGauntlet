@@ -68,11 +68,7 @@ function move(mon, player){
           break;
           //slime
           case 2:
-            if(mon.attackCD >= 0 ){
-               mon.attackCD-= mon.speed;
-              
 
-            }
             
             if(mon.attackCD == 0){
               mon.attackCD = 200;

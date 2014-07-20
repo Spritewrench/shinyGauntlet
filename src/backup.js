@@ -37,12 +37,6 @@
     this.shieldTimer = null;
     
    this.spriteGroup = null;
-  
-    
-    this.p1 =null;
-    this.p2 = null;
-    this.d = 0;
-    
     
   }
 
@@ -91,7 +85,7 @@
       this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1'); 
       this.player.wep.prefix = 0;
       //starting wep
-      this.setWep(1,0);     
+      this.setWep(4,0);     
       
       this.player.shield = this.add.sprite(this.player.x, this.player.y, 'shield');
       this.player.shield.anchor.setTo(0.5, 0.5);
@@ -224,9 +218,7 @@
       
     
 
-    //test
-    this.p1 = new Phaser.Point(400, 300);
-    this.p2 = new Phaser.Point(300, 300);      
+    
       
       
       
@@ -508,7 +500,7 @@
               this.monster[i].crited =false;
               this.monster[i].loadTexture(this.monster[i].name);
             }
-            if(this.player.wep.visible == true  && (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) ||this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) ||  this.player.wep.attackCD < this.player.wep.attackCDVal)&& !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.monster[i].knockback <= 0 ){
+            if(this.player.wep.visible == true  && (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) ||this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || this.player.wepType == 4)&& !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) &&  this.player.canAttack == true && this.monster[i].knockback <= 0 ){
               this.physics.overlap(this.player.wep, this.monster[i], this.monHit, null, this); 
             }
 
@@ -729,23 +721,34 @@
       if(this.dashTime < 25 && ( (!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && !this.game.input.keyboard.isDown(Phaser.Keyboard.W) && !this.game.input.keyboard.isDown(Phaser.Keyboard.S)  && !this.game.input.keyboard.isDown(Phaser.Keyboard.D)) || !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))  ){
         this.dashTime++;
       }
-      //debug wep selecte
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
-        this.setWep(1,0);
-      }
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
-        this.setWep(2,0);
-      }
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
-        this.setWep(3,0);
-      }
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
-        this.setWep(4,0);
-      }      
+      //mace always spinning
+        if(this.player.wepType == 4){
+              var angle = (2) * (Math.PI/180); // Convert to radians
+              var rotatedX = Math.cos(angle) * (this.player.wep.x - this.player.x) - Math.sin(angle) * (this.player.wep.y-this.player.y) + this.player.x;
+              var rotatedY = Math.sin(angle) * (this.player.wep.x - this.player.x) + Math.cos(angle) * (this.player.wep.y - this.player.y) + this.player.y;
+              this.player.wep.x = rotatedX;
+              this.player.wep.y = rotatedY;   
+          
+
+                var tx = this.player.x - this.player.wep.x,
+                    ty = this.player.y- this.player.wep.y,
+                    dist = Math.sqrt(tx*tx+ty*ty);
+
+                       
+                if(dist >= 150 ){
+                  var velX = (tx/dist)*10;
+                  var velY = (ty/dist)*10;     
+                  this.player.wep.x += velX;
+                  this.player.wep.y += velY;
+                }
       
-      //stab
-      if(this.player.wepType != 4){
-      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) ||this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) )  && this.player.hp > 0 && this.player.canAttack == true){
+                
+
+          
+        }      
+      
+      //attack 
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) ||this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) )  && this.player.hp > 0 && this.player.canAttack == true && this.player.wepType != 4 ){
 
         if(this.player.wep.attackCD > 0){
           this.player.wep.attackCD--;
@@ -753,107 +756,62 @@
 
         
         this.player.wep.visible = true;
-        //this.player.wep.angle = this.player.angle;
+        this.player.wep.angle = this.player.angle;
         //this.player.wep.attackCD = this.player.wep.attackCDVal;
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
- 
+          this.player.wep.body.x = this.player.x-this.player.width;
+          this.player.wep.y = this.player.y;
+          this.player.wep.angle = -90;     
           //weapon speciality
           switch(this.player.wepType){
-              case 1:
-                this.player.wep.body.x = this.player.x-this.player.width;
-                this.player.wep.y = this.player.y;
-                this.player.wep.angle = -90;                  
-                break;              
               case 2:
-                this.player.wep.body.x = this.player.x-this.player.width;
-                this.player.wep.y = this.player.y;
-                this.player.wep.angle = -90;                  
                 this.player.body.velocity.x -= 100;
                 break;
-              case 3:        
-                this.player.wep.body.x = this.player.x-this.player.width;
-                this.player.wep.y = this.player.y;
-                this.player.wep.angle = -90;       
-                break;               
           }          
         }
         else if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP)){
-
+          this.player.wep.x = this.player.x;
+          this.player.wep.y = this.player.y-this.player.height;   
           //weapon speciality
           switch(this.player.wepType){
-              case 1:
-                this.player.wep.x = this.player.x;
-                this.player.wep.y = this.player.y-this.player.height;           
-                break;
               case 2:
-                this.player.wep.x = this.player.x;
-                this.player.wep.y = this.player.y-this.player.height;                 
                 this.player.body.velocity.y -= 100;
                 break;
-              case 3:
-                this.player.wep.x = this.player.x;
-                this.player.wep.y = this.player.y-this.player.height;    
-                break;               
           }
           
         }
-        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)){ 
+        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)){
+          this.player.wep.x = this.player.x;
+          this.player.wep.y = this.player.y+this.player.height;
+          this.player.wep.angle = 180;  
           //weapon speciality
           switch(this.player.wepType){
-              case 1:
-                this.player.wep.x = this.player.x;
-                this.player.wep.y = this.player.y+this.player.height;
-                this.player.wep.angle = 180;    
-                break;
               case 2:
-                this.player.wep.x = this.player.x;
-                this.player.wep.y = this.player.y+this.player.height;
-                this.player.wep.angle = 180;               
                 this.player.body.velocity.y += 100;
                 break;
-              case 3:
-                this.player.wep.x = this.player.x;
-                this.player.wep.y = this.player.y+this.player.height;
-                this.player.wep.angle = 180;               
-                break;               
           }          
         }
         else if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
-    
+            this.player.wep.x = this.player.x+this.player.width;
+            this.player.wep.y = this.player.y; 
+            this.player.wep.angle = 90;      
           //weapon speciality
           switch(this.player.wepType){
-              case 1:
-                this.player.wep.x = this.player.x+this.player.width;
-                this.player.wep.y = this.player.y; 
-                this.player.wep.angle = 90;                
-                break;              
               case 2:
-                this.player.wep.x = this.player.x+this.player.width;
-                this.player.wep.y = this.player.y; 
-                this.player.wep.angle = 90;                
                 this.player.body.velocity.x += 100
                 break;
-              case 3: 
-                this.player.wep.x = this.player.x+this.player.width;
-                this.player.wep.y = this.player.y; 
-                this.player.wep.angle = 90;                
-
-                break;              
           }          
         }        
 
 
       }
-      else {
-          
+      else if (this.player.wepType != 4){
+
           
           this.player.wep.x = this.player.x+this.player.wep.width + 20;
           this.player.wep.y = this.player.y;
           this.player.wep.angle = 10;
-          
-      }
-      }
-      
+      }       
       if((!this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && !this.game.input.keyboard.isDown(Phaser.Keyboard.UP) && !this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) && !this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) ) && this.player.wep.attackCD != this.player.wep.attackCDVal ||  this.player.wep.attackCD <= 0 ){
         if(this.player.canAttack){
           this.player.canAttack = false;
@@ -865,54 +823,7 @@
           this.player.canAttack = true;
         }        
       }
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      //slash
-      if(( this.player.wepType == 4 )&& this.player.wep.attackCD < this.player.wep.attackCDVal && 
-        !this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && !this.game.input.keyboard.isDown(Phaser.Keyboard.UP) && !this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) && !this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) ) {
-        this.p1.rotate(this.player.x, this.player.y, this.game.math.wrapAngle(this.d), true,60);
-        this.d+=this.player.wep.attackSpeed;        
-        this.player.wep.x = this.p1.x;
-        this.player.wep.y = this.p1.y;
-        this.player.wep.angle+=this.player.wep.attackSpeed;
-      }
-      else if( this.player.wepType == 4){
-        
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
-          this.player.wep.attackCD = 0;
-          this.player.wep.x = this.player.x;
-          this.player.wep.y = this.player.y+this.player.height;              
-          this.player.wep.angle = 180;
-          this.d = 90;      
-        }
-        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP)){
-          this.player.wep.attackCD = 0;
-          this.player.wep.body.x = this.player.x-this.player.width;
-          this.player.wep.y = this.player.y;              
-          this.player.wep.angle = -90;             
-          this.d =180;
-          
-        }
-        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)){ 
-          this.player.wep.attackCD = 0;
-          this.player.wep.x = this.player.x+this.player.width;
-          this.player.wep.y = this.player.y;               
-          this.player.wep.angle = 90;
-          this.d =0;         
-        }
-        else if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
-          this.player.wep.attackCD = 0;
-          this.player.wep.x = this.player.x;
-          this.player.wep.y = this.player.y-this.player.height;                 
-          this.player.wep.angle =0;
-          this.d =-90;
-        
-        }
-        else{
-          this.player.wep.x = this.player.x+this.player.wep.width + 20;
-          this.player.wep.y = this.player.y;
-          this.player.wep.angle = 10;          
-        }
-      }
+      
      
       
       //block
@@ -936,7 +847,8 @@
           if(this.player.blockCount <= 150){
             this.player.blockCount++;
           }        
-        }
+      }
+        console.log(this.player.blockCount);
       }            
 
 
@@ -972,7 +884,6 @@
       
     },
     monHit: function (obj1, obj2) {
-      //wake up all monster
       if(obj2.attackCD <= 0 ){
         for(var i =0; i < this.monster.length; i++){
           this.monster[i].attackCD = 100;
@@ -1004,51 +915,18 @@
         obj2.hp -= damage;
       }
       
-      //player knock back
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
+      
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.A)){
         this.player.body.velocity.x = 100;
-
-        //spear cause more bounce
-        if(this.player.wepType == 2){
-          this.player.body.velocity.x = 1000;
-        }
-        //slime bounce
-        if(obj2.monType == 2){
-          this.player.body.velocity.x += 500;
-        }        
       }
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.D)){
         this.player.body.velocity.x = -100;
-        //spear cause more bounce
-        if(this.player.wepType == 2){
-          this.player.body.velocity.x = -1000;
-        } 
-        //slime bounce
-        if(obj2.monType == 2){
-          this.player.body.velocity.x -= 500;
-        }        
       }
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP)){
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
         this.player.body.velocity.y = 100;
-        //spear cause more bounce
-        if(this.player.wepType == 2){
-          this.player.body.velocity.y = 1000;
-        }        
-        //slime bounce
-        if(obj2.monType == 2){
-          this.player.body.velocity.y += 500;
-        }        
       }
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)){
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.S)){
         this.player.body.velocity.y = -100;
-        //spear cause more bounce
-        if(this.player.wepType == 2){
-          this.player.body.velocity.y = -1000;
-        }        
-        //slime bounce
-        if(obj2.monType == 2){
-          this.player.body.velocity.y -= 500;
-        }        
       }             
       
       
@@ -1352,9 +1230,8 @@
           this.player.wep.knockback = 10;
           this.player.wep.critChance = 15;
           this.player.wep.critMul = 2;
-          this.player.wep.attackSpeed= 5; 
           this.player.wep.attackCD = 5;
-          this.player.wep.attackCDVal = this.player.wep.attackCD;  
+          this.player.wep.attackCDVal = this.player.wep.attackCD;    
           break;
           //spear
         case 2:
@@ -1365,10 +1242,10 @@
           this.player.wep.width = 21;
           this.player.wep.height = 80;
           this.player.wep.dmg = 15;
-          this.player.wep.knockback = 10;
+          this.player.wep.knockback = 200;
           this.player.wep.critChance = 20;
           this.player.wep.critMul = 3;
-          this.player.wep.attackCD = 20;
+          this.player.wep.attackCD = 10;
           this.player.wep.attackCDVal = this.player.wep.attackCD;    
           break; 
           //dagger
@@ -1388,20 +1265,18 @@
           break; 
           //mace
         case 4:
-          this.player.wep.angle = 90;
           this.player.wepType = 4;
           this.player.canAttack = true;
           this.player.wep.x = this.player.x + 100;
-          this.player.wep.loadTexture('regMace1');
+          this.player.wep.loadTexture('spinMace');
           this.player.wep.anchor.setTo(0.5, 0.5);
-          this.player.wep.width = 21;
-          this.player.wep.height = 64;        
+          this.player.wep.width = 26;
+          this.player.wep.height = 35;        
           this.player.wep.dmg = 20;
           this.player.wep.knockback = 20;
           this.player.wep.critChance = 25;
           this.player.wep.critMul = 2;
-          this.player.wep.attackSpeed= 10; 
-          this.player.wep.attackCD = 180/this.player.wep.attackSpeed ;
+          this.player.wep.attackCD = 15;
           this.player.wep.attackCDVal = this.player.wep.attackCD;   
           break;  
         
