@@ -260,7 +260,7 @@ function move(mon, player){
       velY = (ty/dist)*mon.speed;          
     }
        
-    if(true){
+    if(mon.isStunned == false){
       mon.body.x -= velX;
       mon.body.y -= velY;       
     }
@@ -274,6 +274,8 @@ function move(mon, player){
 
     //knockback end
     if(mon.knockback == 0 ){
+      //stun wear off
+      mon.isStunned = false;
       //shield bash wear off
       mon.hurtByShield = false;
       switch(mon.monType){

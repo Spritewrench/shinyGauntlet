@@ -729,20 +729,124 @@
       if(this.dashTime < 25 && ( (!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && !this.game.input.keyboard.isDown(Phaser.Keyboard.W) && !this.game.input.keyboard.isDown(Phaser.Keyboard.S)  && !this.game.input.keyboard.isDown(Phaser.Keyboard.D)) || !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))  ){
         this.dashTime++;
       }
-      //debug wep selecte
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
-        this.setWep(1,0);
+      //debug wep select
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.ALT)){
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
+          this.setWep(1,0);
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
+          this.setWep(2,0);
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
+          this.setWep(3,0);
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
+          this.setWep(4,0);
+        }  
+        //open doors & Kill Monsters
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.O)){
+
+          for(var i = 0; i < this.monster.length;i++){
+            this.monster[i].hp = 0; 
+          }          
+        }        
       }
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
-        this.setWep(2,0);
+            
+      //debug prefix select
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.ALT)){
+
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
+          this.emitter.removeAll();
+          this.emitter = this.game.add.emitter(x,y, 100);
+          this.emitter.makeParticles(''+1);
+
+          this.emitter.start(false, 500, 20);
+          this.emitter.gravity = 0;    
+          this.player.wep.prefix = 1;
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
+          this.emitter.removeAll();
+          this.emitter = this.game.add.emitter(x,y, 100);
+          this.emitter.makeParticles(''+2);
+
+          this.emitter.start(false, 500, 20);
+          this.emitter.gravity = 0;    
+          this.player.wep.prefix = 2;
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
+          this.emitter.removeAll();
+          this.emitter = this.game.add.emitter(x,y, 100);
+          this.emitter.makeParticles(''+3);
+
+          this.emitter.start(false, 500, 20);
+          this.emitter.gravity = 0;    
+          this.player.wep.prefix = 3;
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
+          this.emitter.removeAll();
+          this.emitter = this.game.add.emitter(x,y, 100);
+          this.emitter.makeParticles(''+4);
+
+          this.emitter.start(false, 500, 20);
+          this.emitter.gravity = 0;    
+          this.player.wep.prefix = 4;
+        }      
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.FIVE)){
+          this.emitter.removeAll();
+          this.emitter = this.game.add.emitter(x,y, 100);
+          this.emitter.makeParticles(''+5);
+
+          this.emitter.start(false, 500, 20);
+          this.emitter.gravity = 0;    
+          this.player.wep.prefix = 5;
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SIX)){
+          this.emitter.removeAll();
+          this.emitter = this.game.add.emitter(x,y, 100);
+          this.emitter.makeParticles(''+6);
+
+          this.emitter.start(false, 500, 20);
+          this.emitter.gravity = 0;    
+          this.player.wep.prefix = 6;
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SEVEN)){
+          this.emitter.removeAll();
+          this.emitter = this.game.add.emitter(x,y, 100);
+          this.emitter.makeParticles(''+7);
+
+          this.emitter.start(false, 500, 20);
+          this.emitter.gravity = 0;    
+          this.player.wep.prefix = 7;
+        }
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.EIGHT)){
+          this.emitter.removeAll();
+          this.emitter = this.game.add.emitter(x,y, 100);
+          this.emitter.makeParticles(''+8);
+
+          this.emitter.start(false, 500, 20);
+          this.emitter.gravity = 0;    
+          this.player.wep.prefix = 8;
+        } 
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.NINE)){
+          this.emitter.removeAll();
+          this.emitter = this.game.add.emitter(x,y, 100);
+          this.emitter.makeParticles(''+9);
+
+          this.emitter.start(false, 500, 20);
+          this.emitter.gravity = 0;    
+          this.player.wep.prefix = 9;
+        } 
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.ZERO)){
+          this.emitter.removeAll();
+          this.emitter = this.game.add.emitter(x,y, 100);
+          this.emitter.makeParticles(''+0);
+
+          this.emitter.start(false, 500, 20);
+          this.emitter.gravity = 0;    
+          this.player.wep.prefix = 0;
+        }  
       }
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
-        this.setWep(3,0);
-      }
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
-        this.setWep(4,0);
-      }      
-      
+             
       //attack
       //stab
       if(this.player.wepType != 1 && this.player.wepType != 4  ){
@@ -903,7 +1007,7 @@
           //sword angle
           this.player.wep.angle+=this.player.wep.attackSpeed-2;
         }
-        console.log(this.player.wep.attackCD);
+
         this.player.canAttack = false;
       }
       else if( (this.player.wepType == 1 || this.player.wepType == 4 )  && this.player.canAttack == true){
@@ -1038,7 +1142,11 @@
       if(damage > 0){
         obj2.hp -= damage;
       }
-      
+      //stunned
+      if(this.player.wep.prefix == 1){
+        obj2.isStunned = true;
+      }
+
       //player knock back
       switch(this.player.direction){
           case 4:
@@ -1263,7 +1371,7 @@
           } 
           else if(world[this.currentMap].cleared == false){
             this.textCounter = 200;
-            
+           
             this.spawn(i,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,x,y,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);
             //king me
@@ -1283,6 +1391,9 @@
             this.shine.visible = false;
 
           }
+        else{
+          this.shine.visible = false;
+        }
           //alert(this.monster[0].monType);
           
           
@@ -1316,6 +1427,7 @@
       this.monster[key].body.collideWorldBounds = true;
       
       this.monster[key].hurtByShield = false;
+      this.monster[key].isStunned = false;
       
       this.monster[key].tarX = Math.floor((Math.random()*600)+100);   ;
       this.monster[key].tarY = Math.floor((Math.random()*400)+100);   ;
@@ -1458,6 +1570,7 @@
           case 1:
 
             this.player.wep.attackCD += 10;
+            this.player.wep.knockback = 70;
             
             break;
           //Light
