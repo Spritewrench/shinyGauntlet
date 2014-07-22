@@ -64,8 +64,12 @@
       
       
       this.load.image('map', 'assets/world/00.png');
-      this.load.image('doorVer', 'assets/world/door.png');
-      this.load.image('doorHor', 'assets/world/door.png');
+      this.load.image('doorVer', 'assets/world/doorHor.png');
+      this.load.image('doorHor', 'assets/world/doorVer.png');
+      
+      this.load.image('bigTopWall', 'assets/world/bigTopWall.png');
+      this.load.image('bigSideWall', 'assets/world/bigSideWall.png');
+      
       this.load.image('wall', 'assets/wall.png');
       this.load.image('player', 'assets/player.png');
       this.load.image('regSwrd1', 'assets/regSwrd1.png');
