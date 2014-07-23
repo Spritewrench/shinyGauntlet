@@ -33,7 +33,7 @@
       //weps
       this.load.image('mon6','assets/regSwrd1.png');  
       this.load.image('mon7','assets/regSpear1.png');  
-      this.load.image('mon8','assets/regDagger1.png');
+      this.load.image('mon8','assets/weapon/3/0.png');
       this.load.image('mon9','assets/regMace1.png');
       
       //Hit
@@ -56,6 +56,15 @@
       //UI
       this.load.image('timer','assets/timer.png'); 
       
+      //classes
+      for(var i =1; i<=4;i++){
+        for(var j =0; j< 9;j++){
+          this.load.image("wep"+i+j,'assets/weapon/'+i+'/'+j+'.png');
+          this.load.image('shield'+j,'assets/weapon/shield'+j+'.png');
+          
+        }
+        
+      }
       
       for(var i =0; i<10;i++){
         this.load.image(''+i,'assets/particleEmitter/'+i+'.png');

@@ -90,11 +90,15 @@
       
       this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1'); 
       this.player.wep.prefix = 0;
-      //starting wep
-      this.setWep(1,0);     
+   
       
       this.player.shield = this.add.sprite(this.player.x, this.player.y, 'shield');
       this.player.shield.anchor.setTo(0.5, 0.5);
+      this.player.shield.x = this.player.x;
+      this.player.shield.y = this.player.y;      
+      
+      //starting wep
+      this.setWep(1,0);        
       
       this.player.shieldTimer = this.add.sprite(this.player.x, this.player.y-40, 'timer'); 
       //this.player.shieldTimer.visible = false;
@@ -1216,6 +1220,7 @@
       if(obj2.monType > 5 &&  obj2.monType < 10){
         obj2.visible = false;
         this.setWep(obj2.monType-5,obj2.prefix);
+        
       }     
   
     },    
@@ -1262,6 +1267,7 @@
       if(obj2.monType > 5 &&  obj2.monType < 10){
         obj2.visible = false;
         this.setWep(obj2.monType-5,obj2.prefix);
+      
       }     
     },
 
@@ -1488,6 +1494,13 @@
       this.emitter.start(false, 500, 20);
       this.emitter.gravity = 0;    
       this.player.wep.prefix = prefix;
+      
+      this.player.wep.loadTexture('wep'+wepType+prefix);
+      
+      this.player.shield.loadTexture('shield'+prefix);
+
+      
+      
 
       
       switch(wepType){
@@ -1495,7 +1508,7 @@
         case 1:
           this.player.wepType = 1;
           this.player.canAttack = true;
-          this.player.wep.loadTexture('regSwrd1');
+          
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 64;          
@@ -1511,7 +1524,7 @@
         case 2:
           this.player.wepType = 2;
           this.player.canAttack = true;
-          this.player.wep.loadTexture('regSpear1');
+  
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 80;
@@ -1526,7 +1539,7 @@
         case 3:
           this.player.wepType = 3;
           this.player.canAttack = true;
-          this.player.wep.loadTexture('regDagger1');
+
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 32;        
@@ -1543,7 +1556,7 @@
           this.player.wepType = 4;
           this.player.canAttack = true;
           this.player.wep.x = this.player.x + 100;
-          this.player.wep.loadTexture('regMace1');
+
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 64;        
