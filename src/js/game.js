@@ -696,42 +696,93 @@
       
       //dash
       if(this.player.hp > 0 && this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.dashTime == 25){
-        
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
-        {
-            
+        var dist = 150;
+        if(this.player.wep.prefix == 1){
+          //teleport
+          
+          
+                   
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
+          {
 
-            this.player.body.velocity.x = -this.speed*5;
-            this.dashTime = 0;
-            
+              if(this.player.body.x-dist > 0){
+                this.player.body.x -= dist;
+              } 
+              
+              this.dashTime = 0;
+
+
+          }
+
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
+          {
+              if(this.player.body.x+dist < 800){
+                this.player.body.x += dist;
+              }            
+
+              this.dashTime = 0;
+
+          }
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
+          {
+              if(this.player.body.y-dist > 0){
+                this.player.body.y -= dist;
+              }
+
+              this.dashTime = 0;
+          }
+
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
+          {
+
+              if(this.player.body.y+dist < 600){
+                this.player.body.y += dist;
+              }
+              this.dashTime = 0;
+          } 
           
         }
-        
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
-        {
-            
-            this.player.body.velocity.x = this.speed*5;
-          this.dashTime = 0;
-            
-        }
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
-        {
-            
-            this.player.body.velocity.y = -this.speed*5;
-          this.dashTime = 0;
-        }
+        else{
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
+          {
 
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
-        {
-           
-            this.player.body.velocity.y = this.speed*5;
-         this.dashTime = 0;
+
+              this.player.body.velocity.x = -this.speed*5;
+              this.dashTime = 0;
+
+
+          }
+
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
+          {
+
+              this.player.body.velocity.x = this.speed*5;
+            this.dashTime = 0;
+
+          }
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
+          {
+
+              this.player.body.velocity.y = -this.speed*5;
+            this.dashTime = 0;
+          }
+
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
+          {
+
+              this.player.body.velocity.y = this.speed*5;
+           this.dashTime = 0;
+          }          
         }
+        
+          
 
         
       }
+      //recharge dash timer
       if(this.dashTime < 25 && ( (!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && !this.game.input.keyboard.isDown(Phaser.Keyboard.W) && !this.game.input.keyboard.isDown(Phaser.Keyboard.S)  && !this.game.input.keyboard.isDown(Phaser.Keyboard.D)) || !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))  ){
         this.dashTime++;
+
       }
       //debug wep select
       if(!this.game.input.keyboard.isDown(Phaser.Keyboard.ALT)){
@@ -859,7 +910,8 @@
         if(this.player.wep.attackCD > 0){
           this.player.wep.attackCD--;
         }
-
+        //attacking breaks invis
+        this.player.alpha = 1;
         
         this.player.wep.visible = true;
         //this.player.wep.angle = this.player.angle;
@@ -1003,7 +1055,8 @@
         this.d+=this.player.wep.attackSpeed;        
         this.player.wep.x = this.p1.x;
         this.player.wep.y = this.p1.y;
-        
+        //attacking breaks invis
+        this.player.alpha = 1;
         if(this.player.wepType == 4 ){
           this.player.wep.angle+=this.player.wep.attackSpeed;
         }
@@ -1061,11 +1114,28 @@
       //block
       if( this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.player.hp > 0 && this.player.wep.prefix != 8 && this.player.blockCount > 0){
         
-        this.player.shield.x = this.player.x;
-        this.player.shield.y = this.player.y;
-        //blessed
-        this.player.shieldTimer.alpha = 1;
 
+        
+        this.player.shieldTimer.alpha = 1;
+        
+        switch(this.player.wep.prefix){
+          case 0:
+            this.player.shield.x = this.player.x;
+            this.player.shield.y = this.player.y;
+            break;
+          case 1:
+            this.player.shield.x = this.player.x;
+            this.player.shield.y = this.player.y;
+            break;            
+          case 4:
+            //vanish
+            if(this.player.blockCount >= 150){
+              this.player.alpha = 0.5;
+              this.player.blockCount = 0;
+              break;
+            }
+              
+        }
         
         //this.player.shieldTimer.visible = true;
       }
@@ -1077,8 +1147,15 @@
 
       if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
           if(this.player.blockCount <= 150){
-            this.player.blockCount++;
-          }        
+            this.player.blockCount+=0.5;
+          }
+          else{
+            switch(this.player.wep.prefix){
+              case 4:
+                this.player.alpha = 1;
+                break;
+            }
+          }
         }
       }            
 
@@ -1237,7 +1314,7 @@
       if(this.player.body.touching.down){
         this.player.body.velocity.y = -200;
       }   
-      //blocking
+      //blocking 
       if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || this.player.wep.prefix == 8 || this.player.blockCount <= 0 ){
         attack(obj2,obj1);
       }
@@ -1575,51 +1652,50 @@
       switch(prefix){
           default:
             break;
-          //trusty
+          //Adventurer
+          //shield
           case 0:
 
             break;               
-          //Heavy
+          //Mage
+          //teleport
           case 1:
 
-            this.player.wep.attackCD += 10;
-            this.player.wep.knockback = 70;
-            
             break;
-          //Light
+          //Warrior
+          //taunt
           case 2:
 
-            this.player.wep.attackCD -= 10;
-            if(this.player.wep.attackCD < 0){
-              this.player.wep.attackCD = 0;
-            }
+
+            
             
             break;  
-          //Keen
+          //Priest
+          //repel
           case 3:
-          this.player.wep.critMul -= 5;
+
 
            
             break;
-          //dull
+          //Thief
+          //vanish
           case 4:
-          this.player.wep.critMul += 5;
+
 
             
             break;
-          //lucky
+          //Archer
+          //windwalk
           case 5:
-            this.player.wep.critChance -= 10;   
-            if(this.player.wep.critChance <0 ){
-              this.player.wep.critChance = 0;
-            }
+
             break;                
-          //unlucky
+          //Fighter
+          //overpower
           case 6:
-            this.player.wep.critChance += 10;
+
             
             break; 
-          //Blessed
+          //Paladin
           case 7:
             //can block forever
             this.player.wep.dmg = 5;
@@ -1627,17 +1703,16 @@
 
             
             break;      
-          //Cursed
+          //Barbarian
           case 8:
           //can no longer block
             this.player.wep.dmg += 20;
            
             break;      
-          //Vorpal
-          //snicker snak
+          //Warlock
+          //lifetap          
           case 9:
-            this.player.wep.critChance = 25;
-            this.player.wep.critMul += 10;
+
            
             break;       
                   
