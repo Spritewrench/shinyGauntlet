@@ -83,8 +83,11 @@
       //custom object variables
       this.player.isRolling = 0;
       this.player.hp = 10;
-      this.player.blockCount= 150;
+      this.player.blockMax= 150;
+      this.player.blockCount= this.player.blockMax;
+      this.player.blockKnock= 50;
       this.player.blockTime = 0;
+      
       
       
       
@@ -98,7 +101,7 @@
       this.player.shield.y = this.player.y;      
       
       //starting wep
-      this.setWep(1,0);        
+      this.setWep(1,3);        
       
       this.player.shieldTimer = this.add.sprite(this.player.x, this.player.y-40, 'timer'); 
       //this.player.shieldTimer.visible = false;
@@ -263,12 +266,12 @@
       
       //show shield timer
       if(this.player.shieldTimer.visible){
-        var newTimer = (this.player.blockCount / 150)*50;
+        var newTimer = (this.player.blockCount / this.player.blockMax)*50;
         if(newTimer < 0){
           newTimer =0;
         }
         this.player.shieldTimer.width += (newTimer - this.player.shieldTimer.width)*0.1; 
-        if(this.player.blockCount >= 150){
+        if(this.player.blockCount >= this.player.blockMax){
           this.player.shieldTimer.alpha += (0 - this.player.shieldTimer.alpha)*0.05; 
         }
         
@@ -478,7 +481,7 @@
                
             }                  
             //scion blast
-            if(this.monster[i].monType == 4 && this.monster[i].attackCD > 75 &&  this.monster[i].knockback <= 0){
+            if(this.monster[i].monType == 4 && this.monster[i].attackCD > 75 &&  this.monster[i].knockback <= 0 && this.player.alpha == 1){
               this.spawn(this.monster.length,12,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 10;
               this.monster[this.monster.length-1].height = 10;
@@ -488,7 +491,7 @@
               this.monster[this.monster.length-1].tarY = this.monster[i].tarY;
             } 
             //dragon
-            if(this.monster[i].monType == 5 && this.monster[i].attackCD > 25 && this.monster[i].attackCD <= 75 &&  this.monster[i].knockback <= 0){
+            if(this.monster[i].monType == 5 && this.monster[i].attackCD > 25 && this.monster[i].attackCD <= 75 &&  this.monster[i].knockback <= 0 && this.player.wep.prefix != 4){
               this.spawn(this.monster.length,13,11,'ice',this.monster[i].x,this.monster[i].y,64,3,0,2);
 
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -696,7 +699,7 @@
       
       //dash
       if(this.player.hp > 0 && this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.dashTime == 25){
-        var dist = 150;
+        var dist = 200;
         if(this.player.wep.prefix == 1){
           //teleport
           
@@ -704,9 +707,9 @@
                    
           if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
           {
-
-              if(this.player.body.x-dist > 0){
-                this.player.body.x -= dist;
+              this.player.body.x -= dist;
+              if(this.player.body.x < 0){
+                this.player.body.x = 50;                
               } 
               
               this.dashTime = 0;
@@ -716,8 +719,9 @@
 
           if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
           {
-              if(this.player.body.x+dist < 800){
-                this.player.body.x += dist;
+              this.player.body.x += dist;
+              if(this.player.body.x+dist > 800){
+                this.player.body.x = 750; 
               }            
 
               this.dashTime = 0;
@@ -725,8 +729,9 @@
           }
           if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
           {
-              if(this.player.body.y-dist > 0){
-                this.player.body.y -= dist;
+              this.player.body.y -= dist;
+              if(this.player.body.y-dist < 0){
+                this.player.body.y = 50;
               }
 
               this.dashTime = 0;
@@ -734,9 +739,9 @@
 
           if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
           {
-
-              if(this.player.body.y+dist < 600){
-                this.player.body.y += dist;
+              this.player.body.y += dist;
+              if(this.player.body.y+dist > 600){
+                this.player.body.y = 525;
               }
               this.dashTime = 0;
           } 
@@ -910,8 +915,7 @@
         if(this.player.wep.attackCD > 0){
           this.player.wep.attackCD--;
         }
-        //attacking breaks invis
-        this.player.alpha = 1;
+
         
         this.player.wep.visible = true;
         //this.player.wep.angle = this.player.angle;
@@ -1056,7 +1060,7 @@
         this.player.wep.x = this.p1.x;
         this.player.wep.y = this.p1.y;
         //attacking breaks invis
-        this.player.alpha = 1;
+        
         if(this.player.wepType == 4 ){
           this.player.wep.angle+=this.player.wep.attackSpeed;
         }
@@ -1109,7 +1113,7 @@
           this.player.wep.angle = 10;          
         }
       }
-     
+ 
       
       //block
       if( this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.player.hp > 0 && this.player.wep.prefix != 8 && this.player.blockCount > 0){
@@ -1124,18 +1128,60 @@
             this.player.shield.y = this.player.y;
             break;
           case 1:
+            
             this.player.shield.x = this.player.x;
             this.player.shield.y = this.player.y;
-            break;            
+            break;     
+          case 2:
+            //taunt
+            this.player.shield.x = this.player.x;
+            this.player.shield.y = this.player.y;
+            for(var i =0; i < this.monster.length; i++){ 
+              if(this.monster[i].monType <= 5 ){
+                this.monster[i].tarX = this.player.x;
+                this.monster[i].tarY = this.player.y;
+              }
+
+            }
+            break;     
+
+          case 3:
+            //repel
+       
+            this.player.shield.x = this.player.x;
+            this.player.shield.y = this.player.y;
+         
+            break;                 
           case 4:
             //vanish
-            if(this.player.blockCount >= 150){
+            if(this.player.blockCount >= this.player.blockMax){
               this.player.alpha = 0.5;
               this.player.blockCount = 0;
               break;
             }
+          case 5:
+            this.player.shield.x = this.player.x;
+            this.player.shield.y = this.player.y;
+            break;     
+          case 6:
+            this.player.shield.x = this.player.x;
+            this.player.shield.y = this.player.y;
+            break;  
+          case 7:
+            this.player.shield.x = this.player.x;
+            this.player.shield.y = this.player.y;
+            break;     
+          case 8:
+            this.player.shield.x = this.player.x;
+            this.player.shield.y = this.player.y;
+            break;     
+          case 9:
+            this.player.shield.x = this.player.x;
+            this.player.shield.y = this.player.y;
+            break;                   
+            }
               
-        }
+        
         
         //this.player.shieldTimer.visible = true;
       }
@@ -1144,9 +1190,9 @@
           this.player.shield.y = this.player.y;
 
           //this.player.shieldTimer.visible = false;
-
-      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
-          if(this.player.blockCount <= 150){
+        
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || this.player.wep.prefix == 4){
+          if(this.player.blockCount <= this.player.blockMax){
             this.player.blockCount+=0.5;
           }
           else{
@@ -1204,6 +1250,12 @@
       var damage = 0;
 
       var chance = Math.floor((Math.random()*this.player.wep.critChance)+1);
+      //break invis and crit
+      if(this.player.alpha == 0.5){
+        chance = 1;
+        this.player.alpha = 1;
+        console.log(true);
+      }
       if(chance == 1){
         damage = getHit(obj2,this.player.wep.dmg*this.player.wep.critMul, this.player.wep.knockback*this.player.wep.critMul);
         obj2.crited = true;
@@ -1315,7 +1367,7 @@
         this.player.body.velocity.y = -200;
       }   
       //blocking 
-      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || this.player.wep.prefix == 8 || this.player.blockCount <= 0 ){
+      if(this.player.shield.visible == false || !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || this.player.wep.prefix == 8 || this.player.blockCount <= 0 ){
         attack(obj2,obj1);
       }
       else{
@@ -1327,7 +1379,7 @@
         obj2.tarX = this.player.x;
         obj2.tarY = this.player.y;
         obj2.hurtByShield = true;
-        getHit(obj2,0,50);
+        getHit(obj2,0,this.player.blockKnock);
       }
       
       if(obj2.monType == 99){        
@@ -1336,7 +1388,7 @@
       if(obj2.monType == 98){
         
         obj2.visible = false;
-        this.player.blockCount= 1;
+        //this.player.blockCount= 1;
       }           
       ///////////////////////////////////
       // weapon pick ups
@@ -1654,18 +1706,20 @@
             break;
           //Adventurer
           //shield
+            this.player.blockKnock = 50;
           case 0:
 
             break;               
           //Mage
           //teleport
           case 1:
+            this.player.blockKnock = 50;
 
             break;
           //Warrior
           //taunt
           case 2:
-
+            this.player.blockKnock = 50;
 
             
             
@@ -1673,30 +1727,35 @@
           //Priest
           //repel
           case 3:
-
+            this.player.blockKnock = 100;
+            this.player.wep.knockback += 20;
 
            
             break;
           //Thief
           //vanish
           case 4:
-
+            this.player.blockKnock = 50;
+            this.player.shield.visible = false;
 
             
             break;
           //Archer
           //windwalk
           case 5:
+            this.player.blockKnock = 50;
 
             break;                
           //Fighter
           //overpower
           case 6:
+            this.player.blockKnock = 50;
 
             
             break; 
           //Paladin
           case 7:
+            this.player.blockKnock = 50;
             //can block forever
             this.player.wep.dmg = 5;
             
@@ -1705,6 +1764,7 @@
             break;      
           //Barbarian
           case 8:
+            this.player.blockKnock = 50;
           //can no longer block
             this.player.wep.dmg += 20;
            
@@ -1712,6 +1772,7 @@
           //Warlock
           //lifetap          
           case 9:
+            this.player.blockKnock = 50;
 
            
             break;       

@@ -238,7 +238,13 @@ function move(mon, player){
             break;
           
       
-      }        
+      }
+      //look for vanished player
+      if(player.alpha != 1 && player.wep.prefix == 4 && (mon.tarX == player.x || mon.tarY == player.y )){
+            mon.tarX = Math.floor((Math.random()*600)+100);
+            mon.tarY = Math.floor((Math.random()*400)+100);           
+      }
+
     }
     else{
       if(mon.monType > 10 && mon.monType <98){
