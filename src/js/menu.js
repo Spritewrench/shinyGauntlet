@@ -25,12 +25,17 @@
       this.startTxt2.anchor.setTo(0.5, 0.5);      
       
       y = y + this.startTxt2.height + 20;
-      this.startTxt3 = this.add.bitmapText(x, y, '# of Rooms visited: '+localStorage.getItem("roomCount"), {font: '12px minecraftia', align: 'center'});
+      this.startTxt3 = this.add.bitmapText(x, y, '[E] To export dungeon', {font: '12px minecraftia', align: 'center'});
       this.startTxt3.anchor.setTo(0.5, 0.5);  
       
       y = y + this.startTxt3.height + 20;
-      this.startTxt4 = this.add.bitmapText(x, y, '# of Bosses Defeated: '+localStorage.getItem("bossCount"), {font: '12px minecraftia', align: 'center'});
-      this.startTxt4.anchor.setTo(0.5, 0.5);        
+      this.startTxt4 = this.add.bitmapText(x, y,'# of Rooms visited: '+localStorage.getItem("roomCount"), {font: '12px minecraftia', align: 'center'});
+      this.startTxt4.anchor.setTo(0.5, 0.5);   
+      
+      y = y + this.startTxt4.height + 20;
+      this.startTxt5 = this.add.bitmapText(x, y, '# of Bosses Defeated: '+localStorage.getItem("bossCount"), {font: '12px minecraftia', align: 'center'});
+      this.startTxt5.anchor.setTo(0.5, 0.5);         
+      
 
       this.input.onDown.add(this.onDown, this);
     },
@@ -41,7 +46,16 @@
       }
       if(this.game.input.keyboard.isDown(Phaser.Keyboard.M)){
         window.location.href = "index.html";
-      }      
+      }    
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.E)){
+        
+        var compressed = LZString.compress(localStorage.getItem("currentDungeon"));
+        var zip = new JSZip();
+        zip.file("Dungeon.txt", compressed);
+        var content = zip.generate({type:"blob"});
+        // see FileSaver.js
+        saveAs(content, "exportDun.zip")    
+      }          
     },
 
     onDown: function () {

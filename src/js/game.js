@@ -1244,7 +1244,12 @@
         if( this.player.alpha <= 0.1){
           this.game.state.start('menu');
           this.player.hp = 10
-          console.log( JSON.stringify(world) );
+          localStorage.setItem("currentDungeon",world);
+  
+           
+          //var compressed = LZString.compress(JSON.stringify(world));
+          //console.log( compressed);
+               
         }        
         
         
