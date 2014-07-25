@@ -16,18 +16,14 @@
   <div id="titleScreen">
 
     <br/>
-    Dungeon Code:
-    <input id="seed"  value=""  maxlength="16" onkeypress="return validate(event)" onblur="updateDiff(3)" onkeydown="updateDiff(3)">
-    <input id="clickMe" type="button" value="retry" onclick="retry();" />
-    <a id ="tweet" href="https://twitter.com/intent/tweet?text=">
-      <img src="assets/twitter.png" />
-    </a>
-    
     <br/>
+    <br/>
+
     
-    Difficulty:
+
     <div id="diff"></div>
     <input id="clickMe" type="button" value="Play" onclick="genDungeon();" />
+
   </div>
 
 
@@ -39,15 +35,9 @@
   <script type="text/javascript" src="js\lib\widgets.js"></script>
   <script>
     //numbers only
-    function validate(evt){
-    var charCode = (evt.which) ? evt.which : event.keyCode
-    if (charCode > 31 && (charCode < 48 || charCode > 57))
-        return false;
-    return true;    
-    }
     
     //gen dungeon seed
-    retry();
+    //retry();
     //respond to space press
     document.addEventListener('keydown', function(event) {
         if(event.keyCode == 32) {
@@ -61,175 +51,24 @@
    
     function genDungeon(){
 
-      var seed = document.getElementById('seed').value;
-      if(seed.length < 16){
-        alert("Dungeon Code too Short!!! " );
-        window.location.href = "index.html";
-      }
-      else if(isNaN(parseFloat(seed))){
-        alert("Numbers Only!!!");
-        window.location.href = "index.html";
-      }      
-      else{
-        localStorage.setItem("dungeonSeed", seed );  
-        window.location.href = "game.html";        
-      }
-        
-    }
-    function checkDiff(monPref, diff){
-      switch(monPref){
-        default:
-          break;
-        //King
-        case 0:
-          diff += 2;
-          break;               
-        //twin
-        case 1:
-          diff+=2;
-          break;
-        //Lazy
-        case 2:
-          diff-=1;
-          break;  
-        //Hasty
-        case 3:
-          diff+=1;
-          break;
-        //iron
-        case 4:
-          diff+=1;
-          break;
-        //wimpy
-        case 5:
-          diff-=1;     
-          break;                
-        //hulking
-        case 6:
-          diff+=1;
-          break; 
-        //wounded
-        case 7:
-          diff-=1;
-          break;      
-        //Titanic
-        case 8:
-          diff+=1;
-          break;      
-        //Impish
-        case 9:
-          diff+=1;
-          break;      
 
-      }  
-      
-      return diff;
+        localStorage.setItem("dungeonSeed", 0 );  
+        window.location.href = "game.html";   
     }
-    function setDiff(diff){
-      for (var i= document.images.length; i-->0;){
-        document.images[i].parentNode.removeChild(document.images[i]);  
-      }            
-      for(var i = 0; i < diff; i++){
-        var img = document.createElement("img");
-        img.src = "assets/starBronze.png";
-        var src = document.getElementById("diff");
-        src.appendChild(img);       
-      }      
-    }
+
+  
     
-    function updateDiff(val){
-      var diff = val;
-      var seed = document.getElementById('seed').value;
-      var monQue = seed.substr(6, seed.length);
-      mon = monQue.match(new RegExp(".{1,2}", "g")); 
-      //console.log(mon);
-      for(var i = 0; i < mon.length; i++){
-        
-        diff = checkDiff(parseInt(mon[i][1]),diff);
-        
-      }   
-      setDiff(diff);
-    }    
-    
-    function retry(){
-      
-      var src = document.getElementsByTagName('img');
-      for (var i= document.images.length; i-->0;){
-        document.images[i].parentNode.removeChild(document.images[i]);  
-      }      
-   
-      
-      
-      var diff = 0;
-      var seed = "";
-      var x = Math.floor((Math.random()*9)+1);
-      var y = Math.floor((Math.random()*9)+1);
-      var startX = Math.floor((Math.random()*x-1)+1);
-      var startY = Math.floor((Math.random()*y-1)+1);
-      var winX   = Math.floor((Math.random()*x-1)+1);
-      var winY   = Math.floor((Math.random()*y-1)+1);
-     
-      
-      //win pos check
-      if(winX == startX){
-        if(winX+1 > x || winX == x){
-          winX -= 1;
-        }
-        else{
-          winX += 1;
-        }
-      }
-      if(winY == startY ){
-        if(winY+1 > y || winY == y){
-          winY -= 1;
-        }
-        else{
-          winY += 1;
-        }        
-      }      
-      
-      seed += ""+x+y+startX+startY+winX+winY;
 
-
-      
-      var wepchance = 0;
-      var wep = (Math.floor((Math.random()*3)+1)+5);
-      var wepPref =Math.floor((Math.random()*9));
-      
-      
-
-      //gen monsters
-      for(var i = 0; i < 5; i++){
-        var randomizer = Math.floor((Math.random()*10+wepchance)+1);
-        if(randomizer <=5 ){
-          var monType = Math.floor((Math.random()*3)+6);
-          var monPref = Math.floor((Math.random()*10));    
-          wepchance+=5;    
-        }
-        else{
-          var monType = Math.floor((Math.random()*5)+1);
-          var monPref = Math.floor((Math.random()*10));        
-        }
-        seed+=""+monType+monPref;
-      }
 
 
       
       
 
-               
-      
-      
-      
-      document.getElementById('seed').value = seed;
-      document.getElementById('tweet').href = "https://twitter.com/intent/tweet?text=Dungeon Code: "+seed+" Generated!&hashtags=shinygauntlet";
-      document.getElementById('seed').style.width= (seed.length*10)+"px";
-      
-      updateDiff(3);
+
 
               
      
-    }           
+               
 
   </script>  
   

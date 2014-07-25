@@ -284,6 +284,8 @@ function move(mon, player){
       mon.isStunned = false;
       //shield bash wear off
       mon.hurtByShield = false;
+      //return to normal speed
+      mon.speed = mon.origSpeed;
       switch(mon.monType){
           case 1:
             mon.speed = 0;

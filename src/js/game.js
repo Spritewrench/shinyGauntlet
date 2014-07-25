@@ -87,7 +87,8 @@
       this.player.blockCount= this.player.blockMax;
       this.player.blockKnock= 50;
       this.player.blockTime = 0;
-      
+      this.player.roomCount = 0;
+      this.player.bossCount = 0;
       
       
       
@@ -282,6 +283,8 @@
       for(var i =0; i < this.emitter.length;i++){
         this.emitter.getAt(i).alpha = this.emitter.getAt(i).lifespan / 200;
         this.emitter.add(this.player.wep);
+        this.emitter.add(this.player);
+        this.emitter.add(this.player.shield);
         //console.log(this.spriteGroup.l);
       }
 
@@ -534,6 +537,11 @@
              this.monster[i].alpha += (0 -  this.monster[i].alpha)*0.1;
             if( this.monster[i].alpha <= 0.1){
                this.monster[i].visible = false;
+                if(this.monster[i].monType <= 5){
+                  this.player.bossCount++;
+                  localStorage.setItem("bossCount",this.player.bossCount);                
+                }
+                
             }
             
 
@@ -645,8 +653,8 @@
         //this.bg.x = 700;
       }       
       //controls
-      this.emitter.x = this.player.wep.x;
-      this.emitter.y = this.player.wep.y;this.emitter.x = this.player.wep.x;
+      this.emitter.x = this.player.x;
+      this.emitter.y = this.player.y;
       this.emitter.y = this.player.wep.y;
       var slowx = this.player.body.velocity.x* 0.10;
       var slowy = this.player.body.velocity.y* 0.10;
@@ -708,8 +716,8 @@
           if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
           {
               this.player.body.x -= dist;
-              if(this.player.body.x < 0){
-                this.player.body.x = 50;                
+              if(this.player.body.x < 100){
+                this.player.body.x = 100;                
               } 
               
               this.dashTime = 0;
@@ -720,8 +728,8 @@
           if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
           {
               this.player.body.x += dist;
-              if(this.player.body.x+dist > 800){
-                this.player.body.x = 750; 
+              if(this.player.body.x > 700){
+                this.player.body.x = 650; 
               }            
 
               this.dashTime = 0;
@@ -730,8 +738,8 @@
           if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
           {
               this.player.body.y -= dist;
-              if(this.player.body.y-dist < 0){
-                this.player.body.y = 50;
+              if(this.player.body.y< 100){
+                this.player.body.y = 100;
               }
 
               this.dashTime = 0;
@@ -740,8 +748,8 @@
           if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
           {
               this.player.body.y += dist;
-              if(this.player.body.y+dist > 600){
-                this.player.body.y = 525;
+              if(this.player.body.y> 525){
+                this.player.body.y = 475;
               }
               this.dashTime = 0;
           } 
@@ -1115,7 +1123,7 @@
       }
  
       
-      //block
+      //blocking
       if( this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.player.hp > 0 && this.player.wep.prefix != 8 && this.player.blockCount > 0){
         
 
@@ -1150,6 +1158,19 @@
        
             this.player.shield.x = this.player.x;
             this.player.shield.y = this.player.y;
+            
+            if(this.player.blockCount >= this.player.blockMax){
+              this.player.blockCount = 0;
+              for(var i =0; i < this.monster.length; i++){ 
+                if(this.monster[i].monType <= 5 ||  this.monster[i].monType >= 10 && this.monster[i].monType != 99){
+                  getHit(this.monster[i],0,this.player.blockKnock);
+                  this.monster[i].hurtByShield = true;
+                  this.monster[i].speed = 15;
+                }              
+            }
+
+
+            }            
          
             break;                 
           case 4:
@@ -1223,6 +1244,7 @@
         if( this.player.alpha <= 0.1){
           this.game.state.start('menu');
           this.player.hp = 10
+          console.log( JSON.stringify(world) );
         }        
         
         
@@ -1380,6 +1402,7 @@
         obj2.tarY = this.player.y;
         obj2.hurtByShield = true;
         getHit(obj2,0,this.player.blockKnock);
+
       }
       
       if(obj2.monType == 99){        
@@ -1483,7 +1506,12 @@
       
 
 
-      
+      //new room count
+      if( world[this.currentMap].visited == false){
+         world[this.currentMap].visited = true;
+        this.player.roomCount++;
+        localStorage.setItem("roomCount",this.player.roomCount);
+      }
       //load new monsters
       //only one win portal
       
@@ -1561,6 +1589,7 @@
       this.monster[key].randomizer = 0;
       this.monster[key].body.collideWorldBounds = true;
       
+      this.monster[key].origSpeed = this.monster[key].speed;
       this.monster[key].hurtByShield = false;
       this.monster[key].isStunned = false;
       
@@ -1620,7 +1649,7 @@
       this.emitter = this.game.add.emitter(x,y, 100);
       this.emitter.makeParticles(''+prefix);
       
-      this.emitter.start(false, 500, 20);
+      this.emitter.start(false, 700, 20);
       this.emitter.gravity = 0;    
       this.player.wep.prefix = prefix;
       
@@ -1728,7 +1757,7 @@
           //repel
           case 3:
             this.player.blockKnock = 100;
-            this.player.wep.knockback += 20;
+
 
            
             break;
