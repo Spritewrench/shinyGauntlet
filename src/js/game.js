@@ -58,6 +58,9 @@
       this.textGroup = this.add.group();
       this.bg = this.add.sprite(0, 0, ''+posX+posY);
       
+      
+      
+      
       this.shine = this.add.sprite(x, y, 'shine');
       this.shine.anchor.setTo(0.5, 0.5);
       this.shine.width = 64;
@@ -1244,11 +1247,14 @@
         if( this.player.alpha <= 0.1){
           this.game.state.start('menu');
           this.player.hp = 10
-          localStorage.setItem("currentDungeon",world);
-  
-           
+
+         
+          localStorage.setItem("currentDungeon",JSON.stringify(world));
+          //console.log(JSON.stringify(world));
+          //console.log(JSON.stringify(world));
+           //console.log(Object.keys(JSON.parse(localStorage.getItem("currentDungeon"))));
           //var compressed = LZString.compress(JSON.stringify(world));
-          //console.log( compressed);
+         
                
         }        
         
@@ -1281,7 +1287,7 @@
       if(this.player.alpha == 0.5){
         chance = 1;
         this.player.alpha = 1;
-        console.log(true);
+        
       }
       if(chance == 1){
         damage = getHit(obj2,this.player.wep.dmg*this.player.wep.critMul, this.player.wep.knockback*this.player.wep.critMul);
@@ -1431,7 +1437,7 @@
     
     reload: function () {
       //alert(this.player.worldPosX+" "+this.player.worldPosY);
-      
+
       this.currentMap = ''+this.player.worldPosX+this.player.worldPosY;
       this.textCounter = 0;
       this.txt.y = 800;
@@ -1440,6 +1446,8 @@
       this.lightSize = 0;
       
       //place walls
+      
+      
       if(world[this.currentMap].dir[3] === 0){
         this.leftWall.height = 600;
         this.leftWall.y = 0;
