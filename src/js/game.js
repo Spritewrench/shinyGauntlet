@@ -377,12 +377,7 @@
         world[this.currentMap].cleared = true;
         
       }
-      //respawn weapons
-      for(var i = 0; i < this.monster.length;i++){
-        if(this.monster[i].monType > 5  &&  this.monster[i].monType < 10 ){
-          //world[this.currentMap].cleared = false;
-        }
-      }
+
      
       
       //monster hurt
@@ -682,7 +677,7 @@
             
 
             this.player.body.velocity.x = -this.speed;
-
+            this.player.direction = 4;
             
           
         }
@@ -691,18 +686,21 @@
         {
             
             this.player.body.velocity.x = this.speed;
+            this.player.direction = 2;
             
         }
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
         {
             
             this.player.body.velocity.y = -this.speed;
+            this.player.direction = 1;
         }
 
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
         {
             
             this.player.body.velocity.y = this.speed;
+            this.player.direction = 3;
         }
 
         
@@ -1314,54 +1312,17 @@
       }
 
       //player knock back
-      switch(this.player.direction){
-          case 4:
-            this.player.body.velocity.x = 100;
-
-            //spear cause more bounce
-            if(this.player.wepType == 2){
-              this.player.body.velocity.x = 1000;
-            }
-            //slime bounce
-            if(obj2.monType == 2){
-              this.player.body.velocity.x += 500;
-            }           
-            break;
-          case 2:
-            this.player.body.velocity.x = -100;
-            //spear cause more bounce
-            if(this.player.wepType == 2){
-              this.player.body.velocity.x = -1000;
-            } 
-            //slime bounce
-            if(obj2.monType == 2){
-              this.player.body.velocity.x -= 500;
-            }           
-            break;
-          case 1:
-            this.player.body.velocity.y = 100;
-            //spear cause more bounce
-            if(this.player.wepType == 2){
-              this.player.body.velocity.y = 1000;
-            }        
-            //slime bounce
-            if(obj2.monType == 2){
-              this.player.body.velocity.y += 500;
-            }          
-            break;
-          case 3:
-            this.player.body.velocity.y = -100;
-            //spear cause more bounce
-            if(this.player.wepType == 2){
-              this.player.body.velocity.y = -1000;
-            }        
-            //slime bounce
-            if(obj2.monType == 2){
-              this.player.body.velocity.y -= 500;
-            }           
-            break;          
-          
+      this.playerKnockback(100);
+      
+      //spear cause more bounce
+      if(this.player.wepType == 2){
+        this.playerKnockback(2000);
       }
+      //slime bounce
+      if(obj2.monType == 2){
+        this.playerKnockback(500);
+      }  
+      
           
       
       
@@ -1388,16 +1349,16 @@
     },    
     playerHit: function (obj1, obj2) {  
       if(this.player.body.touching.left){
-        this.player.body.velocity.x = 200;
+        this.player.body.velocity.x += 500;
       }
       if(this.player.body.touching.right){
-        this.player.body.velocity.x = -200;
+        this.player.body.velocity.x -= 500;
       }
       if(this.player.body.touching.up){
-        this.player.body.velocity.y = 200;
+        this.player.body.velocity.y += 500;
       }
       if(this.player.body.touching.down){
-        this.player.body.velocity.y = -200;
+        this.player.body.velocity.y -= 500;
       }   
       //blocking 
       if(this.player.shield.visible == false || !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || this.player.wep.prefix == 8 || this.player.blockCount <= 0 ){
@@ -1516,7 +1477,7 @@
         world[this.currentMap].msg = "";
         this.shine.visible = false;
       }
-      
+
 
 
       //new room count
@@ -1534,6 +1495,10 @@
       for(var i = 0; i < world[this.currentMap].monCount;i++){
           var x = world[this.currentMap].mon[i].x;
           var y = world[this.currentMap].mon[i].y;
+        //respawn weapons
+        if(world[this.currentMap].mon[i].monType >  5 && world[this.currentMap].mon[i].monType <  10 ){
+          world[this.currentMap].cleared = false
+        }        
        //win over ride 
           if(this.currentMap == winPos){
             x = this.game.width / 2
@@ -1840,10 +1805,32 @@
         }
 
       //this.game.state.start('menu');
-    },      
+    },
+    playerKnockback: function (dist) {
+      switch(this.player.direction){
+          case 4:
+            this.player.body.velocity.x += dist;
+
+         
+            break;
+          case 2:
+            this.player.body.velocity.x -= dist;
+         
+            break;
+          case 1:
+            this.player.body.velocity.y += dist;
+      
+            break;
+          case 3:
+            this.player.body.velocity.y -= dist;
+          
+            break;     
+      }
+    },    
     onInputDown: function () {
       //this.game.state.start('menu');
     }
+    
     
 
   };
