@@ -105,7 +105,7 @@
       this.player.shield.y = this.player.y;      
       
       //starting wep
-      this.setWep(1,3);        
+      this.setWep(1,7);        
       
       this.player.shieldTimer = this.add.sprite(this.player.x, this.player.y-40, 'timer'); 
       //this.player.shieldTimer.visible = false;
@@ -205,7 +205,7 @@
 
       
       this.input.onDown.add(this.onInputDown, this);
-      this.speed = 200;
+      
       
       this.currentMap =''+this.player.worldPosX+this.player.worldPosY;
       
@@ -265,7 +265,7 @@
     },
 
     update: function () {
-      
+      console.log(this.speed);
       this.txt.y += (this.txtTar - this.txt.y)*0.1;
       
       //show shield timer
@@ -291,7 +291,7 @@
         //console.log(this.spriteGroup.l);
       }
 
-
+      
        //this.game.world.swap(this.player.wep,this.emitter.getAt(this.emitter.length));
       //console.log(this.emitter.getAt(this.emitter.length).x);
       
@@ -1169,9 +1169,15 @@
                   this.monster[i].speed = 15;
                 }              
             }
-
-
-            }            
+            }
+            break;
+          case 9:
+            //lifetap
+       
+            this.player.shield.x = this.player.x;
+            this.player.shield.y = this.player.y;
+            
+          
          
             break;                 
           case 4:
@@ -1213,8 +1219,8 @@
 
           //this.player.shieldTimer.visible = false;
         
-      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || this.player.wep.prefix == 4){
-          if(this.player.blockCount <= this.player.blockMax){
+      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) ){
+          if((this.player.blockCount <= this.player.blockMax && this.player.wep.prefix != 9) ){
             this.player.blockCount+=0.5;
           }
           else{
@@ -1225,9 +1231,26 @@
             }
           }
         }
-      }            
+      }    
+      //lifetap
+
+        if(this.game.input.keyboard.justReleased(Phaser.Keyboard.SPACEBAR) && this.player.wep.prefix == 9){
+          this.player.blockCount -= 2;
+          if(this.player.blockCount <= 0){
+            this.player.hp = 0;
+          }
+          for(var i =0; i < this.monster.length; i++){ 
+            if(this.monster[i].monType <= 5 ||  this.monster[i].monType >= 10 && this.monster[i].monType != 99){
+              this.monster[i].hp -= 100;
+              this.monster[i].attackCD = 1;
+              console.log(this.monster[i].hp);
 
 
+            }              
+          }              
+
+
+        }  
       
  
       
@@ -1713,20 +1736,26 @@
             break;
           //Adventurer
           //shield
+            this.player.shield.visible = true;
             this.player.blockKnock = 50;
+            this.speed = 200;
           case 0:
 
             break;               
           //Mage
           //teleport
           case 1:
+            this.player.shield.visible = true;
             this.player.blockKnock = 50;
+            this.speed = 200;  
 
             break;
           //Warrior
           //taunt
           case 2:
+            this.player.shield.visible = true;
             this.player.blockKnock = 50;
+            this.speed = 200;
 
             
             
@@ -1734,8 +1763,9 @@
           //Priest
           //repel
           case 3:
+            this.player.shield.visible = true;
             this.player.blockKnock = 100;
-
+            this.speed = 200;
 
            
             break;
@@ -1744,25 +1774,30 @@
           case 4:
             this.player.blockKnock = 50;
             this.player.shield.visible = false;
-
+            this.speed = 200;
             
             break;
           //Archer
           //windwalk
           case 5:
+            this.player.shield.visible = true;
             this.player.blockKnock = 50;
 
             break;                
           //Fighter
           //overpower
           case 6:
+            this.player.shield.visible = true;
             this.player.blockKnock = 50;
+            this.speed = 200;
 
             
             break; 
           //Paladin
           case 7:
+            this.player.shield.visible = true;
             this.player.blockKnock = 50;
+            this.speed = 150;
             //can block forever
             this.player.wep.dmg = 5;
             
@@ -1771,15 +1806,19 @@
             break;      
           //Barbarian
           case 8:
+            this.player.shield.visible = false;
             this.player.blockKnock = 50;
+            this.speed = 300;
           //can no longer block
             this.player.wep.dmg += 20;
            
             break;      
           //Warlock
           //lifetap          
-          case 9:
+          case 9: 
+            this.player.shield.visible = true;
             this.player.blockKnock = 50;
+            this.speed = 200;
 
            
             break;       

@@ -48,8 +48,8 @@
         window.location.href = "index.html";
       }    
       if(this.game.input.keyboard.isDown(Phaser.Keyboard.E)){
-        
-        var compressed = LZString.compress(localStorage.getItem("currentDungeon"));
+        //localStorage.setItem("currentDungeon",JSON.stringify(world));
+        var compressed = LZString.compress(JSON.stringify(world));
         var zip = new JSZip();
         zip.file("Dungeon.txt", compressed);
         var content = zip.generate({type:"blob"});
