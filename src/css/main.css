@@ -39,3 +39,6 @@ canvas{
     display : block; 
     margin : auto;           
 } 
+#clickMe, #clickMe2 {
+  width: 285px;
+}

@@ -43,18 +43,6 @@
     this.p2 = null;
     this.d = 0;
     
-    this.holderA = false;
-    this.holderS = false;
-    this.holderD = false;
-    this.holderW = false;
-    
-    this.dashA = 0;
-    this.dashS = 0;
-    this.dashD = 0;
-    this.dashW = 0;
-    
-    this.playerHp = null;
-    this.monHp = null;
     
   }
 
@@ -97,7 +85,7 @@
       this.player.direction = 1;
       //custom object variables
       this.player.isRolling = 0;
-      this.player.hp = 50;
+      this.player.hp = 10;
       this.player.blockMax= 150;
       this.player.blockCount= this.player.blockMax;
       this.player.blockKnock= 50;
@@ -247,15 +235,9 @@
       
     
 
-    //slash
+    //test
     this.p1 = new Phaser.Point(400, 300);
     this.p2 = new Phaser.Point(300, 300);      
-      
-    //hp
-      this.playerHp = this.add.sprite(10, 570, 'playerHp');
-      this.playerHp.width = this.player.hp/50 * 100;
-      this.playerHp.height = 10;
-      
       
       
       
@@ -300,8 +282,6 @@
       }
       this.player.shieldTimer.x = this.player.x;
       this.player.shieldTimer.y = this.player.y-40;      
-      //hp 
-      this.playerHp.width += ((this.player.hp/50 * 100) - this.playerHp.width)*0.1;
       //fade out particles
       for(var i =0; i < this.emitter.length;i++){
         this.emitter.getAt(i).alpha = this.emitter.getAt(i).lifespan / 200;
@@ -512,7 +492,7 @@
               this.monster[this.monster.length-1].tarY = this.monster[i].tarY;
             } 
             //dragon
-            if(this.monster[i].monType == 5 && this.monster[i].attackCD > 25 && this.monster[i].attackCD <= 75 &&  this.monster[i].knockback <= 0 ){
+            if(this.monster[i].monType == 5 && this.monster[i].attackCD > 25 && this.monster[i].attackCD <= 75 &&  this.monster[i].knockback <= 0 && this.player.wep.prefix != 4){
               this.spawn(this.monster.length,13,11,'ice',this.monster[i].x,this.monster[i].y,64,3,0,2);
 
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -735,19 +715,15 @@
         
       }
       
-      //dash controls
-      if(( this.dashTime == 25 && this.player.wep.prefix != 3)){
+      //dash
+      if(this.player.hp > 0 && this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.dashTime == 25 && ( this.player.wep.prefix != 3)){
         var dist = 200;
-        var dashDist = 10;
-
-
-        
         if(this.player.wep.prefix == 1){
           //teleport
           
           
                    
-          if (this.holderA && this.game.input.keyboard.isDown(Phaser.Keyboard.A) )
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
           {
               this.player.body.x -= dist;
               if(this.player.body.x < 100){
@@ -759,7 +735,7 @@
 
           }
 
-          if ( this.holderD && this.game.input.keyboard.isDown(Phaser.Keyboard.D)  )
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
           {
               this.player.body.x += dist;
               if(this.player.body.x > 700){
@@ -769,7 +745,7 @@
               this.dashTime = 0;
 
           }
-          if (this.holderW && this.game.input.keyboard.isDown(Phaser.Keyboard.W) )
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
           {
               this.player.body.y -= dist;
               if(this.player.body.y< 100){
@@ -779,7 +755,7 @@
               this.dashTime = 0;
           }
 
-          if ( this.holderS && this.game.input.keyboard.isDown(Phaser.Keyboard.S)  )
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
           {
               this.player.body.y += dist;
               if(this.player.body.y> 525){
@@ -790,65 +766,42 @@
           
         }
         else{
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
+          {
 
-          
-          if ( this.holderA && this.game.input.keyboard.isDown(Phaser.Keyboard.A)  )
-          {
-              this.dashA = dashDist;
-              //this.player.body.velocity.x = -this.speed*5;
+
+              this.player.body.velocity.x = -this.speed*5;
               this.dashTime = 0;
+
+
           }
 
-          if ( this.holderS && this.game.input.keyboard.isDown(Phaser.Keyboard.S)  )
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
           {
-              this.dashS = dashDist;
-              //this.player.body.velocity.x = -this.speed*5;
-              this.dashTime = 0;
+
+              this.player.body.velocity.x = this.speed*5;
+            this.dashTime = 0;
+
           }
-          if ( this.holderD && this.game.input.keyboard.isDown(Phaser.Keyboard.D)  )
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
           {
-              this.dashD = dashDist;
-              //this.player.body.velocity.x = -this.speed*5;
-              this.dashTime = 0;
+
+              this.player.body.velocity.y = -this.speed*5;
+            this.dashTime = 0;
           }
-          if ( this.holderW && this.game.input.keyboard.isDown(Phaser.Keyboard.W)  )
+
+          if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
           {
-              this.dashW = dashDist;
-              //this.player.body.velocity.x = -this.speed*5;
-              this.dashTime = 0;
-          } 
-       
+
+              this.player.body.velocity.y = this.speed*5;
+           this.dashTime = 0;
+          }          
         }
-       
-        //controls time between taps
-        
-        this.holderA = this.game.input.keyboard.justReleased(Phaser.Keyboard.A,200);
-        this.holderS = this.game.input.keyboard.justReleased(Phaser.Keyboard.S,200);
-        this.holderD = this.game.input.keyboard.justReleased(Phaser.Keyboard.D,200);
-        this.holderW = this.game.input.keyboard.justReleased(Phaser.Keyboard.W,200);
         
           
 
         
       }
-      //dash
-      if(this.dashA > 0){
-        this.player.body.velocity.x = -this.speed*5;
-        this.dashA--;
-      } 
-      if(this.dashS > 0){
-        this.player.body.velocity.y = this.speed*5;
-        this.dashS--;
-      } 
-      if(this.dashD > 0){
-        this.player.body.velocity.x = this.speed*5;
-        this.dashD--;
-      } 
-      if(this.dashW > 0){
-        this.player.body.velocity.y = -this.speed*5;
-        this.dashW--;
-      }       
-      
       //recharge dash timer
       if(this.dashTime < 25 && ( (!this.game.input.keyboard.isDown(Phaser.Keyboard.A) && !this.game.input.keyboard.isDown(Phaser.Keyboard.W) && !this.game.input.keyboard.isDown(Phaser.Keyboard.S)  && !this.game.input.keyboard.isDown(Phaser.Keyboard.D)) || !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))  ){
         this.dashTime++;
@@ -1494,7 +1447,7 @@
       if(obj2.monType > 5 &&  obj2.monType < 10){
         obj2.visible = false;
         this.setWep(obj2.monType-5,obj2.prefix);
-
+        console.log(obj2.monType-5)
       
       }     
     },
@@ -1584,9 +1537,6 @@
 
 
 
-      
-      
-      
       //new room count
       if( world[this.currentMap].visited == false){
          world[this.currentMap].visited = true;
@@ -1619,8 +1569,7 @@
           } 
           else if(world[this.currentMap].cleared == false){
             this.textCounter = 200;
-      //name
-      console.log(world[this.currentMap].mon[i].name);           
+           
             this.spawn(i,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,x,y,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);
             //king me
@@ -1848,7 +1797,7 @@
           //Priest
           //repel
           case 3:
-            this.player.shield.visible = false;
+            this.player.shield.visible = true;
             this.player.blockKnock = 100;
             this.speed = 200;
 
@@ -1862,10 +1811,10 @@
             this.speed = 200;
             
             break;
-          //Rouge
+          //Archer
           //windwalk
           case 5:
-            this.player.shield.visible = false;
+            this.player.shield.visible = true;
             this.player.blockKnock = 50;
             this.speed = 200;
 
@@ -1873,7 +1822,7 @@
           //Fighter
           //overpower
           case 6:
-            this.player.shield.visible = false;
+            this.player.shield.visible = true;
             this.player.blockKnock = 50;
             this.speed = 200;
 
@@ -1902,7 +1851,7 @@
           //Warlock
           //lifetap          
           case 9: 
-            this.player.shield.visible = false;
+            this.player.shield.visible = true;
             this.player.blockKnock = 50;
             this.speed = 200;
 

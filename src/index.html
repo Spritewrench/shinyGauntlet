@@ -25,9 +25,9 @@
     
 
     <div id="diff"></div>
-    <input id="clickMe" type="button" value="Play" onclick="genDungeon();" />
+    <input id="clickMe"  type="button" value="Play" onclick="genDungeon();" />
 
-    <input type="file" id="file" name="file" multiple=""><br>
+    <input type="file" id="file" name="file" multiple="">
 
     <div id="error_block" class="alert alert-danger hidden">
 
@@ -63,7 +63,7 @@
           reader.onload = (function(theFile) {
             return function(e) {
 
-              $result.append($title);
+
               var $fileContent = $("<ul>");
               try {
 
@@ -73,8 +73,9 @@
                 var string = zip.file("Dungeon.txt").asText();
                 if(string.length > 0 ){
                   localStorage.setItem("validCode", true );
+                  document.getElementById('clickMe2').disabled=false;
                 }
-
+                
                 localStorage.setItem("continue",string);
                 var string = LZString.decompress(string);
               } catch(e) {
@@ -95,7 +96,7 @@
       });
     })();
     </script>
-    <input id="clickMe" type="button" value="Continue" onclick="genDungeon2();" />
+    <input id="clickMe2" type="button" value="Continue" onclick="genDungeon2();" disabled='true' />
 
 
 
@@ -110,6 +111,7 @@
     //gen dungeon seed
     //retry();
     //respond to space press
+    
     document.addEventListener('keydown', function(event) {
         if(event.keyCode == 32) {
             genDungeon();

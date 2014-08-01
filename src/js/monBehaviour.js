@@ -317,7 +317,7 @@ function attack(mon, player){
   var monType = parseInt(mon.monType);
   switch(monType){
     default:        
-      player.hp = 0;
+      player.hp--;
       //alert ("brains~~");
       break;
     case 99:        

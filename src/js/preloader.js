@@ -55,10 +55,12 @@
       
       //UI
       this.load.image('timer','assets/timer.png'); 
+      this.load.image('playerHp','assets/hp.png'); 
+      this.load.image('monHp','assets/hp.png'); 
       
       //classes
       for(var i =1; i<=4;i++){
-        for(var j =0; j< 9;j++){
+        for(var j =0; j<= 9;j++){
           this.load.image("wep"+i+j,'assets/weapon/'+i+'/'+j+'.png');
           this.load.image('shield'+j,'assets/weapon/shield'+j+'.png');
           
