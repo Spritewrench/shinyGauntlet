@@ -87,7 +87,7 @@
    
       
       this.player = this.add.sprite(x, y, 'player');
-      this.player.anchor.setTo(0.5, 0.5);
+      this.player.anchor.setTo(0.5, 0.7);
       
       this.player.worldPosX=parseInt(posX);
       this.player.worldPosY=parseInt(posY);
@@ -117,7 +117,7 @@
       this.player.shield.y = this.player.y;      
       
       //starting wep
-      this.setWep(1,7);        
+      this.setWep(1,0);        
       
       this.player.shieldTimer = this.add.sprite(this.player.x, this.player.y-40, 'timer'); 
       //this.player.shieldTimer.visible = false;
@@ -614,7 +614,7 @@
         var newY = this.player.worldPosY+1;
         //alert(world[''+this.player.worldPosX+newY]);
         if(typeof world[''+this.player.worldPosX+newY] !== 'undefined'){
-          this.player.y = 0;
+          this.player.y = 50;
           this.player.worldPosY = newY;
 
           this.reload();
@@ -632,7 +632,7 @@
         var newY = this.player.worldPosY-1;
         //alert(world[''+this.player.worldPosX+newY]);
         if(typeof world[''+this.player.worldPosX+newY] !== 'undefined'){
-          this.player.y = 600;
+          this.player.y = 550;
           this.player.worldPosY = newY;
 
           this.reload();
@@ -646,7 +646,7 @@
         var newX = this.player.worldPosX+1;
         //alert(world[''+this.player.worldPosX+newY]);
         if(typeof world[''+newX+this.player.worldPosY] !== 'undefined'){
-          this.player.x = 0;
+          this.player.x = 50;
           this.player.worldPosX = newX;
 
           this.reload();
@@ -660,7 +660,7 @@
         var newX = this.player.worldPosX-1;
         //alert(world[''+this.player.worldPosX+newY]);
         if(typeof world[''+newX+this.player.worldPosY] !== 'undefined'){
-          this.player.x = 800;
+          this.player.x = 750;
           this.player.worldPosX = newX;
 
           this.reload();
@@ -699,7 +699,7 @@
       
 
 
-      if(this.player.hp > 0 && !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+      if(this.player.hp > 0 && !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && (this.holderA <= 0 || this.holderS <= 0 || this.holderD <= 0 || this.holderW <= 0)){
         
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
         {
@@ -736,9 +736,9 @@
       }
       
       //dash controls
-      if(( this.dashTime == 25 && this.player.wep.prefix != 3)){
+      if(( this.dashTime == 25 )){
         var dist = 200;
-        var dashDist = 10;
+        var dashDist = 7;
 
 
         
@@ -1619,12 +1619,11 @@
           } 
           else if(world[this.currentMap].cleared == false){
             this.textCounter = 200;
-      //name
-      console.log(world[this.currentMap].mon[i].name);           
+      //name         
             this.spawn(i,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,x,y,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);
             //king me
-            if(world[this.currentMap].mon[i].prefix == 0){
+            if(world[this.currentMap].mon[i].prefix == 0 && world[this.currentMap].mon[i].monType <= 5){
                 
                 var x = 200;
                 for(var j = 0; j < 2; j++){
@@ -1637,6 +1636,16 @@
                 }
 
             }
+            //twin
+            if(world[this.currentMap].mon[i].prefix == 1 && world[this.currentMap].mon[i].monType <= 5){
+              this.monster[i].x = 300;
+              this.monster[i].x = 300;
+              this.spawn(i+1,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,500,300,world[this.currentMap].mon[i].size,
+                     world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);
+              this.monster[this.monster.length-1].tarX = Math.floor((Math.random()*600)+100);
+              this.monster[this.monster.length-1].tarY = Math.floor((Math.random()*400)+100);               
+            }
+
             this.shine.visible = false;
 
           }
@@ -1651,6 +1660,7 @@
       }
 
       this.txt.setText(world[this.currentMap].msg);
+      this.textGroup.add(this.txt); 
         
 
     },
@@ -1742,6 +1752,7 @@
       this.player.wep.loadTexture('wep'+wepType+prefix);
       
       this.player.shield.loadTexture('shield'+prefix);
+      this.player.loadTexture('player'+prefix);
 
       
       

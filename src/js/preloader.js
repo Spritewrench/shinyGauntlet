@@ -63,6 +63,7 @@
         for(var j =0; j<= 9;j++){
           this.load.image("wep"+i+j,'assets/weapon/'+i+'/'+j+'.png');
           this.load.image('shield'+j,'assets/weapon/shield'+j+'.png');
+          this.load.image('player'+j,'assets/player'+j+'.png');
           
         }
         

@@ -123,7 +123,7 @@ function lost(x,y){
    
     for(var k = 0; k < world[''+x+y].monCount; k ++){
       //monster stats          
-      placeMon(x,y,monType,monType,k);
+      placeMon(x,y,monType,1,k);
 
     }   
   
@@ -140,17 +140,7 @@ function lost(x,y){
       world[''+i+j].mon[k].y = 300;
       world[''+i+j].cleared = false;
       
-      if(world[''+i+j].monCount == 2){
-        world[''+i+j].mon[0].x = 300;
-        world[''+i+j].mon[0].y = 300;
 
-        world[''+i+j].mon[1].x = 500;
-        world[''+i+j].mon[1].y = 300;            
-      }
-      else{
-        world[''+i+j].mon[k].x = 400;
-        world[''+i+j].mon[k].y = 300;        
-      }
 
       world[''+i+j].mon[k].hp = 30;
       world[''+i+j].mon[k].speed = 2;
@@ -160,6 +150,7 @@ function lost(x,y){
       world[''+i+j].mon[k].size = 128;
       world[''+i+j].mon[k].prefix = parseInt(monPref);
       var prefix = "<Insert Prefix>";
+      var ability = "";
       //prefix system
       switch(world[''+i+j].mon[k].prefix){
           default:
@@ -263,70 +254,76 @@ function lost(x,y){
             break;      
 
         }  
-        if(world[''+i+j].mon[k].prefix == 1){
-          world[''+i+j].monCount = 2;
-        }
-        else{
-          world[''+i+j].monCount = 1;
-        }
+
       }
       else{
+        
+         world[''+i+j].mon[k].name =  "wep"+(world[''+i+j].mon[k].monType-5)+world[''+i+j].mon[k].prefix;
+        
         switch( world[''+i+j].mon[k].prefix){
           default:
             break;
-          //King
+          //Adventurer
           case 0:
-            prefix = "Trusty";
+            prefix = "Adventurer's";
+            ability = "Active Ability: Press <space> to block";
             break;               
-          //twin
+          //Mage
           case 1:
-            prefix = "Heavy";
-            
+            prefix = "Mage's";
+            ability = "Passive Ability: Dash now teleports";
             break;
-          //Lazy
+          //Warriror
           case 2:
-            prefix = "Light";
+            prefix = "Warrior's";
+            ability = "Passive Ability: Press <space> to block (Shield taunts enemies)";
             
             break;  
-          //Hasty
+          //Priest
           case 3:
-            prefix = "Keen";
+            prefix = "Priest's";
+            ability = "Active Ability: Press <space> to knockback all enemies (no damage)";
            
             break;
-          //iron
+          //Thief
           case 4:
-            prefix = "Dull";
+            prefix = "Thief's";
+            ability = "Active Ability: Press <space> to vanish";
             
             break;
-          //wimpy
+          //Rouge
           case 5:
-            prefix = "Lucky";
+            prefix = "Rogue's";
+            ability = "Active Ability: Press <space> to temporarily boost move speed; no longer able to dash";
             
             break;                
-          //hulking
+          //Fighter
           case 6:
-            prefix = "UnLucky";
+            prefix = "Fighter's";
+            ability = "Active Ability: Press <space> to swap weapon(random)";
             
             break; 
-          //wounded
+          //Paladin
           case 7:
-            prefix = "Blessed";
+            prefix = "Paladin's";
+            ability = "Active Ability: Press <space> to block (Unbreakable shield; Reduced Damage; Reduced movespeed)";
             
             break;      
-          //Titanic
+          //Barbarian
           case 8:
-            prefix = "Cursed";
+            prefix = "Barbarian's";
+            ability = "Passive Ability: Increased movespeed; Increased damage";
            
             break;      
-          //Impish
+          //Warlock
           case 9:
-            prefix = "Vorpal";
-           
+            prefix = "Warlock's";
+            ability = "Active Ability: Press <space> to damage all enemies(no knockback)";
             break;       
         }
       }
 
-      world[''+i+j].msg = "A "+prefix+" "+monName;
+      world[''+i+j].msg = "A "+prefix+" "+monName+"\n "+ ability;
 
     }   
    
