@@ -299,7 +299,7 @@
         
       }
       this.player.shieldTimer.x = this.player.x;
-      this.player.shieldTimer.y = this.player.y-40;      
+      this.player.shieldTimer.y = this.player.y+40;      
       //hp 
       this.playerHp.width += ((this.player.hp/50 * 100) - this.playerHp.width)*0.1;
       //fade out particles
@@ -375,7 +375,7 @@
       //close doors
       var monAlive = 0;
       for(var i = 0; i < this.monster.length;i++){
-        if(this.monster[i].visible &&  this.monster[i].monType != 99  &&  this.monster[i].monType <= 5  ){
+        if(this.monster[i].visible &&  this.monster[i].monType != 99  &&  (this.monster[i].monType <= 5 || this.monster[i].monType ==29) ){
           monAlive++;
 
         }         
@@ -698,7 +698,7 @@
       
       
 
-      console.log(this.player.body.velocity.x);
+
       if(this.player.hp > 0 && !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && (this.dashA <= 0 && this.dashS <= 0 && this.dashD <= 0 && this.dashW <= 0) ){
         
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.player.body.velocity.x > -180)
@@ -1348,7 +1348,18 @@
         if( this.player.alpha <= 0.1){
           this.game.state.start('menu');
           this.player.hp = 10
-
+          // spawn shade
+          
+          world[this.currentMap].monCount = 1;
+          for(var i = 0; i < world[this.currentMap].monCount; i++ ){
+            world[this.currentMap].mon[i].name = "shade";
+            world[this.currentMap].mon[i].monType = 29;
+            world[this.currentMap].mon[i].hp = 150;
+            world[this.currentMap].mon[i].speed = 3;
+            world[this.currentMap].mon[i].def = 0;
+            world[this.currentMap].msg = "A Shade"
+          }
+          
          
           localStorage.setItem("currentDungeon",JSON.stringify(world));
           //console.log(JSON.stringify(world));

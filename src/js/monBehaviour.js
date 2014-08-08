@@ -247,7 +247,7 @@ function move(mon, player){
 
     }
     else{
-      if(mon.monType > 10 && mon.monType <98){
+      if(mon.monType > 10 && mon.monType <19  ){
         mon.hp--;
       }
     }    
@@ -362,7 +362,7 @@ function getHit(mon, damage, knockback){
     }
 
 
-    if(mon.monType > 10 && mon.monType < 98 ){
+    if(mon.monType > 10 && mon.monType < 19 ){
       //mon.hp = 0;
       mon.knockback = 0;
       dmgTaken = 0;

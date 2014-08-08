@@ -26,6 +26,7 @@
       this.load.image('mon3','assets/monsters/mon3.png');
       this.load.image('mon4','assets/monsters/mon4.png');
       this.load.image('mon5','assets/monsters/mon5.png');
+      this.load.image('shade','assets/monsters/shade.png');
       
       //projectiles
       this.load.image('ice','assets/monsters/iceShard.png');
