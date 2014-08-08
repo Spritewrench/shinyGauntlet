@@ -698,34 +698,34 @@
       
       
 
-
-      if(this.player.hp > 0 && !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && (this.holderA <= 0 || this.holderS <= 0 || this.holderD <= 0 || this.holderW <= 0)){
+      console.log(this.player.body.velocity.x);
+      if(this.player.hp > 0 && !this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && (this.dashA <= 0 && this.dashS <= 0 && this.dashD <= 0 && this.dashW <= 0) ){
         
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.A))
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.A) && this.player.body.velocity.x > -180)
         {
             
-
-            this.player.body.velocity.x = -this.speed;
+           
+            this.player.body.velocity.x -= this.speed;
             this.player.direction = 4;
             
           
         }
         
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.D))
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.D) && this.player.body.velocity.x < 180)
         {
             
             this.player.body.velocity.x = this.speed;
             this.player.direction = 2;
             
         }
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.W))
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.W) && this.player.body.velocity.y > -180)
         {
             
             this.player.body.velocity.y = -this.speed;
             this.player.direction = 1;
         }
 
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.S))
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.S) && this.player.body.velocity.y < 180)
         {
             
             this.player.body.velocity.y = this.speed;
@@ -835,6 +835,7 @@
       if(this.dashA > 0){
         this.player.body.velocity.x = -this.speed*5;
         this.dashA--;
+        
       } 
       if(this.dashS > 0){
         this.player.body.velocity.y = this.speed*5;
