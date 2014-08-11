@@ -9,11 +9,13 @@
   Preloader.prototype = {
 
     preload: function () {
-      this.asset = this.add.sprite(400, 300, 'preloader');
-      this.asset.anchor.setTo(0.5, 0.5);
+      
+  
+    //  this.asset = this.add.sprite(400, 300, 'preloader');
+    //  this.asset.anchor.setTo(0.5, 0.5);
 
-      this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
-      this.load.setPreloadSprite(this.asset);
+     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
+    //  this.load.setPreloadSprite(this.asset);
 
       
    
@@ -95,14 +97,20 @@
     },
 
     create: function () {
-      this.asset.cropEnabled = false;
+      //this.asset.cropEnabled = false;
+      this.titleTxt = this.add.bitmapText(400, 280, 'BUILDING FLOOR '+localStorage.getItem("floorNum")+'...', {font: '16px minecraftia', align: 'center'});
+      this.titleTxt.anchor.setTo(0.5, 0.5);          
     },
 
     update: function () {
       if (this.ready===true) {
         //this.ready=true;
         //hide loading css
-        this.game.state.start('game');
+        this.titleTxt.setText('FLOOR '+localStorage.getItem("floorNum")+' READY \n PRES <SPACE> TO START');
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) ){
+          this.game.state.start('game');
+        }
+        
         
       }
     },

@@ -13,7 +13,7 @@
         , y = (this.game.height / 2) - 100;
 
 
-      this.titleTxt = this.add.bitmapText(x, y, 'YOU DIED!', {font: '16px minecraftia', align: 'center'});
+      this.titleTxt = this.add.bitmapText(x, y, 'YOU DIED ON FLOOR '+localStorage.getItem("floorNum")+'!', {font: '16px minecraftia', align: 'center'});
       this.titleTxt.anchor.setTo(0.5, 0.5);
 
       y = y + this.titleTxt.height + 5;
@@ -24,11 +24,11 @@
       this.startTxt2 = this.add.bitmapText(x, y, '[SPACE] Try again', {font: '12px minecraftia', align: 'center'});
       this.startTxt2.anchor.setTo(0.5, 0.5);      
       
-      y = y + this.startTxt2.height + 20;
-      this.startTxt3 = this.add.bitmapText(x, y, '[E] To export dungeon', {font: '12px minecraftia', align: 'center'});
-      this.startTxt3.anchor.setTo(0.5, 0.5);  
+     // y = y + this.startTxt2.height + 20;
+     // this.startTxt3 = this.add.bitmapText(x, y, '[E] To export dungeon', {font: '12px minecraftia', align: 'center'});
+   //   this.startTxt3.anchor.setTo(0.5, 0.5);  
       
-      y = y + this.startTxt3.height + 20;
+      y = y + this.startTxt2.height + 20;
       this.startTxt4 = this.add.bitmapText(x, y,'# of Rooms visited: '+localStorage.getItem("roomCount"), {font: '12px minecraftia', align: 'center'});
       this.startTxt4.anchor.setTo(0.5, 0.5);   
       
@@ -49,12 +49,12 @@
       }    
       if(this.game.input.keyboard.isDown(Phaser.Keyboard.E)){
         //localStorage.setItem("currentDungeon",JSON.stringify(world));
-        var compressed = LZString.compress(JSON.stringify(world));
-        var zip = new JSZip();
-        zip.file("Dungeon.txt", compressed);
-        var content = zip.generate({type:"blob"});
+       // var compressed = LZString.compress(JSON.stringify(world));
+       // var zip = new JSZip();
+     //   zip.file("Dungeon.txt", compressed);
+     //   var content = zip.generate({type:"blob"});
         // see FileSaver.js
-        saveAs(content, "exportDun.zip")    
+      //  saveAs(content, "exportDun.zip")    
       }          
     },
 

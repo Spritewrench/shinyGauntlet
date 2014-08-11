@@ -1479,7 +1479,8 @@
         // next floor
         //this.game.state.start('win');
         window.location.href = "game.html";  
-        localStorage.setItem("dunSize",localStorage.getItem("dunSize")+1);
+        localStorage.setItem("floorNum",parseInt(localStorage.getItem("floorNum"))+1);
+        localStorage.setItem("dunSize",parseInt(localStorage.getItem("dunSize"))+1);
         
       }
       if(obj2.monType == 98){
@@ -1545,7 +1546,8 @@
         // next floor
         //this.game.state.start('win');
         window.location.href = "game.html";  
-        localStorage.setItem("dunSize",localStorage.getItem("dunSize")+1);
+        localStorage.setItem("floorNum",parseInt(localStorage.getItem("floorNum"))+1);
+        localStorage.setItem("dunSize",parseInt(localStorage.getItem("dunSize"))+1);
       }
       if(obj2.monType == 98){
         
