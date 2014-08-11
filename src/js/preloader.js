@@ -26,7 +26,6 @@
       this.load.image('mon3','assets/monsters/mon3.png');
       this.load.image('mon4','assets/monsters/mon4.png');
       this.load.image('mon5','assets/monsters/mon5.png');
-      this.load.image('shade','assets/monsters/shade.png');
       
       //projectiles
       this.load.image('ice','assets/monsters/iceShard.png');
@@ -56,8 +55,8 @@
       
       //UI
       this.load.image('timer','assets/timer.png'); 
-      this.load.image('playerHp','assets/hp.png'); 
-      this.load.image('monHp','assets/hp.png'); 
+      this.load.image('playerHp','assets/UI/heart.png'); 
+      this.load.image('monHp','assets/UI/hp.png'); 
       
       //classes
       for(var i =1; i<=4;i++){
