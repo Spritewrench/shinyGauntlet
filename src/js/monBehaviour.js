@@ -20,6 +20,9 @@ function move(mon, player){
             //attack(mon,player);
           }
           break;
+        case 0:        
+
+          break;          
         case 98:      
 
           var tx = mon.tarX - mon.x,
@@ -343,7 +346,13 @@ function attack(mon, player){
     case 9:        
       //player.hp = 0;
       //alert ("brains~~");
-      break;       
+      break;  
+    case 0:        
+      //alert ("brains~~");
+      break;    
+    case 20:        
+      //alert ("brains~~");
+      break;          
       
       
   }
@@ -362,7 +371,7 @@ function getHit(mon, damage, knockback){
     }
 
 
-    if(mon.monType > 10 && mon.monType <= 19 ){
+    if( (mon.monType > 10 && mon.monType <= 19) || (mon.monType == 0) ){
       //mon.hp = 0;
       mon.knockback = 0;
       dmgTaken = 0;

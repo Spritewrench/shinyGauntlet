@@ -124,6 +124,9 @@ function lost(x,y){
   if(randomizer == 0){
     monType = Math.floor((Math.random()*4)+6);
   }
+  else if(randomizer%3 == 0){
+    monType = 0;
+  }  
   else {
     monType = Math.floor((Math.random()*5)+1);
     
@@ -170,7 +173,9 @@ function lost(x,y){
       }
       var monName = "";
       switch( world[''+i+j].mon[k].monType){
-        default:
+        case 0:
+          monName = "";
+          world[''+i+j].mon[k].hp = 100;
           break;
         case 1:
           monName = "Minotaur";
@@ -211,7 +216,14 @@ function lost(x,y){
           break;    
 
       }
-      if(world[''+i+j].mon[k].monType < 6){
+      if(world[''+i+j].mon[k].monType == 0){
+        world[''+i+j].mon[k].name = 'pit';
+        monName = "";
+        prefix = "";
+
+        
+      }
+      else if(world[''+i+j].mon[k].monType < 6 && world[''+i+j].mon[k].monType > 0 ){
         switch( world[''+i+j].mon[k].prefix){
           default:
             break;
@@ -335,7 +347,7 @@ function lost(x,y){
         }
       }
 
-      world[''+i+j].msg = "A "+prefix+" "+monName+"\n "+ ability;
+      world[''+i+j].msg = ""+prefix+" "+monName+"\n "+ ability;
 
     }   
    

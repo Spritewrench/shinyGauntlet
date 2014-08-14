@@ -43,7 +43,8 @@
       this.load.image('mon2Hit','assets/monsters/mon2Hit.png');
       this.load.image('mon3Hit','assets/monsters/mon3Hit.png');
       this.load.image('mon4Hit','assets/monsters/mon4Hit.png');
-      this.load.image('mon5Hit','assets/monsters/mon5Hit.png');      
+      this.load.image('mon5Hit','assets/monsters/mon5Hit.png');
+      this.load.image('pit','assets/monsters/pit.png');
       
       //crit
       this.load.image('mon1Crit','assets/monsters/mon1Crit.png');
