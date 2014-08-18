@@ -105,7 +105,7 @@
       this.player.roomCount = 0;
       this.player.bossCount = 0;
       this.player.isHit = 0;
-      
+      this.player.inPit = false;
       
       
       this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1'); 
@@ -569,10 +569,38 @@
 
             //pit
             if(this.monster[i].monType == 0 &&  this.physics.collide(this.player, this.monster[i] )){
-              //this.speed = 0;
+
+              if(this.player.body.touching.left){
+                this.player.body.x -= 60;
+              }
+              if(this.player.body.touching.right){
+                this.player.body.x += 60;
+              }
+              if(this.player.body.touching.up){
+                this.player.body.y -= 60;
+              }
+              if(this.player.body.touching.down){
+                this.player.body.y += 60;
+              }                
+              this.player.shield.visible = false;
+              this.player.wep.visible = false;
+              this.player.inPit= true;
+              
             }
             else{
               this.physics.collide(this.player, this.monster[i], this.playerHit, null, this);
+            }
+            //fall in
+            if(this.player.inPit){
+              //fall in
+              this.speed = 0;
+              this.player.width--;
+              this.player.height--;
+              this.player.angle+=5; 
+              if(this.player.width <= 5){
+                this.player.hp = 0;
+                this.player.inPit = false;
+              }
             }
                            
           }     
@@ -592,7 +620,7 @@
             if( this.monster[i].alpha <= 0.1){
               //spawn hearts
               if(this.monster[i].monType > 0 && this.monster[i].monType < 6){
-                var randomizer = Math.floor((Math.random()*5)  );
+                var randomizer = Math.floor((Math.random()*this.player.hp+1 ) );
                 if(randomizer == 1){
                   this.spawn(this.monster.length,20,1,'playerHp',this.monster[i].x,this.monster[i].y,32,3,0,0);
                 }
@@ -1616,9 +1644,14 @@
     
     reload: function () {
       //alert(this.player.worldPosX+" "+this.player.worldPosY);
-      //cant dash into a roomCount
+
+      this.dashA = 0;
+      this.dashS = 0;
+      this.dashD = 0;
+      this.dashW = 0;
       this.player.body.velocity.x = 0;
-      this.player.body.velocity.y = 0;
+      this.player.body.velocity.y = 0;      
+      
       this.currentMap = ''+this.player.worldPosX+this.player.worldPosY;
       this.textCounter = 0;
       this.txt.y = 800;
@@ -1787,18 +1820,18 @@
                     //world[this.currentMap].mon[i].height = 300;
                   break;
                   case 3:
-                    this.monster[i].width = 300;
+                    this.monster[i].width = 400;
                     this.monster[i].height = 300;
                     //world[this.currentMap].mon[i].height = 300;
                   break;
                   case 4:
                     this.monster[i].width = 300;
-                    this.monster[i].height = 300;
+                    this.monster[i].height = 400;
                     //world[this.currentMap].mon[i].height = 300;
                   break;     
                   case 5:
-                    this.monster[i].width = 300;
-                    this.monster[i].height = 300;
+                    this.monster[i].width = 400;
+                    this.monster[i].height = 400;
                     //world[this.currentMap].mon[i].height = 300;
                   break;
                   case 6:
@@ -1813,8 +1846,8 @@
                   case 7:
                     this.monster[i].width = 100;
                     this.monster[i].height = 300;
-                    this.monster[i].x = 300;
-                    this.spawn(i+1,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,500,300,world[this.currentMap].mon[i].size,
+                    this.monster[i].x = 200;
+                    this.spawn(i+1,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,500,400,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);  
                     this.monster[this.monster.length-1].width = 100;
                     this.monster[this.monster.length-1].height = 300;                  
@@ -1836,8 +1869,8 @@
                   this.spawn(i+1,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,this.monster[i].x,350,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);   
                   this.monster[this.monster.length-1].width = 100;
-                  this.monster[this.monster.length-1].height = 300;                  
-                    this.spawn(i+2,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,this.monster[i].x,400,world[this.currentMap].mon[i].size,
+                  this.monster[this.monster.length-1].height = 200;                  
+                    this.spawn(i+1,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,this.monster[i].x,400,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);  
                     this.monster[this.monster.length-1].width = 300;
                     this.monster[this.monster.length-1].height = 100; 

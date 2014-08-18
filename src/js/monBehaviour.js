@@ -348,7 +348,7 @@ function attack(mon, player){
       //alert ("brains~~");
       break;  
     case 0:        
-      //alert ("brains~~");
+      
       break;    
     case 20:        
       //alert ("brains~~");
