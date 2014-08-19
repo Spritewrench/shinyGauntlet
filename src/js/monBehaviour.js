@@ -109,7 +109,10 @@ function move(mon, player){
             }
             
             if(mon.attackCD == 0){
-              mon.attackCD = 100;
+              mon.attackCD = 200;
+              if(mon.hp <= 30){
+                //mon.attackCD = 100;
+              }
             }          
             var tx = mon.tarX - mon.x,
                   ty = mon.tarY - mon.y,
@@ -119,13 +122,17 @@ function move(mon, player){
               velY = (ty/dist)*mon.speed;     
               mon.body.x += velX;
               mon.body.y += velY;  
-              if(dist <= mon.width){
+              if(dist <= mon.width && mon.hp > 30){
                   mon.tarX = Math.floor((Math.random()*600)+100);
                   mon.tarY = Math.floor((Math.random()*400)+100);  
 
 
-              }          
-      
+              }   
+              //enrage
+              if(mon.hp <= 30){
+                  mon.tarX = 400;
+                  mon.tarY = 300;                  
+              }
                    
 
             break;
@@ -167,7 +174,7 @@ function move(mon, player){
 
             velX = (tx/dist)*mon.speed;
             velY = (ty/dist)*mon.speed; 
-            if(mon.attackCD >  75){
+            if(mon.attackCD >= 95){
               mon.body.x += velX;
               mon.body.y += velY;               
             }

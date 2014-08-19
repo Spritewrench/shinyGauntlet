@@ -326,6 +326,34 @@
         this.emitter.add(this.player.shield);
         //console.log(this.spriteGroup.l);
       }
+      //fall in
+      if(this.player.inPit){
+        //fall in
+        var placeholder= this.speed;
+        this.speed = 0;
+        this.dashA = 0;
+        this.dashS = 0;
+        this.dashD = 0;
+        this.dashW = 0;
+        this.player.body.velocity.x = 0;
+        this.player.body.velocity.y = 0;    
+        this.player.width--;
+        this.player.height-=1.5;
+        this.player.angle+=5; 
+        if(this.player.width <= 5){
+          this.player.hp--;
+          this.player.body.x = this.player.enterX;
+          this.player.body.y = this.player.enterY;
+          this.speed = 200;
+          this.player.width = 64;
+          this.player.height =100;          
+          this.player.angle = 0;
+          this.player.inPit = false;
+          this.player.wep.visible= true;
+          //if your supposed to  have a shiedl
+          this.player.shield.visible = true;
+        }
+      }      
 
       
        //this.game.world.swap(this.player.wep,this.emitter.getAt(this.emitter.length));
@@ -419,6 +447,11 @@
       //monster hurt
       for(var i = 0; i < this.monster.length;i++){
         
+        //pit hitbox
+        if(this.monster[i].monType == 0){
+         //this.monster[i].body.setSize(10,10); 
+        }
+               
 
         // mon hp UI
         // except bullets
@@ -446,7 +479,7 @@
               
             }
             //lich ice blast 1
-          if(this.monster[i].monType == 3 && this.monster[i].attackCD == 100 && this.monster[i].knockback <= 0 ){
+          if(this.monster[i].monType == 3 && (this.monster[i].attackCD == 100 || (this.monster[i].attackCD == 100 && this.monster[i].hp <= 30)) && this.monster[i].knockback <= 0 ){
               this.spawn(this.monster.length,11,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
               this.monster[this.monster.length-1].height = 32;
@@ -487,7 +520,7 @@
                
             }      
             //lich blast 2
-            if(this.monster[i].monType == 3 && this.monster[i].attackCD == 50){
+            if(this.monster[i].monType == 3 && (this.monster[i].attackCD == 200 || (this.monster[i].attackCD == 100 && this.monster[i].hp <= 30)) && this.monster[i].knockback <= 0){
               
               this.spawn(this.monster.length,11,11,'ice',this.monster[i].x,this.monster[i].y,16,3,0,2);
               this.monster[this.monster.length-1].width = 32;
@@ -538,7 +571,7 @@
               this.monster[this.monster.length-1].tarY = this.monster[i].tarY;
             } 
             //dragon
-            if(this.monster[i].monType == 5 && this.monster[i].attackCD > 45 && this.monster[i].attackCD <= 75 &&  this.monster[i].knockback <= 0 ){
+            if(this.monster[i].monType == 5 && this.monster[i].attackCD > 45 && this.monster[i].attackCD <= 65 &&  this.monster[i].knockback <= 0 ){
               this.spawn(this.monster.length,13,11,'ice',this.monster[i].x,this.monster[i].y,64,3,0,2);
 
               this.monster[this.monster.length-1].anchor.setTo(0.5, 1.0);
@@ -590,18 +623,7 @@
             else{
               this.physics.collide(this.player, this.monster[i], this.playerHit, null, this);
             }
-            //fall in
-            if(this.player.inPit){
-              //fall in
-              this.speed = 0;
-              this.player.width--;
-              this.player.height--;
-              this.player.angle+=5; 
-              if(this.player.width <= 5){
-                this.player.hp = 0;
-                this.player.inPit = false;
-              }
-            }
+
                            
           }     
           //mon death
@@ -711,6 +733,7 @@
           this.player.worldPosY = newY;
 
           this.reload();
+            
         }
         else{
           this.player.y = 0;
@@ -1555,6 +1578,7 @@
       //life
       if(obj2.monType == 20){
         obj2.visible = false;
+        obj2.hp = 0;
         this.player.hp += 1;      
       }
   
@@ -1637,6 +1661,7 @@
       //life
       if(obj2.monType == 20){
         obj2.visible = false;
+        obj2.hp = 0;
         this.player.hp += 1;
       }      
     },
@@ -1644,7 +1669,10 @@
     
     reload: function () {
       //alert(this.player.worldPosX+" "+this.player.worldPosY);
-
+      
+      //where you entered
+      this.player.enterX = this.player.x;
+      this.player.enterY = this.player.y;   
       this.dashA = 0;
       this.dashS = 0;
       this.dashD = 0;
@@ -1745,6 +1773,7 @@
         this.player.roomCount++;
         localStorage.setItem("roomCount",this.player.roomCount);
       }
+     
       //load new monsters
       //only one win portal
       
@@ -1803,6 +1832,7 @@
             }
             //pit types
             if(world[this.currentMap].mon[i].monType == 0){
+              
               switch(world[this.currentMap].mon[i].prefix){
                   case 0:
                     this.monster[i].width = 100;
@@ -1825,13 +1855,13 @@
                     //world[this.currentMap].mon[i].height = 300;
                   break;
                   case 4:
-                    this.monster[i].width = 300;
-                    this.monster[i].height = 400;
+                    this.monster[i].width = 400;
+                    this.monster[i].height = 300;
                     //world[this.currentMap].mon[i].height = 300;
                   break;     
                   case 5:
                     this.monster[i].width = 400;
-                    this.monster[i].height = 400;
+                    this.monster[i].height = 300;
                     //world[this.currentMap].mon[i].height = 300;
                   break;
                   case 6:
@@ -1857,7 +1887,7 @@
                     this.monster[i].width = 300;
                     this.monster[i].height = 100;
                     this.monster[i].y = 200;
-                    this.spawn(i+1,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,this.monster[i].x,400,world[this.currentMap].mon[i].size,
+                    this.spawn(i+1,world[this.currentMap].mon[i].monType,world[this.currentMap].mon[i].prefix,world[this.currentMap].mon[i].name,this.monster[i].x,300,world[this.currentMap].mon[i].size,
                      world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,world[this.currentMap].mon[i].speed);  
                     this.monster[this.monster.length-1].width = 300;
                     this.monster[this.monster.length-1].height = 100; 
@@ -1878,7 +1908,7 @@
                 
               }             
             }            
-
+            
             this.shine.visible = false;
 
           }
