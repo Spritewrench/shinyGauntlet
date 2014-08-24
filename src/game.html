@@ -52,7 +52,7 @@
         world[''+i+j] = new Object();
         world[''+i+j].posX = 0;
         world[''+i+j].posY = 0;
-        world[''+i+j].light = 800;
+        world[''+i+j].light = 300;
         world[''+i+j].dir = [];
         world[''+i+j].dir[0] = 0;
         world[''+i+j].dir[1] = 0;
@@ -119,12 +119,12 @@ function lost(x,y){
    }
   
   //control wep drops
-  var monType = Math.floor((Math.random()*9)+1);
+
    randomizer = Math.floor((Math.random()*10));
-  if(randomizer == 0 || randomizer == 5 || randomizer == 9){
+  if(false){
     monType = Math.floor((Math.random()*4)+6);
   }
-  else if(randomizer%3 == 0){
+  else if(false){
     monType = 0;
   }  
   else {
@@ -132,12 +132,16 @@ function lost(x,y){
     
   }
    
-   var monPref = Math.floor((Math.random()*10));
+   
 
    
     for(var k = 0; k < world[''+x+y].monCount; k ++){
-      //monster stats          
-      placeMon(x,y,2,monPref,k);
+      var monType = Math.floor((Math.random()*9)+1);
+      var monPref = Math.floor((Math.random()*10));
+      console.log(monType+" "+monPref);      
+      //monster stats    
+      
+      placeMon(x,y,monType,monPref,k);
 
     }   
   
@@ -183,7 +187,7 @@ function lost(x,y){
           break;
         case 2:
           monName = "Slime";
-          world[''+i+j].mon[k].hp = 200;
+          world[''+i+j].mon[k].hp = 100;
           world[''+i+j].mon[k].speed = 4;
           break;   
         case 3:
@@ -282,8 +286,8 @@ function lost(x,y){
       }
       else{
         
-         world[''+i+j].mon[k].name =  "wep"+(world[''+i+j].mon[k].monType-5)+world[''+i+j].mon[k].prefix;
-        
+        world[''+i+j].mon[k].name =  "wep"+(world[''+i+j].mon[k].monType-5)+world[''+i+j].mon[k].prefix;
+        world[''+i+j].light = 900;
         switch( world[''+i+j].mon[k].prefix){
           default:
             break;
@@ -347,8 +351,8 @@ function lost(x,y){
         }
       }
 
-      world[''+i+j].msg = ""+prefix+" "+monName+"\n "+ ability;
-
+      world[''+i+j].msg = ""+prefix+" "+monName+"\n ";
+       console.log(prefix+" "+monName);    
     }   
    
   </script>

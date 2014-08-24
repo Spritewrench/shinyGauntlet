@@ -272,8 +272,18 @@
     this.spriteGroup.add(this.shine); 
  
     this.spriteGroup.add(this.door[0]);
+    this.spriteGroup.add(this.door[1]);
+    this.spriteGroup.add(this.door[2]);
+    this.spriteGroup.add(this.door[3]);
+      
     this.spriteGroup.add(this.topWall);
     this.spriteGroup.add(this.topWall2);
+    this.spriteGroup.add(this.botWall);
+    this.spriteGroup.add(this.botWall2);
+    this.spriteGroup.add(this.rightWall);
+    this.spriteGroup.add(this.rightWall2);
+    this.spriteGroup.add(this.leftWall);
+    this.spriteGroup.add(this.leftWall2);      
     
     this.spriteGroup.add(this.player);
     this.spriteGroup.add(this.player.shield);
@@ -423,6 +433,8 @@
       
       
       this.lightSize += (this.lightLimit - this.lightSize)*0.03;
+      //flicker
+
       
       
       //close doors
@@ -448,6 +460,9 @@
         this.door[2].tarY = 100;
         this.door[3].tarX = 200;
         world[this.currentMap].cleared = true;
+        world[this.currentMap].light = 900;
+      
+        this.lightLimit = world[this.currentMap].light;        
         
       }
 
@@ -485,13 +500,7 @@
             //slime split
             if(this.monster[i].monType == 2 && this.monster[i].attackCD == 1 &&  this.monster[i].attackCD > 0 && this.monster[i].knockback <= 0 &&  this.monster[i].prefix != 11){
               ;
-              this.spawn(this.monster.length,this.monster[i].monType,11,this.monster[i].name,this.monster[i].x,this.monster[i].y,32,25,0,this.monster[i].speed);
-              this.monster[i].hp -= 50;
-              this.monster[this.monster.length-1].hp = 25;
-              this.monster[this.monster.length-1].attackCD = 200;
-              this.monster[this.monster.length-1].tarX = Math.floor((Math.random()*600)+100);
-              this.monster[this.monster.length-1].tarY = Math.floor((Math.random()*400)+100);         
-              this.monster[this.monster.length-1].hpMax = this.monster[i].hpMax;
+
             }
             //lich ice blast 1
           if(this.monster[i].monType == 3 && (this.monster[i].attackCD == 100 || (this.monster[i].attackCD == 100 && this.monster[i].hp <= 30)) && this.monster[i].knockback <= 0 ){
@@ -1574,6 +1583,24 @@
 
       //slime bounce
       if(obj2.monType == 2){
+        if(obj2.hp > 25){
+          this.spawn(this.monster.length,obj2.monType,11,obj2.name,obj2.x,obj2.y,obj2.width,obj2.hp/2,0,obj2.speed);
+          
+          this.monster[this.monster.length-1].hp = obj2.hp/2;
+          obj2.hp = obj2.hp/2;
+          this.monster[this.monster.length-1].attackCD = 200;
+          this.monster[this.monster.length-1].tarX = Math.floor((Math.random()*600)+100);
+          this.monster[this.monster.length-1].tarY = Math.floor((Math.random()*400)+100);         
+          this.monster[this.monster.length-1].hpMax = obj2.hpMax;        
+          this.monster[this.monster.length-1].knockback = this.player.wep.knockback;
+          this.monster[this.monster.length-1].speed = Math.floor((Math.random()*4)+1);
+          this.monster[this.monster.length-1].origSpeed = this.monster[this.monster.length-1].speed;
+          obj2.knockback = this.player.wep.knockback;
+        }
+        else{
+          obj2.hp = 0;
+        }
+          
         this.playerKnockback(500);
       }  
       
@@ -1698,7 +1725,7 @@
     
     reload: function () {
       //alert(this.player.worldPosX+" "+this.player.worldPosY);
-      
+
       //where you entered
       this.player.enterX = this.player.x;
       this.player.enterY = this.player.y;   
@@ -1710,6 +1737,13 @@
       this.player.body.velocity.y = 0;      
       
       this.currentMap = ''+this.player.worldPosX+this.player.worldPosY;
+      //lightLimit
+      
+      if(world[this.currentMap].cleared ){
+          world[this.currentMap].light = 900;
+      }
+      this.lightLimit = world[this.currentMap].light;
+      
       this.textCounter = 0;
       this.txt.y = 800;
       this.bg.loadTexture('map');

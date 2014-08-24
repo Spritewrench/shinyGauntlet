@@ -117,8 +117,11 @@ function move(mon, player){
           break;
           //slime
           case 2:
-
+            mon.angle+=mon.speed;
             mon.attackCD--;
+            if(mon.hp < mon.hpMax){
+              //mon.hp+= 0.005;
+            }
             
             if(mon.attackCD == 0){
               mon.attackCD = 200;
@@ -425,7 +428,7 @@ function getHit(mon, damage, knockback){
     }
 
 
-    if( (mon.monType > 10 && mon.monType <= 19) || (mon.monType == 0) ){
+    if( (mon.monType > 10 && mon.monType <= 19) || (mon.monType == 0) || mon.monType == 2 ){
       //mon.hp = 0;
       mon.knockback = 0;
       dmgTaken = 0;
