@@ -23,28 +23,39 @@ function move(mon, player){
         case 0:        
 
           break;          
-        case 98:      
-
-          var tx = mon.tarX - mon.x,
-              ty = mon.tarY - mon.y,
+        case 99:      
+          
+          var tx = player.x - mon.x,
+              ty = player.y - mon.y,
               dist = Math.sqrt(tx*tx+ty*ty);
 
-          velX = (tx/dist)*mon.speed;
-          velY = (ty/dist)*mon.speed;     
-          mon.body.x += velX;
-          mon.body.y += velY;     
+          velX = (tx/dist)*1;
+          velY = (ty/dist)*1; 
+          if(dist <= 200){
+            player.angle+=5;
+            player.body.x -= velX;
+            player.body.y -= velY;  
+          } 
+          else{
+            player.angle = 0;  
+          }
+   
 
           break;          
         //mino
         case 1:        
-          //varied spped
-          if(mon.speed < 8){
-            mon.speed++;
+          if(mon.attackCD >= 0 ){
+            mon.attackCD--;
+
+
           }
-          //rage mode
-          if(mon.hp <= 50){
-            //mon.speed = 15;
-          }
+
+          if(mon.attackCD == 0){
+            mon.attackCD = 100;
+            if(mon.hp <= 30){
+              //mon.attackCD = 100;
+            }
+          }   
           var tx = mon.tarX - mon.x,
               ty = mon.tarY - mon.y,
               dist = Math.sqrt(tx*tx+ty*ty);
@@ -53,25 +64,61 @@ function move(mon, player){
           velY = (ty/dist)*mon.speed;     
           mon.body.x += velX;
           mon.body.y += velY;     
-          if(dist <= mon.width){
-            
-            var randomizer = Math.floor((Math.random()*10-mon.randomizer)+1);
-            if( randomizer == 1){
-              mon.tarX = Math.floor((Math.random()*600)+100);
-              mon.tarY = Math.floor((Math.random()*400)+100);            
-            }
-            else{
-              mon.tarX = player.x;
-              mon.tarY = player.y;              
-            }
+          if(dist <= 100  ){
+              if(mon.speed > 0){
+                mon.speed--;
+              }
+             
+              if(mon.attackCD == 1 && mon.speed == 0){
+                var randomizer = Math.floor((Math.random()*10-mon.randomizer)+1);
+                if( randomizer == 1){
+                  mon.tarX = Math.floor((Math.random()*600)+100);
+                  mon.tarY = Math.floor((Math.random()*400)+100);            
+                }
+                else{
+                  //charge a distance behind player
+                  var offsetX = 0;
+                  var offsetY = 0;
+                  var diffX = Math.sqrt((player.x - mon.x)*(player.x - mon.x));
+                  var diffY = Math.sqrt((player.y - mon.y)*(player.y - mon.y));
+                  var diff = 50;
+                  var offset = 200;
+                  if(player.x > mon.x  && diffX >= diff){
+                    offsetX = offset;
+                  }
+                  if(player.x < mon.x && diffX >= diff){
+                    offsetX = -offset;
+                  }
+                  if(player.y > mon.y && diffY >= diff){
+                    offsetY = offset;
+                  }
+                  if(player.y < mon.y && diffY >= diff){
+                    offsetY = -offset;
+                  }    
 
+                  mon.tarX = player.x+offsetX;
+                  mon.tarY = player.y+offsetY;     
+                  if(player.x+offsetX > 800 || player.x+offsetX < 0 ){
+                    mon.tarX = player.x;
+                  }
+                  if(player.y+offsetY > 600 || player.y+offsetY < 0){
+                    mon.tarY = player.y;
+                  }                  
+                  
+                }             
+              }
+                                
               
-
           }
+          else{
+            mon.speed++;
+
+          }          
           break;
           //slime
           case 2:
 
+            mon.attackCD--;
             
             if(mon.attackCD == 0){
               mon.attackCD = 200;

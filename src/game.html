@@ -121,7 +121,7 @@ function lost(x,y){
   //control wep drops
   var monType = Math.floor((Math.random()*9)+1);
    randomizer = Math.floor((Math.random()*10));
-  if(randomizer == 0){
+  if(randomizer == 0 || randomizer == 5 || randomizer == 9){
     monType = Math.floor((Math.random()*4)+6);
   }
   else if(randomizer%3 == 0){
@@ -132,12 +132,12 @@ function lost(x,y){
     
   }
    
-   var monPref = Math.floor((Math.random()*9));
+   var monPref = Math.floor((Math.random()*10));
 
    
     for(var k = 0; k < world[''+x+y].monCount; k ++){
       //monster stats          
-      placeMon(x,y,0,monPref,k);
+      placeMon(x,y,2,monPref,k);
 
     }   
   
@@ -183,7 +183,7 @@ function lost(x,y){
           break;
         case 2:
           monName = "Slime";
-          world[''+i+j].mon[k].hp = 100;
+          world[''+i+j].mon[k].hp = 200;
           world[''+i+j].mon[k].speed = 4;
           break;   
         case 3:

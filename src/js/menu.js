@@ -42,7 +42,13 @@
 
     update: function () {
       if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
-        this.game.state.start('game');
+        //this.game.state.start('game');
+        localStorage.setItem("dunSize",2);
+        localStorage.setItem("floorNum",0);
+        localStorage.setItem("wepType",1);
+        localStorage.setItem("wepPref",0);   
+        localStorage.setItem("hp",3);   
+        window.location.href = "game.html";
       }
       if(this.game.input.keyboard.isDown(Phaser.Keyboard.M)){
         window.location.href = "index.html";
@@ -57,6 +63,7 @@
       //  saveAs(content, "exportDun.zip")    
       }          
     },
+
 
     onDown: function () {
       
