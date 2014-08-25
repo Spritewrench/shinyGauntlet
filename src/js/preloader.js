@@ -21,7 +21,8 @@
    
 
       
-      
+      //title
+      this.load.image('title','assets/titleScreen1.png');
       
       this.load.image('mon1','assets/monsters/mon1.png');
       this.load.image('mon2','assets/monsters/mon2.png');
@@ -108,7 +109,7 @@
         //this.ready=true;
         //hide loading css
         this.titleTxt.setText('FLOOR '+localStorage.getItem("floorNum")+' READY \n PRES <SPACE> TO START');
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) ){
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || localStorage.getItem("floorNum") == 0 ){
           this.game.state.start('game');
         }
         

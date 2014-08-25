@@ -8,15 +8,15 @@ html, body {
   height: 100%;
   overflow: hidden;
   margin: 0px;
-  background-color: #3c868c;
+  background-color: #000;
 }
 
 #titleScreen{
-  padding-top: 240px;
+  padding-top: -200px;
   text-align: center;
   font-family: 'chunkfiveroman';
   font-size: 24px;
-  background-image:url('../assets/titleScreen.png');
+  
   background-repeat:no-repeat;
   background-position: 48% 0px;
 }

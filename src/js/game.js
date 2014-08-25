@@ -57,6 +57,8 @@
     this.dashD = 0;
     this.dashW = 0;
     
+    this.titleCtrl = false;
+    
     this.playerHp = [];
     this.monHp = null;
     
@@ -291,17 +293,24 @@
     this.shadowGroup.add(lightSprite);
     this.textGroup.add(this.txt); 
 
-          
+    //title
+    this.titleName = this.add.sprite(400, 150, 'title');
+    this.titleName.anchor.setTo(0.5, 0.5);
       
     // load
      
     this.reload();      
-      
+    //show title on first floor 
+    if( localStorage.getItem("floorNum") == 0){
+      this.titleName.alpha = 1;
+    }
+    
       
     },
 
     update: function () {
-     
+
+      
       this.txt.y += (this.txtTar - this.txt.y)*0.1;
       //show room text
       this.seedTxt.setText("FLOOR #"+localStorage.getItem("floorNum")+" ["+this.player.worldPosX+"] ["+this.player.worldPosY+"]");
@@ -872,6 +881,7 @@
                    
           if (this.holderA && this.game.input.keyboard.isDown(Phaser.Keyboard.A) )
           {
+              
               this.player.body.x -= dist;
               if(this.player.body.x < 100){
                 this.player.body.x = 100;                
@@ -1629,6 +1639,9 @@
       if(obj2.monType > 5 &&  obj2.monType < 10){
         obj2.visible = false;
         this.setWep(obj2.monType-5,obj2.prefix);
+        this.textCounter = 200;
+        this.txt.setText("Press <space> to use your class ability");
+        
         
       }  
       //life
@@ -1711,6 +1724,8 @@
       if(obj2.monType > 5 &&  obj2.monType < 10){
         obj2.visible = false;
         this.setWep(obj2.monType-5,obj2.prefix);
+        this.textCounter = 200;
+        this.txt.setText("Press <space> to use your class ability");   
 
       
       }     
@@ -1725,7 +1740,8 @@
     
     reload: function () {
       //alert(this.player.worldPosX+" "+this.player.worldPosY);
-
+      //hide titleCtr
+      this.titleName.alpha = 0;
       //where you entered
       this.player.enterX = this.player.x;
       this.player.enterY = this.player.y;   
