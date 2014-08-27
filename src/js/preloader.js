@@ -29,9 +29,13 @@
       this.load.image('mon3','assets/monsters/mon3.png');
       this.load.image('mon4','assets/monsters/mon4.png');
       this.load.image('mon5','assets/monsters/mon5.png');
+      this.load.image('trap','assets/monsters/trap.png');
       
       //projectiles
       this.load.image('ice','assets/monsters/iceShard.png');
+      this.load.image('fire','assets/monsters/fireBall.png');
+      this.load.image('lazer','assets/monsters/lazer.png');
+      this.load.image('arrow','assets/monsters/arrow.png');
       
       //weps
       this.load.image('mon6','assets/regSwrd1.png');  

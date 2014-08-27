@@ -172,7 +172,7 @@ function move(mon, player){
               velY = (ty/dist)*mon.speed;     
               mon.body.x += velX;
               mon.body.y += velY;  
-              if(dist <= mon.width && mon.hp > 30){
+              if(dist <= mon.width ){
                   mon.tarX = Math.floor((Math.random()*600)+100);
                   mon.tarY = Math.floor((Math.random()*400)+100);  
 
@@ -180,8 +180,9 @@ function move(mon, player){
               }   
               //enrage
               if(mon.hp <= 30){
-                  mon.tarX = 400;
-                  mon.tarY = 300;                  
+                  mon.speed = mon.origSpeed +1;
+                  //mon.tarX = 400;
+                  //mon.tarY = 300;                  
               }
                    
 
@@ -296,7 +297,21 @@ function move(mon, player){
             }    
 
             break;
-          
+          //trap
+          case 14:
+            if(mon.speed < 3){
+              mon.speed++;
+            }
+            if(mon.attackCD > 1 ){
+              mon.attackCD--;
+              
+
+            }           
+            if(mon.attackCD <= 1){
+              mon.attackCD = 100;
+              mon.tarX = player.x;
+              mon.tarY = player.y+3;
+            }           
       
       }
       //look for vanished player
@@ -309,6 +324,9 @@ function move(mon, player){
     else{
       if(mon.monType > 10 && mon.monType <=19){
         mon.hp--;
+        if(mon.monType == 14){
+          mon.hp = 1;
+        }
       }
     }    
 

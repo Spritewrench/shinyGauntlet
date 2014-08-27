@@ -52,7 +52,7 @@
         world[''+i+j] = new Object();
         world[''+i+j].posX = 0;
         world[''+i+j].posY = 0;
-        world[''+i+j].light = 400;
+        world[''+i+j].light = 300;
         world[''+i+j].dir = [];
         world[''+i+j].dir[0] = 0;
         world[''+i+j].dir[1] = 0;
@@ -84,10 +84,16 @@
 
         lost(holderX,holderY);
         localStorage.setItem("winX",''+holderX);
-        localStorage.setItem("winY",''+holderY);      
+        localStorage.setItem("winY",''+holderY);
+
       }
 
     }
+    //reset position if ero starts at end
+    if( localStorage.getItem("winX") ==   localStorage.getItem("heroStartX")
+    && localStorage.getItem("winY") ==   localStorage.getItem("heroStartY")){
+      window.location.href = "game.html"; 
+    }    
 function lost(x,y){
    var randomizer = Math.floor((Math.random()*4));
    
@@ -121,10 +127,10 @@ function lost(x,y){
   //control wep drops
 
    randomizer = Math.floor((Math.random()*10));
-  if(false){
+  if(randomizer == 0 ){
     monType = Math.floor((Math.random()*4)+6);
   }
-  else if(false){
+  else if(randomizer % 3 == 0){
     monType = 0;
   }  
   else {
@@ -136,12 +142,12 @@ function lost(x,y){
 
    
     for(var k = 0; k < world[''+x+y].monCount; k ++){
-      var monType = Math.floor((Math.random()*9)+1);
+     // var monType = Math.floor((Math.random()*9)+1);
       var monPref = Math.floor((Math.random()*10));
       console.log(monType+" "+monPref);      
       //monster stats    
       
-      placeMon(x,y,monType,monPref,k);
+      placeMon(x,y,0,7,k);
 
     }   
   
@@ -287,7 +293,7 @@ function lost(x,y){
       else{
         
         world[''+i+j].mon[k].name =  "wep"+(world[''+i+j].mon[k].monType-5)+world[''+i+j].mon[k].prefix;
-        world[''+i+j].light = 900;
+        
         switch( world[''+i+j].mon[k].prefix){
           default:
             break;
@@ -295,11 +301,27 @@ function lost(x,y){
           case 0:
             prefix = "Adventurer's";
             ability = "Active Ability: Press <space> to block";
+             
+            
             break;               
           //Mage
           case 1:
             prefix = "Mage's";
             ability = "Passive Ability: Dash now teleports";
+            switch(world[''+i+j].mon[k].monType){
+                case 6:
+                  monName = "Rod";
+                  break;
+                case 7:
+                  monName = "Staff";
+                  break;
+                case 8:
+                  monName = "Wand";
+                  break;
+                case 9:
+                  monName = "Scepter";
+                  break;       
+            }
             break;
           //Warriror
           case 2:
