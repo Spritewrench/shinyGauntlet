@@ -5,9 +5,16 @@ function move(mon, player){
     if(mon.attackCD > 0){
       
       switch(monType){
-        default:        
-          mon.tarX = player.x;
-          mon.tarY = player.y;
+        default:       
+          if(player.alpha != 1 && player.wep.prefix == 4 ){
+                mon.tarX = mon.x;
+                mon.tarY = mon.y;           
+          }
+          else{
+            mon.tarX = player.x;
+            mon.tarY = player.y;            
+          }
+
           var tx = mon.tarX - mon.x,
               ty = mon.tarY - mon.y,
               dist = Math.sqrt(tx*tx+ty*ty);
@@ -43,7 +50,14 @@ function move(mon, player){
 
           break;          
         //mino
-        case 1:        
+        case 1:   
+          //flip sprite
+          if(player.x >= mon.x){
+            mon.scale.x = -1;
+          }
+          else{
+            mon.scale.x = 1;
+          }
           if(mon.attackCD >= 0 ){
             mon.attackCD--;
 
@@ -60,10 +74,20 @@ function move(mon, player){
               ty = mon.tarY - mon.y,
               dist = Math.sqrt(tx*tx+ty*ty);
           
-          velX = (tx/dist)*mon.speed;
-          velY = (ty/dist)*mon.speed;     
-          mon.body.x += velX;
-          mon.body.y += velY;     
+ 
+          if(mon.attackCD <= 75){
+            velX = (tx/dist)*mon.speed;
+            velY = (ty/dist)*mon.speed;                
+            mon.body.x += velX;
+            mon.body.y += velY;             
+          }
+          else if(mon.attackCD > 75 && mon.attackCD <= 100){
+            velX = (tx/dist)*1;
+            velY = (ty/dist)*1;                
+            mon.body.x -= velX;
+            mon.body.y -= velY;             
+          }
+    
           if(dist <= 100  ){
               if(mon.speed > 0){
                 mon.speed--;
@@ -110,7 +134,7 @@ function move(mon, player){
                                 
               
           }
-          else{
+          else if(mon.speed < 20){
             mon.speed++;
 
           }          
@@ -160,7 +184,7 @@ function move(mon, player){
             
             if(mon.attackCD == 0){
               mon.attackCD = 200;
-              if(mon.hp <= 30){
+              if(mon.hp <= mon.hpMax/2){
                 //mon.attackCD = 100;
               }
             }          
@@ -179,7 +203,7 @@ function move(mon, player){
 
               }   
               //enrage
-              if(mon.hp <= 30){
+              if(mon.hp <= mon.hpMax/2){
                   mon.speed = mon.origSpeed +1;
                   //mon.tarX = 400;
                   //mon.tarY = 300;                  
@@ -197,6 +221,10 @@ function move(mon, player){
               
 
             }           
+          //spin
+          if(mon.attackCD <= 75){
+            mon.angle++;
+          }
             if(mon.attackCD <= 1){
               mon.attackCD = 100;
               mon.tarX = player.x;
@@ -284,6 +312,10 @@ function move(mon, player){
           //dragon fire
           case 13:
           mon.speed = 10;
+          if(mon.width < 64){
+            mon.width+=2;
+            mon.height+=2;
+          }
           var tx = mon.tarX - mon.x,
                 ty = mon.tarY - mon.y,
                 dist = Math.sqrt(tx*tx+ty*ty);

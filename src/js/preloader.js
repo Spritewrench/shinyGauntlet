@@ -64,6 +64,7 @@
       //UI
       this.load.image('timer','assets/timer.png'); 
       this.load.image('playerHp','assets/UI/heart.png'); 
+      this.load.image('playerHpHalf','assets/UI/heartHalf.png'); 
       this.load.image('monHp','assets/UI/hp.png'); 
       
       //classes
@@ -92,6 +93,7 @@
       
       this.load.image('wall', 'assets/wall.png');
       this.load.image('player', 'assets/player.png');
+      this.load.image('playerDeath', 'assets/playerDeath.png');
       this.load.image('regSwrd1', 'assets/regSwrd1.png');
       this.load.image('regSpear1', 'assets/regSpear1.png');
       this.load.image('regDagger1', 'assets/regDagger1.png');

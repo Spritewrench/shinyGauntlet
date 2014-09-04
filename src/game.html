@@ -127,7 +127,7 @@ function lost(x,y){
   //control wep drops
 
    randomizer = Math.floor((Math.random()*10));
-  if(randomizer == 0 ){
+  if(randomizer == 0  ){
     monType = Math.floor((Math.random()*4)+6);
   }
   else if(randomizer % 3 == 0){
@@ -143,11 +143,53 @@ function lost(x,y){
    
     for(var k = 0; k < world[''+x+y].monCount; k ++){
      // var monType = Math.floor((Math.random()*9)+1);
-      var monPref = Math.floor((Math.random()*10));
+      
+      var monPref = Math.floor((Math.random()*4)+1);
+      
+      if(monType > 5){
+        randomizer = Math.floor((Math.random()*2)+1);
+        console.log(randomizer);
+        switch(monPref){
+            case 1:
+              
+              if(randomizer == 1){
+                monType = 6;
+              }
+              else{
+                monType = 8;
+              }
+              break;
+            case 2:
+              if(randomizer == 1){
+                monType = 7;
+              }
+              else{
+                monType = 6;
+              }            
+              break;
+            case 3:
+              if(randomizer == 1){
+                monType = 9;
+              }
+              else{
+                monType = 6;
+              }            
+              break;
+            case 4:
+              if(randomizer == 1){
+                monType = 8;
+              }
+              else{
+                monType = 6;
+              }            
+              break;            
+        }        
+      }
+        
       console.log(monType+" "+monPref);      
       //monster stats    
       
-      placeMon(x,y,0,7,k);
+      placeMon(x,y,monType,monPref,k);
 
     }   
   
@@ -333,6 +375,12 @@ function lost(x,y){
           case 3:
             prefix = "Priest's";
             ability = "Active Ability: Press <space> to knockback all enemies (no damage)";
+            switch(world[''+i+j].mon[k].monType){
+                case 6:
+                  monName = "Rod";
+                  break;
+     
+            }            
            
             break;
           //Thief
