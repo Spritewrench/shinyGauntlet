@@ -13,7 +13,7 @@
   <!-- /build -->
 </head>
 
-<body>
+<body onclick='genDungeon();'>
   
   
   <div id="titleScreen">
@@ -32,18 +32,19 @@
 
 
   <!-- build:js main.min.js -->
-  <script type="text/javascript" src="js\lib\widgets.js"></script>
+  <script type="text/javascript" src="js\lib\widgets.js">
+  </script>
   <script>
     //numbers only
     
     //gen dungeon seed
     //retry();
     //respond to space press
-    
+    setTimeout("genDungeon();",2500);
+    //document.onmousedown = genDungeon();
     document.addEventListener('keydown', function(event) {
-        if(event.keyCode == 32) {
-            genDungeon();
-        }
+      genDungeon();
+
 
     });    
     //gen difficult
@@ -59,7 +60,12 @@
         localStorage.setItem("wepType",1);
         localStorage.setItem("wepPref",0);   
         localStorage.setItem("hp",3);   
+        localStorage.setItem("mageSchool",0);
+        localStorage.setItem("warriorSchool",0);
+        localStorage.setItem("priestSchool",0);
+        localStorage.setItem("thiefSchool",0);      
         window.location.href = "game.html";   
+        localStorage.setItem("musicCtrl",0);
     }
     
 

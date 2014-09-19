@@ -127,10 +127,10 @@ function lost(x,y){
   //control wep drops
 
    randomizer = Math.floor((Math.random()*10));
-  if(randomizer == 0  ){
+  if(randomizer == 0  || randomizer == 9){
     monType = Math.floor((Math.random()*4)+6);
   }
-  else if(randomizer % 3 == 0){
+  else if(randomizer != 3 && randomizer != 4 && randomizer != 5 && randomizer != 6 && randomizer != 7){
     monType = 0;
   }  
   else {
@@ -144,11 +144,14 @@ function lost(x,y){
     for(var k = 0; k < world[''+x+y].monCount; k ++){
      // var monType = Math.floor((Math.random()*9)+1);
       
-      var monPref = Math.floor((Math.random()*4)+1);
-      
+      var monPref = Math.floor((Math.random()*9)+1);
+      //monType = 6;
       if(monType > 5){
         randomizer = Math.floor((Math.random()*2)+1);
-        console.log(randomizer);
+        monPref = Math.floor((Math.random()*4)+1);
+        //monPref = 1;
+        
+        //only certain classes get certain weapons
         switch(monPref){
             case 1:
               
@@ -158,6 +161,16 @@ function lost(x,y){
               else{
                 monType = 8;
               }
+              //level up wizard
+              if(localStorage.getItem("mageSchool") == 1){
+                  //monPref = 11;
+              }
+              if(localStorage.getItem("priestSchool") == 1){
+                 // monPref = 13;
+              }   
+              if(localStorage.getItem("thiefSchool") == 1){
+                 // monPref = 14;
+              }               
               break;
             case 2:
               if(randomizer == 1){
@@ -166,6 +179,17 @@ function lost(x,y){
               else{
                 monType = 6;
               }            
+              
+              //level up Champion
+              if(localStorage.getItem("warriorSchool") == 1 ){
+                //monPref = 22;
+              } 
+              if(localStorage.getItem("priestSchool") == 1){
+                  //monPref = 23;
+              }  
+              if(localStorage.getItem("thiefSchool") == 1){
+                //  monPref = 24;
+              }             
               break;
             case 3:
               if(randomizer == 1){
@@ -173,7 +197,19 @@ function lost(x,y){
               }
               else{
                 monType = 6;
-              }            
+              }      
+     
+              if(localStorage.getItem("priestSchool") == 1){
+                 // monPref = 33;
+              }             
+              //level up bishop
+              if(localStorage.getItem("mageSchool") == 1 ){
+               // monPref = 13;
+              }      
+              //level up templar
+              if(localStorage.getItem("warriorSchool") == 1 ){
+                //monPref = 23;
+              }                    
               break;
             case 4:
               if(randomizer == 1){
@@ -181,12 +217,24 @@ function lost(x,y){
               }
               else{
                 monType = 6;
-              }            
+              }        
+              if(localStorage.getItem("thiefSchool") == 1){
+                 // monPref = 44;
+              }                     
+              //level up cultist
+              if(localStorage.getItem("mageSchool") == 1 ){
+              //  monPref = 14;
+              }  
+              //level up bandit
+              if(localStorage.getItem("warriorSchool") == 1 ){
+                // monPref = 24;
+              }                
               break;            
         }        
       }
+
         
-      console.log(monType+" "+monPref);      
+        
       //monster stats    
       
       placeMon(x,y,monType,monPref,k);
@@ -209,6 +257,7 @@ function lost(x,y){
 
 
       world[''+i+j].mon[k].hp = 30;
+      world[''+i+j].mon[k].maxHp = world[''+i+j].mon[k].hp;
       world[''+i+j].mon[k].speed = 2;
       world[''+i+j].mon[k].name = 'mon'+monType;
       world[''+i+j].mon[k].monType = parseInt(monType);
@@ -272,6 +321,7 @@ function lost(x,y){
         world[''+i+j].mon[k].name = 'pit';
         monName = "";
         prefix = "";
+        world[''+i+j].mon[k].speed = 0;
 
         
       }
@@ -306,7 +356,7 @@ function lost(x,y){
           //wimpy
           case 5:
             prefix = "Wimpy";
-            world[''+i+j].mon[k].def -= 5;
+            //world[''+i+j].mon[k].def -= 5;
             break;                
           //hulking
           case 6:
@@ -358,7 +408,7 @@ function lost(x,y){
                   monName = "Staff";
                   break;
                 case 8:
-                  monName = "Wand";
+                  monName = "Dagger";
                   break;
                 case 9:
                   monName = "Scepter";
@@ -389,40 +439,87 @@ function lost(x,y){
             ability = "Active Ability: Press <space> to vanish";
             
             break;
-          //Rouge
-          case 5:
-            prefix = "Rogue's";
-            ability = "Active Ability: Press <space> to temporarily boost move speed; no longer able to dash";
+          //Wizard
+          case 11:
+            prefix = "Wizard's";
+            ability = "Passive Ability: Dash now teleports";
+            switch(world[''+i+j].mon[k].monType){
+                case 6:
+                  monName = "Rod";
+                  break;
+                case 7:
+                  monName = "Staff";
+                  break;
+                case 8:
+                  monName = "Dagger";
+                  break;
+                case 9:
+                  monName = "Scepter";
+                  break;       
+            }
+            break;
+          //Bishop
+          case 13:
+            prefix = "Bishop's";
+            ability = "Active Ability: Press <space> to knockback all enemies (no damage)";
+            switch(world[''+i+j].mon[k].monType){
+                case 6:
+                  monName = "Rod";
+                  break;
+     
+            }            
+            break;
+          //Warlock
+          case 14:
+            prefix = "Cultist's";
+            ability = "Active Ability: Press <space> to vanish";
             
-            break;                
-          //Fighter
-          case 6:
-            prefix = "Fighter's";
-            ability = "Active Ability: Press <space> to swap weapon(random)";
+            break;   
+          //Champions
+          case 22:
+            prefix = "Champion's";
+            ability = "Active Ability: Press <space> to vanish";
             
             break; 
-          //Paladin
-          case 7:
-            prefix = "Paladin's";
-            ability = "Active Ability: Press <space> to block (Unbreakable shield; Reduced Damage; Reduced movespeed)";
+          //templar
+          case 23:
+            prefix = "Templar's";
+            ability = "Active Ability: Press <space> to vanish";
+            switch(world[''+i+j].mon[k].monType){
+                case 6:
+                  monName = "Rod";
+                  break;
+     
+            }            
+            break; 
+          //bandit
+          case 24:
+            prefix = "Bandits's";
+            ability = "Active Ability: Press <space> to vanish";
             
-            break;      
-          //Barbarian
-          case 8:
-            prefix = "Barbarian's";
-            ability = "Passive Ability: Increased movespeed; Increased damage";
-           
-            break;      
-          //Warlock
-          case 9:
-            prefix = "Warlock's";
-            ability = "Active Ability: Press <space> to damage all enemies(no knockback)";
-            break;       
+            break;    
+          case 33:
+            prefix = "Cleric's";
+            ability = "Active Ability: Press <space> to vanish";
+            switch(world[''+i+j].mon[k].monType){
+                case 6:
+                  monName = "Rod";
+                  break;
+     
+            }             
+            break;   
+          case 44:
+            prefix = "Assassin's";
+            ability = "Active Ability: Press <space> to vanish";
+            
+            break;             
+  
         }
+        
       }
 
       world[''+i+j].msg = ""+prefix+" "+monName+"\n ";
-       console.log(prefix+" "+monName);    
+         
     }   
    
   </script>

@@ -6,30 +6,109 @@ function move(mon, player){
       
       switch(monType){
         default:       
-          if(player.alpha != 1 && player.wep.prefix == 4 ){
-                mon.tarX = mon.x;
-                mon.tarY = mon.y;           
+
+          break;
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        case 21:  
+          //flip sprite
+          if(player.x >= mon.x && mon.scale.x > 0){
+            
+            mon.scale.x = -1*mon.scale.x ;
+    
           }
-          else{
+          if(player.x < mon.x && mon.scale.x < 0){
+            
+            mon.scale.x = -1*mon.scale.x ;
+      
+          }          
+          var tx = player.x - mon.x,
+              ty = player.y - mon.y,
+              dist = Math.sqrt(tx*tx+ty*ty);
+                //fade in
+                mon.alpha+= 0.01; 
+                if(mon.alpha > 1){
+                  mon.alpha = 1;
+                }          
+          if( mon.attackCD > 100 ){
+                //mon.tarX = mon.x;
+                mon.speed = 0;  
+                mon.attackCD--;
+                
+
+          }
+          else if(mon.prefix == 1){
+            //mon.angle = 0;
+            mon.speed = 1;
             mon.tarX = player.x;
             mon.tarY = player.y;            
           }
-
+          else if(mon.prefix == 2 && dist > player.lightSize){
+            //mon.angle = 0;
+            mon.attackCD = -1;    
+          }          
+          
           var tx = mon.tarX - mon.x,
               ty = mon.tarY - mon.y,
               dist = Math.sqrt(tx*tx+ty*ty);
-
-          velX = (tx/dist)*mon.speed;
-          velY = (ty/dist)*mon.speed;     
-          mon.body.x += velX;
-          mon.body.y += velY;     
+          if(player.alpha >= 1){
+            velX = (tx/dist)*mon.speed;
+            velY = (ty/dist)*mon.speed;     
+            mon.body.x += velX;
+            mon.body.y += velY;                
+          }
+ 
           if(dist <= 50){
             //attack(mon,player);
-          }
-          break;
-        case 0:        
+          }          
 
-          break;          
+          break; 
+          
+        //ghost weed  
+        case 22:  
+          if( mon.attackCD > 100 ){
+                //mon.tarX = mon.x;
+                var wobble = Math.floor((Math.random()*10)-5);
+                mon.width += wobble;
+                mon.height += wobble;
+                mon.attackCD--;
+            
+                
+
+          }
+          else {
+           mon.width = 32;
+           mon.height = 32;
+         
+          }
+          if(mon.attackCD > 1 ){
+             mon.attackCD--;
+              
+
+          }           
+          //spin
+          if(mon.attackCD < 101){
+            mon.angle++;
+            
+          }
+          
+            if(mon.attackCD <= 1){
+              mon.attackCD = 100;
+              mon.tarX = player.x;
+              mon.tarY = player.y+3;
+            }          
+
+            break;     
+          
+          
+          
         case 99:      
           
           var tx = player.x - mon.x,
@@ -52,11 +131,15 @@ function move(mon, player){
         //mino
         case 1:   
           //flip sprite
-          if(player.x >= mon.x){
-            mon.scale.x = -1;
+          if(player.x >= mon.x && mon.scale.x > 0){
+            
+            mon.scale.x = -1*mon.scale.x ;
+    
           }
-          else{
-            mon.scale.x = 1;
+          if(player.x < mon.x && mon.scale.x < 0){
+            
+            mon.scale.x = -1*mon.scale.x ;
+      
           }
           if(mon.attackCD >= 0 ){
             mon.attackCD--;
@@ -295,7 +378,7 @@ function move(mon, player){
           //lazer
           case 12:
 
-          mon.speed = 10;
+          //mon.speed = 10;
           var tx = mon.tarX - mon.x,
                 ty = mon.tarY - mon.y,
                 dist = Math.sqrt(tx*tx+ty*ty);
@@ -427,9 +510,46 @@ function attack(mon, player){
   var monType = parseInt(mon.monType);
   switch(monType){
     default:        
-      player.hp--;
+      
+      //warrior half damage
+      if(player.class[2] > 0){
+        player.hp-=0.5;
+      }
+      else{
+        player.hp--;
+      }
       //alert ("brains~~");
       break;
+    case 11:        
+      if(player.class[2] > 0){
+        player.hp-=0.5;
+      }
+      else{
+        player.hp--;
+      }
+      mon.hp =0;
+      //alert ("brains~~");
+      break;
+   case 12:        
+      if(player.class[2] > 0){
+        player.hp-=0.5;
+      }
+      else{
+        player.hp--;
+      }
+      mon.hp =0;
+      //alert ("brains~~");
+      break;
+   case 13:        
+      if(player.class[2] > 0){
+        player.hp-=0.5;
+      }
+      else{
+        player.hp--;
+      }
+      mon.hp =0;
+      //alert ("brains~~");
+      break;      
     case 99:        
       //player.hp = 0;
       //alert ("brains~~");
@@ -459,7 +579,34 @@ function attack(mon, player){
       break;    
     case 20:        
       //alert ("brains~~");
-      break;          
+      break;
+    case 21:        
+      //alert ("brains~~");
+      if(mon.attackCD > 0 && mon.attackCD <= 100 && mon.prefix == 1){
+        if(player.class[2] > 0){
+          player.hp-=0.5;
+        }   
+        else{
+          player.hp--;
+        }
+        
+      }
+      break;   
+    case 22:        
+      //alert ("brains~~");
+      if(mon.attackCD > 0 && mon.attackCD <= 100 && mon.prefix == 1){
+        if(player.class[2] > 0){
+          player.hp-=0.5;
+        }   
+        else{
+          player.hp--;
+        }
+        
+      }
+      break;         
+    case 30:        
+      //alert ("brains~~");
+      break;       
       
       
   }
@@ -478,10 +625,11 @@ function getHit(mon, damage, knockback){
     }
 
 
-    if( (mon.monType > 10 && mon.monType <= 19) || (mon.monType == 0) || mon.monType == 2 ){
+    if( (mon.monType > 10 && mon.monType <= 19) || (mon.monType == 0) || mon.monType == 20 ){
       //mon.hp = 0;
       mon.knockback = 0;
       dmgTaken = 0;
+
       
       
       

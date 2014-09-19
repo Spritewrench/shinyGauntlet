@@ -13,12 +13,7 @@
         , y = this.game.height / 2;
 
        this.stage.backgroundColor = '#44ccf6';
-      this.titleTxt = this.add.bitmapText(x, y, 'SHINY GET!', {font: '16px minecraftia', align: 'center'});
-      this.titleTxt.anchor.setTo(0.5, 0.5);
 
-      y = y + this.titleTxt.height + 5;
-      this.startTxt = this.add.bitmapText(x, y, 'Press "SPACE"', {font: '12px minecraftia', align: 'center'});
-      this.startTxt.anchor.setTo(0.5, 0.5);
 
       this.input.onDown.add(this.onDown, this);
     },
