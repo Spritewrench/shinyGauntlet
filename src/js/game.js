@@ -3,6 +3,7 @@ var bgmusic = null;
   'use strict';
 
   function Game() {
+    this.debug = 0;
     this.player = null;
     this.bg = null;
     this.speed = null;
@@ -30,6 +31,8 @@ var bgmusic = null;
     this.botWall2 = null;
     this.leftWall2 = null;
     this.rightWall2 = null;   
+    
+    this.killed = [];
     
     this.door = [];
     this.screenShakeVal = 0;
@@ -85,7 +88,7 @@ var bgmusic = null;
       
       
       this.music = this.add.audio('nightStalker',1,true);
-      this.music.play('',0,1,true);  
+      //this.music.play('',0,1,true);  
       bgmusic = this.music;      
       
       this.attackSnd = this.add.audio('attack');
@@ -120,7 +123,7 @@ var bgmusic = null;
       //custom object variables
       this.player.isRolling = 0;
       this.player.hp = parseInt(localStorage.getItem("hp"));
-      this.player.maxHp = 5
+      this.player.maxHp = parseInt(localStorage.getItem("maxhp"));
       this.player.blockMax= 150;
       this.player.blockCount= this.player.blockMax;
       this.player.blockKnock= 50;
@@ -134,9 +137,16 @@ var bgmusic = null;
       this.player.class[2] = localStorage.getItem("warriorSchool");
       this.player.class[3] = localStorage.getItem("priestSchool");
       this.player.class[4] = localStorage.getItem("thiefSchool");
-      if(this.player.class[3]> 0 ){
-        this.lightConstant++;
-      }
+      
+      this.player.monKilled = [];
+      this.player.monKilled[1] = 0;
+      this.player.monKilled[2] = 0;
+      this.player.monKilled[3] = 0;
+      this.player.monKilled[4] = 0;
+      this.player.monKilled[5] = 0;
+      
+      this.player.boughtSomething = false;
+
        
       this.player.regenCount = 0;
        this.player.money = 0;
@@ -300,12 +310,25 @@ var bgmusic = null;
       
     //show dungeon code 
     style = { font: '18px nunitolight', fill: '#fff', align: 'center' };
-    this.coinUI = this.add.sprite(610, 25, 'coin');
+    this.coinUI = this.add.sprite(500, 25, 'coin');
     this.coinUI.width = 25;
     this.coinUI.height = 25;
     this.coinUI.anchor.setTo(0.5, 0.5);
-    this.seedTxt = this.add.text(650, 25, "["+this.player.worldPosX+"] ["+this.player.worldPosX+"]", style) ;
+    this.seedTxt = this.add.text(550, 25, "["+this.player.worldPosX+"] ["+this.player.worldPosX+"]", style) ;
     this.seedTxt.anchor.setTo(0.5, 0.5);
+      
+      
+    var dist = 620;
+    for(var i = 1; i <= 5; i++){
+      this.killed[i] = this.add.sprite(dist, 55, 'killed'+i);
+      this.killed[i].anchor.setTo(0.5, 0.5); 
+      this.killed[i].width = 25;
+      this.killed[i].height = 25;      
+      this.killed[i].txt = this.add.text(dist, 25, "", style) ;
+      this.killed[i].txt.anchor.setTo(0.5, 0.5); 
+      dist += 35;
+    }
+
       
       
       
@@ -370,8 +393,10 @@ var bgmusic = null;
     },
 
     update: function () {
-      //console.log(this.player.class[1]+" "+this.player.class[2]+" "+this.player.class[3]+" "+this.player.class[4]+"");
+      console.log(localStorage.getItem("doorKey"));
 
+      
+      
       //max hp
       if(this.player.hp > 5){
         this.player.hp = 5;
@@ -395,13 +420,21 @@ var bgmusic = null;
         
         this.screenShake(this.shakeDir);
       }   
+      else{
+        this.game.world.setBounds(0, 0, this.game.width,this.game.heigth); 
+      }
       //class change
       if(this.player.alpha > 1){
         this.player.alpha-=0.5;
       }
       this.txt.y += (this.txtTar - this.txt.y)*0.1;
-      //show room text
+      //show money text
       this.seedTxt.setText("x "+this.player.money);
+      // dead monsters
+      for(var i = 1; i <= 5 ; i++){
+        this.killed[i].txt.setText(this.player.monKilled[i]);
+      }
+      
       
       //show shield timer
       if(this.player.shieldTimer.visible){
@@ -426,26 +459,29 @@ var bgmusic = null;
       for(var i = 0; i < this.player.maxHp; i++){
         if(i < this.player.hp){
           this.playerHp[i].y += (20 - this.playerHp[i].y)*0.1; 
-          if(i == (Math.round(this.player.hp)-1)){
+          this.playerHp[i].loadTexture('playerHp');
 
-            if(this.player.hp % 1 != 0){
-
-              this.playerHp[i].loadTexture('playerHpHalf');
-
-            }
-            else{
-
-              this.playerHp[i].loadTexture('playerHp');
-            }
-          }
           
         }
+     
         else{
           //this.playerHp[i].y += ((-50) - this.playerHp[i].y)*0.05;
           this.playerHp[i].y += (20 - this.playerHp[i].y)*0.1;
           this.playerHp[i].loadTexture('playerHpEmpty');
           
-        }  
+        }
+        if(i == (Math.round(this.player.hp)-1)){
+
+          if(this.player.hp % 1 != 0){
+
+            this.playerHp[i].loadTexture('playerHpHalf');
+
+          }
+          else{
+
+            this.playerHp[i].loadTexture('playerHp');
+          }
+        }           
         
 
       }
@@ -516,7 +552,13 @@ var bgmusic = null;
       //hide text
       if(this.textCounter > 0){
         this.txtTar = 500
-        this.textCounter--;
+        if(this.currentMap == localStorage.getItem("winX")+localStorage.getItem("winY")){
+          this.txtTar = 410;
+        }
+        if(this.currentMap != localStorage.getItem("winX")+localStorage.getItem("winY") ){
+          this.textCounter--;
+        }
+        
         
         if(this.textCounter < 0){
           this.textCounter = 0;
@@ -638,13 +680,15 @@ var bgmusic = null;
 
         //monster light
         for(var i = 0; i < this.monster.length; i++){
-          if( this.monster[i].visible == true && ((this.monster[i].monType > 5 && this.monster[i].monType < 22 || this.monster[i].monType == 99) || this.monster[i].monType == 30 || this.monster[i].monType == 20 || this.monster[i].monType == 22)){
+          if( this.monster[i].visible == true && ((this.monster[i].monType > 5 && this.monster[i].monType < 22) || this.monster[i].monType == 99 || this.monster[i].monType == 30  || this.monster[i].monType == 20 || this.monster[i].monType == 22 )){
             var flicker = this.game.rnd.integerInRange(-1,2);
             
             var size = 50;
-            if(this.monster[i].monType == 99){
+            if(this.monster[i].monType == 99 ){ 
+              
               size = 900;
             }
+
             if(this.monster[i].monType > 10 && this.monster[i].monType <= 19){
               size = 100;
             }            
@@ -683,7 +727,12 @@ var bgmusic = null;
         var size = 25;
         var lightOp = 1;
         var flicker = this.game.rnd.integerInRange(-1,2);
-        for(var i = 0; i < this.lightConstant; i++ ){
+        var lightCon = this.lightConstant;
+        
+        if(this.player.class[3]> 0 ){
+          lightCon = lightCon*2;//this.lightConstant++;
+        }
+        for(var i = 0; i < lightCon; i++ ){
           
           this.shadowTexture.context.beginPath();
           this.shadowTexture.context.fillStyle = 'rgba(255, 255, 255,'+lightOp+')';
@@ -695,7 +744,7 @@ var bgmusic = null;
           }
           this.lightSize = size;
           this.player.lightSize = size;
-          lightOp -= 0.2;
+          lightOp -= (1/lightCon);
           if(lightOp < 0){
             lightOp = 0;
           }
@@ -769,6 +818,7 @@ var bgmusic = null;
       
       //monster hurt
       for(var i = 0; i < this.monster.length;i++){
+        
         var tx = this.player.x - this.monster[i].x,
         ty = this.player.y - this.monster[i].y;
         var dist = Math.sqrt(tx*tx+ty*ty);
@@ -792,10 +842,14 @@ var bgmusic = null;
           
           
         }
-        //turn into a ghost
+        //change art asset mon
         if(this.monster[i].monType == 22 && this.monster[i].attackCD == 100 && this.monster[i].prefix == 1){
           this.monster[i].loadTexture('weed');
           
+        }
+        //shop keeper textCount
+        if(this.monster[i].monType == 99 && this.monster[i].prefix == 97){
+          this.textCounter++;
         }
                
 
@@ -817,6 +871,8 @@ var bgmusic = null;
             for(var j =0; j < this.monster.length; j++){
               if(this.monster[j].attackCD < 0){
                 this.monster[j].attackCD =200;
+                this.monster[j].tarX = Math.floor((Math.random()*600)+100);
+                this.monster[j].tarY = Math.floor((Math.random()*400)+100);                   
                 if(this.monster[j].monType <= 5 && this.monster[j].monType > 0){
                   this.monster[j].attackCD =1;
                 }
@@ -869,10 +925,14 @@ var bgmusic = null;
 
           if(this.monster[i].hp > 0 && this.player.hp > 0 ){
             //win portal spin
-            if(this.monster[i].monType == 99){
+            if(this.monster[i].monType == 99 ){
               this.monster[i].body.setSize(10,10,0,0); 
-              this.monster[i].attackCD = 1;
-              this.monster[i].angle-=5;
+              this.monster[i].attackCD = 150;
+              if(this.monster[i].prefix == 99 && this.monster[i].width >= 64){
+                this.monster[i].angle-=5;
+                this.shine.visible = true; 
+              }
+              
               move(this.monster[i],this.player);
             }
             
@@ -1095,10 +1155,11 @@ var bgmusic = null;
           }     
           //mon death
           if(this.monster[i].hp <= 0 ){
-            world[this.currentMap].cleared = true;
+            
             //this.monster[i].visible = false;
               this.monster[i].hp = 0;
               if(this.monster[i].monType <= 5 && this.monster[i].monType > 0){
+                world[this.currentMap].cleared = true;
                 this.monster[i].hpMaxbar.alpha = 0;
                 if(this.monster[i].light  > 0){
                   this.monster[i].light -= 0.1;
@@ -1117,6 +1178,7 @@ var bgmusic = null;
               }
              this.monster[i].alpha += (0 -  this.monster[i].alpha)*0.1;
             if( this.monster[i].alpha <= 0.1){
+              this.player.monKilled[this.monster[i].monType] += 1;
               //spawn hearts etc
               if(this.monster[i].monType > 0 && this.monster[i].monType < 6){
                 var randomizer = Math.floor((Math.random()*this.player.hp+1 ) );
@@ -1447,79 +1509,88 @@ var bgmusic = null;
         this.dashTime++;
 
       }
-      //debug life
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.Q)){
-        this.player.hp += 1;
-      }
-      //debug wep select
-      if(!this.game.input.keyboard.isDown(Phaser.Keyboard.ALT)){
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
-          this.setWep(1,0);
+      if(this.debug == 1){
+        //debug life
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.Q)){
+          this.player.hp += 1;
         }
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
-          this.setWep(2,0);
-        }
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
-          this.setWep(3,0);
-        }
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
-          this.setWep(4,0);
-        }  
-        //open doors & Kill Monsters
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.O)){
+        //debug wep select
+        if(!this.game.input.keyboard.isDown(Phaser.Keyboard.ALT)){
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
+            this.setWep(1,0);
+          }
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
+            this.setWep(2,0);
+          }
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
+            this.setWep(3,0);
+          }
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
+            this.setWep(4,0);
+          }  
+          //open doors & Kill Monsters
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.O)){
 
-          for(var i = 0; i < this.monster.length;i++){
-            this.monster[i].hp = 0; 
-          }          
+            for(var i = 0; i < this.monster.length;i++){
+              this.monster[i].hp = 0; 
+            }          
+          }        
+        }
+        // next level
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.CONTROL) && this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+          localStorage.setItem("floorNum",parseInt(localStorage.getItem("floorNum"))+1);
+          localStorage.setItem("dunSize",parseInt(localStorage.getItem("dunSize"))+1);
+          localStorage.setItem("hp",this.player.hp);  
+            localStorage.setItem("mageSchool",this.player.class[1]);
+            localStorage.setItem("warriorSchool",this.player.class[2]);
+            localStorage.setItem("priestSchool",this.player.class[3]);
+            localStorage.setItem("thiefSchool",this.player.class[4]);  
+
+          window.location.href = "game.html";        
+        }
+        //debug prefix select
+        if(this.game.input.keyboard.isDown(Phaser.Keyboard.ALT)){
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+            this.player.monKilled[1] = 0;
+            this.player.monKilled[2] = 0;
+            this.player.monKilled[3] = 0;
+            this.player.monKilled[4] = 0;
+            this.player.monKilled[5] = 0;
+          }
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
+            this.setWep(this.player.wepType,1);
+          }
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
+
+            this.setWep(this.player.wepType,2);
+          }
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
+            this.setWep(this.player.wepType,3);
+          }
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
+            this.setWep(this.player.wepType,4);
+          }      
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.FIVE)){
+            this.setWep(this.player.wepType,5);
+          }
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.SIX)){
+            this.setWep(this.player.wepType,6);
+          }
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.SEVEN)){
+            this.setWep(this.player.wepType,7);
+          }
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.EIGHT)){
+            this.setWep(this.player.wepType,8);
+          } 
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.NINE)){
+            this.setWep(this.player.wepType,9);
+          } 
+          if(this.game.input.keyboard.isDown(Phaser.Keyboard.ZERO)){
+            this.setWep(this.player.wepType,0);
+          }  
         }        
       }
-      // next level
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.CONTROL) && this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
-        localStorage.setItem("floorNum",parseInt(localStorage.getItem("floorNum"))+1);
-        localStorage.setItem("dunSize",parseInt(localStorage.getItem("dunSize"))+1);
-        localStorage.setItem("hp",this.player.hp);  
-          localStorage.setItem("mageSchool",this.player.class[1]);
-          localStorage.setItem("warriorSchool",this.player.class[2]);
-          localStorage.setItem("priestSchool",this.player.class[3]);
-          localStorage.setItem("thiefSchool",this.player.class[4]);  
         
-        window.location.href = "game.html";        
-      }
-      //debug prefix select
-      if(this.game.input.keyboard.isDown(Phaser.Keyboard.ALT)){
-
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
-          this.setWep(this.player.wepType,1);
-        }
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
-          
-          this.setWep(this.player.wepType,2);
-        }
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
-          this.setWep(this.player.wepType,3);
-        }
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
-          this.setWep(this.player.wepType,4);
-        }      
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.FIVE)){
-          this.setWep(this.player.wepType,5);
-        }
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SIX)){
-          this.setWep(this.player.wepType,6);
-        }
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SEVEN)){
-          this.setWep(this.player.wepType,7);
-        }
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.EIGHT)){
-          this.setWep(this.player.wepType,8);
-        } 
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.NINE)){
-          this.setWep(this.player.wepType,9);
-        } 
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.ZERO)){
-          this.setWep(this.player.wepType,0);
-        }  
-      }
              
       //attack
       //stab
@@ -2174,25 +2245,8 @@ var bgmusic = null;
       
 
       
-      if(obj2.monType == 99){
-        // next floor
-        //this.game.state.start('win');
-        
-        localStorage.setItem("floorNum",parseInt(localStorage.getItem("floorNum"))+1);
-        localStorage.setItem("dunSize",parseInt(localStorage.getItem("dunSize"))+1);
-        localStorage.setItem("hp",this.player.hp);  
-          localStorage.setItem("mageSchool",this.player.class[1]);
-          localStorage.setItem("warriorSchool",this.player.class[2]);
-          localStorage.setItem("priestSchool",this.player.class[3]);
-          localStorage.setItem("thiefSchool",this.player.class[4]);  
 
-        window.location.href = "game.html";  
-      }
-      if(obj2.monType == 98){
-        
-        obj2.visible = false;
-        this.player.blockCount= 1;
-      }      
+     
 
        
   
@@ -2253,25 +2307,25 @@ var bgmusic = null;
 
         }
       }
-      
-      if(obj2.monType == 99){        
+      ///////////////////////////////////
+      // Next Floor
+      //////////////////////////////////
+      if(obj2.monType == 99 && obj2.prefix == 99){
         // next floor
         //this.game.state.start('win');
-         
+        
         localStorage.setItem("floorNum",parseInt(localStorage.getItem("floorNum"))+1);
         localStorage.setItem("dunSize",parseInt(localStorage.getItem("dunSize"))+1);
-        localStorage.setItem("hp",this.player.hp); 
+        localStorage.setItem("hp",this.player.hp);  
           localStorage.setItem("mageSchool",this.player.class[1]);
           localStorage.setItem("warriorSchool",this.player.class[2]);
           localStorage.setItem("priestSchool",this.player.class[3]);
           localStorage.setItem("thiefSchool",this.player.class[4]);  
-        window.location.href = "game.html"; 
-      }
-      if(obj2.monType == 98){
-        
-        obj2.visible = false;
-        //this.player.blockCount= 1;
-      }           
+
+        window.location.href = "game.html";  
+      }      
+
+           
       ///////////////////////////////////
       // weapon pick ups
       //////////////////////////////////
@@ -2294,13 +2348,13 @@ var bgmusic = null;
         this.textCounter = 200;
         switch(this.player.wep.prefix){
             case 1:
-              this.txt.setText("Passive: Teleport instead of dash \n Active: \"Phase Out\" shift demensions to avoid damage");
+              this.txt.setText("Passive: Teleport instead of dash \n Active: \"Magic Missle\" Homing missle barrage");
 
               break;
             case 3:
               this.txt.setText("Passive: No heart drops.. \n Active: \"Heal\" Delayed healing");
 
-              this.lightConstant++;
+             
               break;
             case 2:
               this.txt.setText("Passive: Take half damage on all attacks \n Active: \"Shield\" Block an attack");
@@ -2330,12 +2384,22 @@ var bgmusic = null;
         obj2.hp = 0;
         this.player.money += 10;
       }     
-      if(obj2.monType == 20 &&  obj2.prefix > 2){
+      if(obj2.monType == 20 &&  obj2.prefix > 2 && obj2.prefix < 6){
 
         obj2.visible = false;
         obj2.hp = 0;
         this.player.money += 100;
-      }         
+      } 
+      //heart container
+      var cost = this.player.maxHp*10*parseInt(localStorage.getItem("floorNum"));
+      if(obj2.monType == 20 &&  obj2.prefix == 20 && this.player.money >= cost){
+
+        obj2.visible = false;
+        this.player.maxHp++;
+        localStorage.setItem("maxhp",this.player.maxHp); 
+        this.player.money -= cost;
+        this.player.boughtSomething = true;
+      }       
       //scrolls
       if(obj2.monType == 30){
         //wake up all monster
@@ -2481,6 +2545,7 @@ var bgmusic = null;
       
       
       //reset monsters
+      this.txt.setText(""); 
       for(var i = 0; i < this.monster.length; i++){
         this.monster[i].visible = false;
         this.monster[i].attackCD = -1;
@@ -2503,7 +2568,9 @@ var bgmusic = null;
 
       
       
-      
+            var doorKey = parseInt(localStorage.getItem("doorKey"));
+            
+
       //new room count
       if( world[this.currentMap].visited == false){
          world[this.currentMap].visited = true;
@@ -2535,9 +2602,103 @@ var bgmusic = null;
             , y = this.game.height / 2;            
             this.shine.x = x;
             this.shine.y = y;
-            this.shine.visible = true;
-            this.spawn(i,99,99,"win",x,y,64,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,0);   
-            world[this.currentMap].msg ="The way out";
+            var doorKey = parseInt(localStorage.getItem("doorKey"));
+            
+            var doorK = [];
+            doorK[1] = Math.floor(doorKey / 10000);
+            doorKey = Math.floor(doorKey % 10000);
+            //console.log(doorKey);
+      
+            doorK[2] = Math.floor(doorKey / 1000);
+            doorKey = Math.floor(doorKey % 1000);
+            //console.log(doorKey);
+      
+            doorK[3] = Math.floor(doorKey / 100);
+            doorKey = Math.floor(doorKey % 100);
+            //console.log(doorKey);
+      
+            doorK[4] = Math.floor(doorKey / 10);
+            doorKey = Math.floor(doorKey % 10);
+            //console.log(doorKey);
+      
+            doorK[5] = doorKey     
+            //console.log(doorKey);
+      
+            //console.log(localStorage.getItem("doorKey")+"   "+doorK[1]+"-"+doorK[2]+"-"+doorK[3]+"-"+doorK[4]+"-"+doorK[5]);
+            
+            
+            if(this.player.monKilled[1] >= doorK[1] && this.player.monKilled[2] >= doorK[2] && this.player.monKilled[3] >= doorK[3] && this.player.monKilled[4] >= doorK[4] && this.player.monKilled[5] >= doorK[5]){
+              
+              this.spawn(i,99,99,"win",x,y,0,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,0); 
+              world[this.currentMap].msg = "";
+              this.textCounter = 200;
+              this.txt.setText(world[this.currentMap].msg);              
+            }
+            else{
+              this.spawn(i,99,98,"gateKeeper",x,y,64,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,0);
+              world[this.currentMap].msg ="Sorry, you aren't ready for the next floor.\n You need to kill: \n "
+              for(var j = 1; j <= 5; j++){
+                if(doorK[j] > 0 && doorK[j] > this.player.monKilled[j] ){
+                  var val = doorK[j] - this.player.monKilled[j];                  
+                  world[this.currentMap].msg += val;
+                  switch(j){
+                      case 1:
+                      if(val > 1){
+                        world[this.currentMap].msg += " Minotaurs \n";
+                      }
+                      else{
+                        world[this.currentMap].msg += " Minotaur \n";
+                      }
+                      break;
+                      
+                      case 2:
+                      if(val > 1){
+                        world[this.currentMap].msg += " Slimes \n";
+                      }
+                      else{
+                        world[this.currentMap].msg += " Slime \n";
+                      }
+                      break;
+                      
+                      case 3:
+                      if(val > 1){
+                        world[this.currentMap].msg += " Lich \n";
+                      }
+                      else{
+                        world[this.currentMap].msg += " Lich \n";
+                      }
+                      break;
+                      
+                      case 4:
+                      if(val > 1){
+                        world[this.currentMap].msg += " Scion \n";
+                      }
+                      else{
+                        world[this.currentMap].msg += " Scion \n";
+                      }
+                      break;  
+                      
+                      case 5:
+                      if(val > 1){
+                        world[this.currentMap].msg += " Dragons \n";
+                      }
+                      else{
+                        world[this.currentMap].msg += " Dragon \n";
+                      }
+                      break;                      
+                  }
+                }                
+              }
+
+              
+              this.textCounter = 200;
+              this.txt.setText(world[this.currentMap].msg);              
+            }
+            
+              
+            //this.monster[this.monster.length-1].attackCD = 1;
+
+            
                 
           } 
           else if(world[this.currentMap].cleared == false){
@@ -2628,15 +2789,21 @@ var bgmusic = null;
                     }
                     this.monster[this.monster.length-1].attackCD = 50;
               }
-                      
+              //shop     
               if(world[this.currentMap].mon[i].prefix == 6 ){
-                    this.monster[i].width = 300;
-                    this.monster[i].height = 300;
-                    //trap
-                    x = this.game.width / 2
-                    , y = this.game.height / 2;                
-                    this.spawn(this.monster.length,14,11,'trap',x,y,32,3,0,2);
-                    this.monster[this.monster.length-1].attackCD = 1;                      
+                this.monster[i].visible = false;
+                this.spawn(this.monster.length,99,97,'shopKeeper',x,y,64,3,0,2);
+                if(this.player.boughtSomething == false){
+                  this.spawn(this.monster.length,20,20,'playerHpEmpty',x,y+ 60,32,3,0,2);                
+                  this.textCounter = 200;
+                  var cost = this.player.maxHp*10*parseInt(localStorage.getItem("floorNum"));
+                  this.txt.setText('$'+cost);                   
+                }
+                else{                
+                  this.textCounter = 200;
+                  this.txt.setText('I got nothin');                      
+                }
+                 
               }
                       
               if(world[this.currentMap].mon[i].prefix == 7 ){
@@ -2731,7 +2898,7 @@ var bgmusic = null;
         
       }
       //skull (mundane mobs)
-      if(this.currentMap != winPos && this.currentMap!= startPos){
+      if(this.currentMap != winPos && this.currentMap!= startPos && (world[this.currentMap].mon[0].monType != 0 && world[this.currentMap].mon[0].prefix != 6)){
         var mobNum = Math.floor((Math.random()*5)+1);
         for(var j =0; j < mobNum; j++){
           var position = Math.floor((Math.random()*2)+1); 
@@ -2802,6 +2969,12 @@ var bgmusic = null;
       if(this.monster[key].monType > 0 && this.monster[key].monType < 6){
         this.monster[key].body.setSize(100,100,0,0);  
       }
+      //shop keeper
+      if(this.monster[key].monType == 99 && this.monster[key].prefix == 97){
+        this.monster[key].hasItem = true;
+
+          
+      }      
     
       
       this.monster[key].origSpeed = this.monster[key].speed;

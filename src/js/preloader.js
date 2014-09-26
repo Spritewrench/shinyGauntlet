@@ -71,6 +71,8 @@
       this.load.image('mon5Crit','assets/monsters/mon5Crit.png');
       
       this.load.image('win','assets/monsters/win.png');
+      this.load.image('gateKeeper','assets/monsters/gateKeeper.png');
+      this.load.image('shopKeeper','assets/monsters/shopKeeper.png');
       this.load.image('shine','assets/monsters/shine.png');
       
       //UI
@@ -86,6 +88,12 @@
       this.load.image('gem2','assets/UI/gemGreen.png');
       this.load.image('gem3','assets/UI/gemBlue.png');
       this.load.image('gem4','assets/UI/gemYellow.png');
+      
+      this.load.image('killed1','assets/UI/killed1.png');
+      this.load.image('killed2','assets/UI/killed2.png');
+      this.load.image('killed3','assets/UI/killed3.png');
+      this.load.image('killed4','assets/UI/killed4.png');
+      this.load.image('killed5','assets/UI/killed5.png');
       
       //classes
       for(var i =1; i<=4;i++){

@@ -29,8 +29,14 @@
     var worldLimitX = x;
     var worldLimitY = y;
     var dunSize = localStorage.getItem("dunSize");
-
     
+    var placedMon = [];
+    placedMon[1] = 0;
+    placedMon[2] = 0;
+    placedMon[3] = 0;
+    placedMon[4] = 0;
+    placedMon[5] = 0;
+      
     localStorage.setItem("heroStartX",''+0);
     localStorage.setItem("heroStartY",''+0);
 
@@ -61,6 +67,7 @@
         world[''+i+j].monCount = 1;
         world[''+i+j].visited = false;
         world[''+i+j].mon = [];
+        
       
       }    
     }
@@ -85,6 +92,12 @@
         lost(holderX,holderY);
         localStorage.setItem("winX",''+holderX);
         localStorage.setItem("winY",''+holderY);
+        //dungeon key
+        var doorKey = [];
+        for(var k = 1; k <= 5; k++){
+          doorKey[k] = Math.floor((Math.random()*placedMon[k]));
+        }
+        localStorage.setItem("doorKey",''+doorKey[1]+doorKey[2]+doorKey[3]+doorKey[4]+doorKey[5]);
 
       }
 
@@ -135,6 +148,7 @@ function lost(x,y){
   }  
   else {
     monType = Math.floor((Math.random()*5)+1);
+    
     
   }
    
@@ -238,7 +252,7 @@ function lost(x,y){
       //monster stats    
       
       placeMon(x,y,monType,monPref,k);
-
+      
     }   
   
    
@@ -249,6 +263,10 @@ function lost(x,y){
    
  function placeMon(i,j,monType,monPref,k){
        
+      if(typeof world[''+i+j].mon[k] != 'undefined'  && placedMon[world[''+i+j].mon[k].monType] > 0){
+        placedMon[world[''+i+j].mon[k].monType]--;
+      }
+      placedMon[monType]++;
       world[''+i+j].mon[k] = new Object();
       world[''+i+j].mon[k].x = 400;
       world[''+i+j].mon[k].y = 300;

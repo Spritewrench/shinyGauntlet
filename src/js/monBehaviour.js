@@ -110,14 +110,18 @@ function move(mon, player){
           
           
         case 99:      
-          
+
+          if(mon.width < 64 ){
+            mon.width++;
+            mon.height++;
+          }
           var tx = player.x - mon.x,
               ty = player.y - mon.y,
               dist = Math.sqrt(tx*tx+ty*ty);
 
           velX = (tx/dist)*1;
           velY = (ty/dist)*1; 
-          if(dist <= 200){
+          if(dist <= 200 && mon.prefix == 99){
             player.angle+=5;
             player.body.x -= velX;
             player.body.y -= velY;  
@@ -625,7 +629,7 @@ function getHit(mon, damage, knockback){
     }
 
 
-    if( (mon.monType > 10 && mon.monType <= 19) || (mon.monType == 0) || mon.monType == 20 ){
+    if( (mon.monType > 10 && mon.monType <= 19) || (mon.monType == 0) || mon.monType == 20 || mon.monType == 99 ){
       //mon.hp = 0;
       mon.knockback = 0;
       dmgTaken = 0;

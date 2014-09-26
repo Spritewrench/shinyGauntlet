@@ -43,11 +43,17 @@
     update: function () {
       if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
         //this.game.state.start('game');
-        localStorage.setItem("dunSize",5);
+        localStorage.setItem("dungeonSeed", 0 );  
+        localStorage.setItem("dunSize",2);
         localStorage.setItem("floorNum",0);
         localStorage.setItem("wepType",1);
         localStorage.setItem("wepPref",0);   
-        localStorage.setItem("hp",3);   
+        localStorage.setItem("hp",3);  
+        localStorage.setItem("maxhp",5);  
+        localStorage.setItem("mageSchool",0);
+        localStorage.setItem("warriorSchool",0);
+        localStorage.setItem("priestSchool",0);
+        localStorage.setItem("thiefSchool",0);   
         window.location.href = "game.html";
       }
       if(this.game.input.keyboard.isDown(Phaser.Keyboard.M)){
