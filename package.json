@@ -1,30 +1,21 @@
 {
-  "name": "shineyguantlet",
-  "description": "",
-  "readme": "",
-  "repository": "",
-  "version": "0.0.0",
-  "readme": "",
-  "repository": "",
-  "dependencies": {},
-  
-  "devDependencies": {
-    "gulp": "*",
-    "gulp-util": "*",
-    "gulp-concat": "*",
-    "gulp-download": "*",
-    "gulp-rename": "*",
-    "gulp-minify-css": "*",
-    "gulp-minify-html": "*",
-    "gulp-processhtml": "*",
-    "gulp-jshint": "*",
-    "gulp-uglify": "*",
-    "gulp-connect": "*",
-    "gulp-watch": "*",
-    "tiny-lr": "*"
+  "main": "index.html",
+  "name": "shiny_gauntlet",
+  "version": "0.1.0",
+  "window": {
+    "title": "node-webkit demo",
+    "icon": "link.png",
+    "toolbar": false,
+    "frame": true,
+    "width": 800,
+    "height": 600,
+    "position": "mouse",
+    "min_width": 800,
+    "min_height": 600,
+    "max_width": 800,
+    "max_height": 600
   },
-
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "webkit": {
+    "plugin": false
   }
 }

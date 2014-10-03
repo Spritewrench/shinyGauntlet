@@ -84,11 +84,14 @@ var bgmusic = null;
       this.spriteGroup = this.add.group();
       this.shadowGroup = this.add.group();
       this.textGroup = this.add.group();
-      this.bg = this.add.sprite(0, 0, ''+posX+posY);
+      this.bg = this.add.sprite(0, 0, 'map');
       
       
       this.music = this.add.audio('nightStalker',1,true);
-      //this.music.play('',0,1,true);  
+      if(this.debug != 1){
+        this.music.play('',0,1,true); 
+      }
+       
       bgmusic = this.music;      
       
       this.attackSnd = this.add.audio('attack');
@@ -149,7 +152,7 @@ var bgmusic = null;
 
        
       this.player.regenCount = 0;
-       this.player.money = 0;
+       this.player.money =  parseInt(localStorage.getItem("money"));
       //is player confused?
       this.player.confused = 1;
       
@@ -159,7 +162,10 @@ var bgmusic = null;
       this.player.wep = this.add.sprite(this.player.x, this.player.y-48, 'regSwrd1'); 
       this.physics.enable(this.player.wep, Phaser.Physics.ARCADE);
       this.player.wep.prefix = 0;
-   
+      
+
+      
+
       
       this.player.shield = this.add.sprite(this.player.x, this.player.y, 'shield');
       //this.player.shield.width = this.player.width;
@@ -172,7 +178,13 @@ var bgmusic = null;
       //starting wep
       this.setWep(parseInt(localStorage.getItem("wepType")),parseInt(localStorage.getItem("wepPref")));        
       //this.setWep(1,22);
-      
+      this.player.wep.durability =         parseInt(localStorage.getItem("durability"));
+      this.player.wep.durabilityMax =         parseInt(localStorage.getItem("durabilityMax"));
+      //console.log(localStorage.getItem("AltwepType"));
+      this.player.wepAlt = parseInt(localStorage.getItem("AltwepType"));
+      this.player.wepAltPrefix = parseInt(localStorage.getItem("AltwepPref"));
+      this.player.wep.Altdurability = parseInt(localStorage.getItem("Altdurability"));
+      this.player.wep.AltdurabilityMax = parseInt(localStorage.getItem("AltdurabilityMax"));     
       //projectiles
       this.player.projectile = [];
       for(var i = 0; i < 999; i++){
@@ -340,12 +352,23 @@ var bgmusic = null;
       
     //hp UI 
       for(var i = 0; i < 20; i++){
-        this.playerHp[i] = this.add.sprite(10+(30*i), -100, 'playerHp');
+        this.playerHp[i] = this.add.sprite(20+(33*i), -100, 'playerHp');
         this.playerHp[i].width = 25;
-        this.playerHp[i].height = 25;        
+        this.playerHp[i].height = 25;   
+         this.playerHp[i].anchor.setTo(0.5, 0.5);
       }
-
+    
+    //class UI
+    style = { font: '18px nunitolight', fill: '#fff', align: 'center' };
+    this.classtxt = this.add.text(50, 75, "", style) ;
+    this.classtxt.anchor.setTo(0.5, 0.5);     
+    this.classAlttxt = this.add.text(150, 75, "", style) ;
+    this.classAlttxt.anchor.setTo(0.5, 0.5);         
+    this.classAlttxt.alpha = 0.5;
       
+    //durability
+      this.durabilityTxt = this.add.text(100, 115, "", style) ;
+      this.durabilityTxt.anchor.setTo(0.5, 0.5);  
       
       
       
@@ -394,12 +417,76 @@ var bgmusic = null;
 
     update: function () {
       console.log(localStorage.getItem("doorKey"));
-
       
+      
+      //UI update on kills
+      for(var i = 1; i < this.killed.length; i++){
+        if(this.killed[i].width > 25){
+          this.killed[i].width -= 0.05;
+        }
+        if(this.killed[i].height > 25){
+          this.killed[i].height -= 0.05;
+        }        
+        if(this.killed[i].alpha > 1 ){
+          this.killed[i].alpha -= 0.1;
+        }
+      }
+      
+      //wep breaks
+      if(this.player.wep.durability == 0 && (this.player.wep.prefix > 0) ){
+        this.setWep(1,0);
+      }
+      
+      //durability
+      this.durabilityTxt.setText(this.player.wep.durability);
+      
+      //class UI
+      var wepClass = "";
+      switch(this.player.wep.prefix){
+          default:
+            wepClass = "-";
+            break;
+          case 1:
+            wepClass = "Mage";
+            break;
+          case 2:
+            wepClass = "Warrior";
+            break;
+          case 3:
+            wepClass = "Priest";
+            break;
+          case 4:
+            wepClass = "Thief";
+            break;          
+        
+      }
+      this.classtxt.setText(wepClass);
+      // alt class UI
+      var wepClass = "";
+     
+      switch(this.player.wepAltPrefix){
+          default:
+            wepClass = " - ";
+            break;
+          case 1:
+            wepClass = "Mage";
+            break;
+          case 2:
+            wepClass = "Warrior";
+            break;
+          case 3:
+            wepClass = "Priest";
+            break;
+          case 4:
+            wepClass = "Thief";
+            break;          
+        
+      }    
+      this.classAlttxt.setText(wepClass);
       
       //max hp
-      if(this.player.hp > 5){
-        this.player.hp = 5;
+      if(this.player.hp > this.player.maxHp){
+        this.player.hp = this.player.maxHp;
       }
       //regen && healing
       if(this.player.wep.prefix == 3 && this.player.blockCount < this.player.blockMax){
@@ -421,7 +508,7 @@ var bgmusic = null;
         this.screenShake(this.shakeDir);
       }   
       else{
-        this.game.world.setBounds(0, 0, this.game.width,this.game.heigth); 
+        this.game.world.setBounds(0, 0, this.game.width,this.game.height); 
       }
       //class change
       if(this.player.alpha > 1){
@@ -455,23 +542,29 @@ var bgmusic = null;
       
       this.player.shieldTimer.x = this.player.x;
       this.player.shieldTimer.y = this.player.y+40;      
+      //////////////////////////////////////////////////////////////
       //player hp  UI
+      //////////////////////////////////////////////////////////////
       for(var i = 0; i < this.player.maxHp; i++){
         if(i < this.player.hp){
-          this.playerHp[i].y += (20 - this.playerHp[i].y)*0.1; 
+          this.playerHp[i].y += (25 - this.playerHp[i].y)*0.1; 
           this.playerHp[i].loadTexture('playerHp');
-
+          this.playerHp[i].width = 25;
+          this.playerHp[i].height = 25;          
           
         }
      
         else{
           //this.playerHp[i].y += ((-50) - this.playerHp[i].y)*0.05;
-          this.playerHp[i].y += (20 - this.playerHp[i].y)*0.1;
+          this.playerHp[i].y += (25 - this.playerHp[i].y)*0.1;
           this.playerHp[i].loadTexture('playerHpEmpty');
+          this.playerHp[i].width = 25;
+          this.playerHp[i].height = 25;            
           
         }
         if(i == (Math.round(this.player.hp)-1)){
-
+          this.playerHp[i].width = 32;
+          this.playerHp[i].height = 32;
           if(this.player.hp % 1 != 0){
 
             this.playerHp[i].loadTexture('playerHpHalf');
@@ -842,6 +935,9 @@ var bgmusic = null;
           
           
         }
+
+        
+        
         //change art asset mon
         if(this.monster[i].monType == 22 && this.monster[i].attackCD == 100 && this.monster[i].prefix == 1){
           this.monster[i].loadTexture('weed');
@@ -897,7 +993,7 @@ var bgmusic = null;
             if(this.monster[i].hpbar.alpha > 0){
               this.monster[i].hpbar.alpha -= 0.01;;
               this.monster[i].hpMaxbar.alpha -= 0.01;
-              this.monster[i].light -= 0.02;
+              this.monster[i].light -= 0.002;
             }            
           }
 
@@ -1024,7 +1120,7 @@ var bgmusic = null;
                
             }                  
             //scion blast
-            if(this.monster[i].monType == 4 && this.monster[i].attackCD > 75 &&  this.monster[i].knockback <= 0 && this.player.alpha == 1){
+            if(this.monster[i].monType == 4 && this.monster[i].attackCD > 50 && this.monster[i].attackCD < 70 &&  this.monster[i].knockback <= 0 && this.player.alpha == 1){
               this.spawn(this.monster.length,12,11,'lazer',this.monster[i].x,this.monster[i].y,16,3,0,11);
               this.monster[this.monster.length-1].width = 10;
               this.monster[this.monster.length-1].height = 10;
@@ -1112,8 +1208,9 @@ var bgmusic = null;
               switch(this.player.wep.prefix){
                   case 1:
                     //this.monster[i].hp -= 10;
-                    //this.player.projectile[i].hp = 150;
+                    //
                     this.player.projectile[i].lightSize = 150;
+                    this.monster[i].hp -= 10;
                     this.monHit(this.player,this.monster[i]);
                     break                  
                   case 11:
@@ -1201,6 +1298,9 @@ var bgmusic = null;
                this.monster[i].visible = false;
                
                 if(this.monster[i].monType <= 5){
+                  this.killed[this.monster[i].monType].width = 32;
+                  this.killed[this.monster[i].monType].height = 32;
+                  this.killed[this.monster[i].monType].alpha = 10;
                   this.player.bossCount++;
                   localStorage.setItem("bossCount",this.player.bossCount);                
                 }
@@ -1343,7 +1443,70 @@ var bgmusic = null;
         this.speed = this.origSpeed; 
       }
       
-      
+      //swap weapons 
+      if(this.game.input.keyboard.justReleased(Phaser.Keyboard.E,25)){
+        var holderPrefix = this.player.wep.prefix;
+        var holderType = this.player.wepType;
+        
+        var holderDurability = this.player.wep.durability;
+        var holderDurabilityMax = this.player.wep.durabilityMax;
+        
+        this.setWep(this.player.wepAlt,this.player.wepAltPrefix);
+        
+        this.player.wepAlt = holderType; 
+        this.player.wepAltPrefix = holderPrefix;
+        
+        this.player.wep.durability = this.player.wep.Altdurability;
+        this.player.wep.durabilityMax = this.player.wep.AltdurabilityMax;
+        
+        this.player.wep.Altdurability = holderDurability;
+        this.player.wep.AltdurabilityMax = holderDurabilityMax;        
+
+        //localStorage.setItem("AltwepType",this.player.wepAlt);
+        //localStorage.setItem("AltwepPref",this.player.wepAltPrefix);
+        //identify
+        if(this.player.class[4] > 0){
+          
+          for(var i = 0; i < this.monster.length; i++){
+  
+            if(this.monster[i].monType == 30){
+              
+              switch(this.monster[i].prefix){
+                  case 1:
+                    this.txt.setText("Scroll of Speed");
+                    break;
+                  case 2:
+                    this.txt.setText("Scroll of Life");
+                    break;
+                  case 3:
+                    this.txt.setText("Scroll of Death");
+                    break;
+                  case 4:
+                    this.txt.setText("Scroll of Slow");
+                    break;
+                  case 5:
+                    this.txt.setText("Scroll of Darkness");
+                    break;    
+                  case 6:
+                    this.txt.setText("Scroll of Illumination");
+                    break;
+                  case 7:
+                    this.txt.setText("Scroll of Confusion");
+                    break;  
+                  case 8:
+                    this.txt.setText("Scroll of Repair");
+                    break;
+                  case 9:
+                    this.txt.setText("Scroll of Rust");
+                    break;                            
+              }              
+            }
+          }
+        this.textCounter = 200;
+
+        }        
+        
+      }
       
 
 
@@ -1545,6 +1708,13 @@ var bgmusic = null;
             localStorage.setItem("warriorSchool",this.player.class[2]);
             localStorage.setItem("priestSchool",this.player.class[3]);
             localStorage.setItem("thiefSchool",this.player.class[4]);  
+
+            localStorage.setItem("AltwepType",this.player.wepAlt);
+            localStorage.setItem("AltwepPref",this.player.wepAltPrefix); 
+            localStorage.setItem("durability",this.player.wep.durability);  
+            localStorage.setItem("durabilityMax",this.player.wep.durabilityMax);  
+            localStorage.setItem("Altdurability",this.player.wep.Altdurability);  
+            localStorage.setItem("AltdurabilityMax",this.player.wep.AltdurabilityMax);        
 
           window.location.href = "game.html";        
         }
@@ -1862,7 +2032,7 @@ var bgmusic = null;
 
         
         this.player.shieldTimer.alpha = 1;
-        
+        this.player.alpha = 10;
         switch(this.player.wep.prefix){
           case 0:
             this.player.shield.x = this.player.x;
@@ -1872,7 +2042,8 @@ var bgmusic = null;
             //magic missle
               this.player.shield.x = this.player.x;
               this.player.shield.y = this.player.y;
-              if(this.player.blockCount >= this.player.blockMax){
+              if(this.player.blockCount >= this.player.blockMax &&             this.player.wep.durability > 0  ){
+                this.player.wep.durability--;
                 this.player.blockCount = 0;
                 this.player.blockCount -= 10;
                 for(var i =0; i < this.monster.length; i++){ 
@@ -1900,8 +2071,13 @@ var bgmusic = null;
             
             break;     
           case 2:
-              this.player.shield.x = this.player.x;
-              this.player.shield.y = this.player.y;
+              //shield
+              if(this.player.wep.durability > 0 && this.player.blockCount >= this.player.blockMax){
+                
+                this.player.shield.x = this.player.x;
+                this.player.shield.y = this.player.y;                
+              }
+
             break;     
 
           case 3:
@@ -1910,125 +2086,23 @@ var bgmusic = null;
             this.player.shield.x = this.player.x;
             this.player.shield.y = this.player.y;
             
-            if(this.player.blockCount >= this.player.blockMax){
+            if(this.player.blockCount >= this.player.blockMax && this.player.wep.durability > 0){
+              this.player.wep.durability--;
               this.player.blockCount = 0;
+              this.player.hp++;
             }
             break;
             
-          case 5:
-            //windwalk
-       
-            this.player.shield.x = this.player.x;
-            this.player.shield.y = this.player.y;
             
-            if(this.player.blockCount >= this.player.blockMax){
-              this.player.blockCount = 0;
-              
-            }
-            break; 
-          case 6:
-            this.player.shield.x = this.player.x;
-            this.player.shield.y = this.player.y;
-  
-            break;             
-          
-            
-          
-         
-            break;                 
           case 4:
             //vanish
-            if(this.player.blockCount >= this.player.blockMax){
+            if(this.player.blockCount >= this.player.blockMax && this.player.wep.durability > 0){
+              this.player.wep.durability--;
               this.player.alpha = 0.5;
               this.player.blockCount = 0;
               break;
             }
-          case 11:
-            //magic missle
-              this.player.shield.x = this.player.x;
-              this.player.shield.y = this.player.y;
-              if(this.player.blockCount >= this.player.blockMax){
-                this.player.blockCount = 0;
-                this.player.blockCount -= 10;
-                for(var i =0; i < this.monster.length; i++){ 
-                  if(this.monster[i].hp > 0 && ((this.monster[i].monType > 0 && this.monster[i].monType <= 5)|| this.monster[i].monType == 21) && this.monster[i].monType != 99  ){
-                    //this.monster[i].hp -= 100;
-                    this.shakeDir = 3;
-                    this.player.projectile[i].visible = true;
-                    this.player.projectile[i].loadTexture('magicMissile');
-                    this.player.projectile[i].width = 32;
-                    this.player.projectile[i].height = 32;                    
-                    this.monster[i].attackCD = 1;
-
-
-
-
-                  }              
-                }               
-              } 
-              break;  
-          case 13:
-              //demi
-
-              this.player.shield.x = this.player.x;
-              this.player.shield.y = this.player.y;
-              if(this.player.blockCount >= this.player.blockMax){
-                this.player.blockCount = 0;
-                for(var i =0; i < this.monster.length; i++){ 
-                  if((this.monster[i].monType > 0 && this.monster[i].monType <= 5)||  (this.monster[i].monType >= 10 && this.monster[i].monType <= 19) && this.monster[i].monType != 99 && this.monster[i].monType != 14 &&  this.monster[i].hp > 1){
-                    this.monster[i].hp = this.monster[i].hp/2;
-                    this.monster[i].attackCD = 1;
-
-
-
-
-                  }              
-                }               
-              }              
-               break;  
-            case 14:
-              //curse
-
-              this.player.shield.x = this.player.x;
-              this.player.shield.y = this.player.y;
-              if(this.player.blockCount >= this.player.blockMax){
-                this.player.hp -=1;
-                this.player.blockCount = 0;
-                for(var i =0; i < this.monster.length; i++){ 
-                  if(this.monster[i].hp > 0 && (this.monster[i].monType > 0 && this.monster[i].monType <= 5) && this.monster[i].monType != 99  ){
-                    this.shakeDir = 3;
-                    this.player.projectile[i].visible = true;
-                    this.player.projectile[i].loadTexture('curse');
-                    this.player.projectile[i].width = 32;
-                    this.player.projectile[i].height = 32;                    
-                    this.monster[i].attackCD = 1;
-
-
-
-
-                  }              
-                }               
-              }
-            break;     
-          case 22:
-              if(this.player.blockCount >= this.player.blockMax){
-                this.player.shield.x = this.player.x;
-                this.player.shield.y = this.player.y;
-              }            
-
-            break;  
-          case 23:
-              this.player.shield.x = this.player.x;
-              this.player.shield.y = this.player.y;
-              if(this.player.blockCount >= this.player.blockMax){
-                this.player.regenCount = 450;
-                this.player.blockCount = 0;               
-              }            
-            break;  
-          case 24:
-              this.player.shield.x = this.player.x;
-              this.player.shield.y = this.player.y;
-            break;              
+                       
 
             }
           
@@ -2050,7 +2124,7 @@ var bgmusic = null;
             if(this.player.blockCount == this.player.blockMax ){
               //heal
               if(this.player.wep.prefix == 3){
-                this.player.hp += 0.5;
+                //this.player.hp += 0.5;
               }
               //end spin
               if(this.player.wep.prefix == 22){
@@ -2060,8 +2134,11 @@ var bgmusic = null;
             }            
             //custom regen
             if(this.player.wep.prefix == 1){
-              this.player.blockCount+= 2.5;
+              this.player.blockCount+= 1;
             }
+            else if(this.player.wep.prefix == 2){
+              this.player.blockCount+= 2.5;
+            }            
             else if(this.player.wep.prefix == 3){
               this.player.blockCount+=2.5;
             }            
@@ -2076,39 +2153,22 @@ var bgmusic = null;
             }
           }
           else{
-            switch(this.player.wep.prefix){
-              case 4:
-                if(this.player.alpha < 1){
-                  this.player.alpha = 1;
-                }
-                
-                 
-                break;
+            if(this.player.alpha < 1){
+              this.player.alpha = 1;
             }
           }
         }
       }   
       
       if(this.game.input.keyboard.justReleased(Phaser.Keyboard.SPACEBAR) ){
-        //phase in
-        if(this.player.wep.prefix == 1 && this.player.blockCount >= this.player.blockMax){
-            this.player.alpha = 1;
-            this.player.visible = true;
-
+  
+        if(this.player.wep.prefix == 2 && this.player.blockCount >= this.player.blockMax ){
+          this.player.wep.durability -= 1;
+          this.player.blockCount = 0;
         }
-        //sharpen
-        if(this.player.wep.prefix == 6 && this.player.blockCount >= this.player.blockMax){
-        this.player.blockCount = 0;   
-        this.player.wep.dmg+=10;
-        this.emitter.removeAll();
-        this.emitter = this.game.add.emitter(x,y, 100);
-        this.emitter.makeParticles(''+3);
 
-        this.emitter.start(false, 700, 10);
-        this.emitter.gravity = 0;      
-        }
         
-        }       
+      }       
 
       
  
@@ -2127,6 +2187,8 @@ var bgmusic = null;
         if( this.player.alpha <= 0.1){
           this.game.state.start('menu');
           localStorage.setItem("hp",3); 
+          localStorage.setItem("maxhp",5);
+          //localStorage.setItem("",3); 
           localStorage.setItem("mageSchool",0);
           localStorage.setItem("warriorSchool",0);
           localStorage.setItem("priestSchool",0);
@@ -2206,7 +2268,7 @@ var bgmusic = null;
       }
 
       //player knock back
-      if((obj2.monType > 0 && obj2.monType < 6 )|| obj2.monType == 21 ){
+      if((obj2.monType > 0 && obj2.monType < 6 ) ){
         this.playerKnockback(50);
         this.screenShakeVal = 5;
         
@@ -2317,11 +2379,17 @@ var bgmusic = null;
         localStorage.setItem("floorNum",parseInt(localStorage.getItem("floorNum"))+1);
         localStorage.setItem("dunSize",parseInt(localStorage.getItem("dunSize"))+1);
         localStorage.setItem("hp",this.player.hp);  
-          localStorage.setItem("mageSchool",this.player.class[1]);
-          localStorage.setItem("warriorSchool",this.player.class[2]);
-          localStorage.setItem("priestSchool",this.player.class[3]);
-          localStorage.setItem("thiefSchool",this.player.class[4]);  
+        localStorage.setItem("mageSchool",this.player.class[1]);
+        localStorage.setItem("warriorSchool",this.player.class[2]);
+        localStorage.setItem("priestSchool",this.player.class[3]);
+        localStorage.setItem("thiefSchool",this.player.class[4]);  
 
+        localStorage.setItem("AltwepType",this.player.wepAlt);
+        localStorage.setItem("AltwepPref",this.player.wepAltPrefix); 
+        localStorage.setItem("durability",this.player.wep.durability);  
+        localStorage.setItem("durabilityMax",this.player.wep.durabilityMax);  
+        localStorage.setItem("Altdurability",this.player.wep.Altdurability);  
+        localStorage.setItem("AltdurabilityMax",this.player.wep.AltdurabilityMax);          
         window.location.href = "game.html";  
       }      
 
@@ -2341,10 +2409,28 @@ var bgmusic = null;
           }
                    
 
-        }              
-        world[this.currentMap].cleared = true;
-        obj2.visible = false;
+        } 
+        var holder = this.player.wepType;
+        var holderPrefix = this.player.wep.prefix;
+        var holderDura = this.player.wep.durability;
         this.setWep(obj2.monType-5,obj2.prefix);
+        this.player.wep.durability = obj2.hp;
+        //world[this.currentMap].cleared = true;
+        obj2.loadTexture('wep'+(holder)+holderPrefix);
+        obj2.hp = holderDura;
+        if(obj2.hp <= 0){
+          obj2.hp = 1;
+        }
+        obj2.monType= holder+5;
+        obj2.prefix = holderPrefix;
+        
+        world[this.currentMap].mon[0].name = 'wep'+(holder)+holderPrefix; 
+        world[this.currentMap].mon[0].monType = obj2.monType;
+        world[this.currentMap].mon[0].prefix = obj2.prefix;
+        world[this.currentMap].mon[0].hp = obj2.hp;
+        this.playerKnockback(500);
+        //obj2.visible = false;
+        
         this.textCounter = 200;
         switch(this.player.wep.prefix){
             case 1:
@@ -2352,7 +2438,7 @@ var bgmusic = null;
 
               break;
             case 3:
-              this.txt.setText("Passive: No heart drops.. \n Active: \"Heal\" Delayed healing");
+              this.txt.setText("Passive: No heart drops.. \n Active: \"Heal\" Heal");
 
              
               break;
@@ -2366,7 +2452,7 @@ var bgmusic = null;
               break;
         }  
         this.shine.visible = false;
-        this.player.alpha = 10;
+        
 
       
       }     
@@ -2383,12 +2469,14 @@ var bgmusic = null;
         obj2.visible = false;
         obj2.hp = 0;
         this.player.money += 10;
+        localStorage.setItem("money",this.player.money);
       }     
       if(obj2.monType == 20 &&  obj2.prefix > 2 && obj2.prefix < 6){
 
         obj2.visible = false;
         obj2.hp = 0;
         this.player.money += 100;
+        localStorage.setItem("money",this.player.money);
       } 
       //heart container
       var cost = this.player.maxHp*10*parseInt(localStorage.getItem("floorNum"));
@@ -2398,7 +2486,8 @@ var bgmusic = null;
         this.player.maxHp++;
         localStorage.setItem("maxhp",this.player.maxHp); 
         this.player.money -= cost;
-        this.player.boughtSomething = true;
+        this.player.boughtSomething = true
+        localStorage.setItem("money",this.player.money);
       }       
       //scrolls
       if(obj2.monType == 30){
@@ -2449,7 +2538,16 @@ var bgmusic = null;
             case 7:
               this.txt.setText("Scroll of Confusion: The room is spinning...");
               this.player.confused = -1;
-              break;               
+              break; 
+            case 8:
+              this.txt.setText("Scroll of Repair: Weapons all shiny");
+              this.player.wep.durability += 10;
+            
+              break; 
+            case 9:
+              this.txt.setText("Scroll of Rust: Should have oiled these");
+              this.player.wep.durability -= 10;
+              break;             
         }  
       }       
     },
@@ -2636,7 +2734,7 @@ var bgmusic = null;
             }
             else{
               this.spawn(i,99,98,"gateKeeper",x,y,64,world[this.currentMap].mon[i].hp,world[this.currentMap].mon[i].def,0);
-              world[this.currentMap].msg ="Sorry, you aren't ready for the next floor.\n You need to kill: \n "
+              world[this.currentMap].msg ="You aren't ready for the next floor.\n You need to kill: \n "
               for(var j = 1; j <= 5; j++){
                 if(doorK[j] > 0 && doorK[j] > this.player.monKilled[j] ){
                   var val = doorK[j] - this.player.monKilled[j];                  
@@ -2742,7 +2840,7 @@ var bgmusic = null;
             if(world[this.currentMap].mon[i].monType == 0){
               
                   
-              if(world[this.currentMap].mon[i].prefix <= 1){
+              if(world[this.currentMap].mon[i].prefix <= 1 || world[this.currentMap].mon[i].prefix >= 8 ){
                 this.monster[i].visible = false;
                 this.monster[i].width =300;
                 this.monster[i].height =300;
@@ -2758,7 +2856,7 @@ var bgmusic = null;
                     //trap
                     x = this.game.width / 2
                     , y = this.game.height / 2;     
-                    var randomizer = Math.floor((Math.random()*7)+1);
+                    var randomizer = Math.floor((Math.random()*9)+1);
                     this.spawn(this.monster.length,30,randomizer,'scroll',x,y,32,3,0,2);
                     this.textCounter = 200;
                     this.txt.setText("Scroll of ???");
@@ -2784,13 +2882,19 @@ var bgmusic = null;
                             break;
                           case 7:
                             this.txt.setText("Scroll of Confusion");
-                            break;                           
+                            break;  
+                          case 8:
+                            this.txt.setText("Scroll of Repair");
+                            break;
+                          case 9:
+                            this.txt.setText("Scroll of Rust");
+                            break;                            
                       }
                     }
                     this.monster[this.monster.length-1].attackCD = 50;
               }
               //shop     
-              if(world[this.currentMap].mon[i].prefix == 6 ){
+              if(world[this.currentMap].mon[i].prefix == 6 || world[this.currentMap].mon[i].prefix == 7 ){
                 this.monster[i].visible = false;
                 this.spawn(this.monster.length,99,97,'shopKeeper',x,y,64,3,0,2);
                 if(this.player.boughtSomething == false){
@@ -2806,6 +2910,7 @@ var bgmusic = null;
                  
               }
                       
+              /*
               if(world[this.currentMap].mon[i].prefix == 7 ){
                     this.monster[i].width = 100;
                     this.monster[i].height = 300;
@@ -2866,7 +2971,8 @@ var bgmusic = null;
                       this.monster[this.monster.length-1].attackCD = 50;                  
                        
                 
-              }        
+              }   
+              */
 
 
                             
@@ -3017,18 +3123,30 @@ var bgmusic = null;
             this.monster[key].height = 64;
             this.monster[key].speed = 0;
             this.monster[key].attackCD = 1;
+            if(this.monster[key].prefix == 1){
+              this.monster[key].hp = 10;
+            }
+            if(this.monster[key].prefix == 3){
+              this.monster[key].hp = 3;
+            }          
             break;    
           case 7:
             this.monster[key].width = 21;
             this.monster[key].height = 80;
             this.monster[key].speed = 0;
             this.monster[key].attackCD = 1;
+            if(this.monster[key].prefix == 2){
+              this.monster[key].hp = 20;
+            }          
             break;    
           case 8:
             this.monster[key].width = 21;
             this.monster[key].height = 32;
             this.monster[key].speed = 0;
             this.monster[key].attackCD = 1;
+            if(this.monster[key].prefix == 4){
+              this.monster[key].hp = 5;
+            }            
             break;               
           case 9:
             this.monster[key].width = 21;
@@ -3053,6 +3171,7 @@ var bgmusic = null;
     },
     //determine weapon
     setWep: function (wepType,prefix) {
+      this.player.alpha = 10;
       this.emitter.removeAll();
       
       this.emitter.makeParticles(''+prefix);
@@ -3081,7 +3200,7 @@ var bgmusic = null;
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 64;          
-          this.player.wep.dmg = 10;
+          this.player.wep.dmg = 15;
           this.player.wep.origDmg = this.player.wep.dmg;
           this.player.wep.knockback = 10;
           this.player.wep.critChance = 15;
@@ -3089,6 +3208,8 @@ var bgmusic = null;
           this.player.wep.attackSpeed= 12; 
           this.player.wep.attackCD = 180;
           this.player.wep.attackCDVal = this.player.wep.attackCD; 
+          this.player.wep.durability = 10;
+          this.player.wep.durabilityMax = this.player.wep.durability;          
           break;
           //spear
         case 2:
@@ -3098,13 +3219,15 @@ var bgmusic = null;
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 80;
-          this.player.wep.dmg = 15;
+          this.player.wep.dmg = 20;
           this.player.wep.origDmg = this.player.wep.dmg;
           this.player.wep.knockback = 10;
           this.player.wep.critChance = 20;
-          this.player.wep.critMul = 3;
+          this.player.wep.critMul = 2;
           this.player.wep.attackCD = 20;
           this.player.wep.attackCDVal = this.player.wep.attackCD;    
+          this.player.wep.durability = 10;
+          this.player.wep.durabilityMax = this.player.wep.durability;                 
           break; 
           //dagger
         case 3:
@@ -3114,13 +3237,15 @@ var bgmusic = null;
           this.player.wep.anchor.setTo(0.5, 0.5);
           this.player.wep.width = 21;
           this.player.wep.height = 32;        
-          this.player.wep.dmg = 5;
+          this.player.wep.dmg = 10;
           this.player.wep.origDmg = this.player.wep.dmg;
           this.player.wep.knockback = 5;
           this.player.wep.critChance = 5;
-          this.player.wep.critMul = 2;
+          this.player.wep.critMul = 5;
           this.player.wep.attackCD = 2;
-          this.player.wep.attackCDVal = this.player.wep.attackCD;     
+          this.player.wep.attackCDVal = this.player.wep.attackCD;   
+          this.player.wep.durability = 10;
+          this.player.wep.durabilityMax = this.player.wep.durability;                 
           break; 
           //mace
         case 4:
@@ -3140,6 +3265,8 @@ var bgmusic = null;
           this.player.wep.attackSpeed= 9; 
           this.player.wep.attackCD = 180 ;
           this.player.wep.attackCDVal = this.player.wep.attackCD;   
+          this.player.wep.durability = 10;
+          this.player.wep.durabilityMax = this.player.wep.durability;                 
           break;  
         
         default:
@@ -3166,6 +3293,8 @@ var bgmusic = null;
             this.player.shield.visible = false;
             this.player.blockKnock = 50;
             this.speed = 200;
+            this.player.wep.durability = 0;
+            this.player.wep.durabilityMax = this.player.wep.durability;       
             
 
             break;               
@@ -3175,6 +3304,8 @@ var bgmusic = null;
             this.player.shield.visible = false;
             this.player.blockKnock = 50;
             this.speed = 200;  
+            this.player.wep.durability += 0;
+            this.player.wep.durabilityMax = this.player.wep.durability;             
 
             break;
           //Warrior
@@ -3183,6 +3314,10 @@ var bgmusic = null;
             this.player.shield.visible = true;
             this.player.blockKnock = 25;
             this.speed = 200;
+            this.player.wep.durability = 0;
+            this.player.wep.durabilityMax = 0; 
+            this.player.wep.durability += 20;
+            this.player.wep.durabilityMax = this.player.wep.durability;                 
 
             
             
@@ -3192,6 +3327,10 @@ var bgmusic = null;
             this.player.shield.visible = false;
             this.player.blockKnock = 50;
             this.speed = 200;
+            this.player.wep.durability = 0;
+            this.player.wep.durabilityMax = 0;          
+            this.player.wep.durability = 3;
+            this.player.wep.durabilityMax = this.player.wep.durability;                 
 
            
             break;
@@ -3201,6 +3340,11 @@ var bgmusic = null;
             this.player.blockKnock = 50;
             this.player.shield.visible = false;
             this.speed = 200;
+            this.player.wep.durability = 0;
+            this.player.wep.durabilityMax = 0;        
+            this.player.wep.durability += 10;
+            this.player.wep.durabilityMax = this.player.wep.durability;                 
+          
             
             break;
           case 22:
@@ -3248,12 +3392,13 @@ var bgmusic = null;
         rand1 = this.game.rnd.integerInRange(-25,25);
         rand2 = this.game.rnd.integerInRange(-25,25);
       }
-     
+        rand1 = this.game.rnd.integerInRange(-25,25);
+        rand2 = this.game.rnd.integerInRange(-25,25)     
       
       this.game.world.setBounds(rand1, rand2, this.game.width + rand1, this.game.height + rand2);
       this.screenShakeVal--;
       if ( this.screenShakeVal <= 0) {
-        this.game.world.setBounds(0, 0, this.game.width,this.game.heigth); // normalize after shake?      
+        this.game.world.setBounds(0, 0, this.game.width,this.game.height); // normalize after shake?      
     
       }
 

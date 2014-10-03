@@ -47,7 +47,13 @@
         localStorage.setItem("dunSize",2);
         localStorage.setItem("floorNum",0);
         localStorage.setItem("wepType",1);
-        localStorage.setItem("wepPref",0);   
+        localStorage.setItem("wepPref",0);  
+        localStorage.setItem("AltwepType",1);
+        localStorage.setItem("AltwepPref",0);
+            localStorage.setItem("durability",0);  
+            localStorage.setItem("durabilityMax",0);  
+            localStorage.setItem("Altdurability",0);  
+            localStorage.setItem("AltdurabilityMax",0);  
         localStorage.setItem("hp",3);  
         localStorage.setItem("maxhp",5);  
         localStorage.setItem("mageSchool",0);
@@ -55,6 +61,7 @@
         localStorage.setItem("priestSchool",0);
         localStorage.setItem("thiefSchool",0);   
         window.location.href = "game.html";
+        localStorage.setItem("money",0);
       }
       if(this.game.input.keyboard.isDown(Phaser.Keyboard.M)){
         window.location.href = "index.html";

@@ -172,7 +172,7 @@
 
       
       
-      this.load.image('map', 'assets/world/00.png');
+      this.load.image('map', 'assets/world/bg.png');
       this.load.image('doorVer', 'assets/world/doorHor.png');
       this.load.image('doorHor', 'assets/world/doorVer.png');
       
@@ -194,7 +194,7 @@
       this.load.image('curse', 'assets/curse.png');
       
       this.load.image('player2', 'assets/player.png');
-      this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.xml');
+      //this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.xml');
       
      //music from @LimeFaceX
       this.load.audio('nightStalker', ['sound/NightStalker.wav']);      

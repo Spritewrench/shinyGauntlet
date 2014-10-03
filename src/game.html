@@ -89,19 +89,34 @@
         //place monster
 
 
-        lost(holderX,holderY);
+        
         localStorage.setItem("winX",''+holderX);
         localStorage.setItem("winY",''+holderY);
+        lost(holderX,holderY);
         //dungeon key
-        var doorKey = [];
-        for(var k = 1; k <= 5; k++){
-          doorKey[k] = Math.floor((Math.random()*placedMon[k]));
-        }
-        localStorage.setItem("doorKey",''+doorKey[1]+doorKey[2]+doorKey[3]+doorKey[4]+doorKey[5]);
+
+
 
       }
 
     }
+    //count monsters
+    for(var i =-100; i < 100; i++){
+      for(var j =-100; j < 100; j++){
+
+        if(typeof world[''+i+j].mon[0] != 'undefined'){
+          if(world[''+i+j].mon[0].monType > 0 && world[''+i+j].mon[0].monType < 6  ){
+            placedMon[world[''+i+j].mon[0].monType]++;
+          }
+        }
+      }
+        
+      
+         
+    }
+    localStorage.setItem("doorKey",""+placedMon[1]+placedMon[2]+placedMon[3]+placedMon[4]+placedMon[5])    ;
+
+ 
     //reset position if ero starts at end
     if( localStorage.getItem("winX") ==   localStorage.getItem("heroStartX")
     && localStorage.getItem("winY") ==   localStorage.getItem("heroStartY")){
@@ -140,7 +155,7 @@ function lost(x,y){
   //control wep drops
 
    randomizer = Math.floor((Math.random()*10));
-  if(randomizer == 0  || randomizer == 9){
+  if(randomizer == 0  || randomizer == 5 || randomizer == 9){
     monType = Math.floor((Math.random()*4)+6);
   }
   else if(randomizer != 3 && randomizer != 4 && randomizer != 5 && randomizer != 6 && randomizer != 7){
@@ -161,7 +176,7 @@ function lost(x,y){
       var monPref = Math.floor((Math.random()*9)+1);
       //monType = 6;
       if(monType > 5){
-        randomizer = Math.floor((Math.random()*2)+1);
+        randomizer = 1;//Math.floor((Math.random()*2)+1);
         monPref = Math.floor((Math.random()*4)+1);
         //monPref = 1;
         
@@ -207,10 +222,10 @@ function lost(x,y){
               break;
             case 3:
               if(randomizer == 1){
-                monType = 9;
+                monType = 6;
               }
               else{
-                monType = 6;
+                monType = 9;
               }      
      
               if(localStorage.getItem("priestSchool") == 1){
@@ -252,21 +267,19 @@ function lost(x,y){
       //monster stats    
       
       placeMon(x,y,monType,monPref,k);
-      
+     
     }   
   
    
-   
+    
 }
    
 
-   
+    
  function placeMon(i,j,monType,monPref,k){
-       
-      if(typeof world[''+i+j].mon[k] != 'undefined'  && placedMon[world[''+i+j].mon[k].monType] > 0){
-        placedMon[world[''+i+j].mon[k].monType]--;
-      }
-      placedMon[monType]++;
+   
+
+      
       world[''+i+j].mon[k] = new Object();
       world[''+i+j].mon[k].x = 400;
       world[''+i+j].mon[k].y = 300;
@@ -398,12 +411,12 @@ function lost(x,y){
             break;      
 
         }  
-
+         world[''+i+j].msg = ""+prefix+" "+monName+"\n ";
       }
       else{
         
         world[''+i+j].mon[k].name =  "wep"+(world[''+i+j].mon[k].monType-5)+world[''+i+j].mon[k].prefix;
-        
+         world[''+i+j].msg = ""//""+prefix+" "+monName+"\n ";
         switch( world[''+i+j].mon[k].prefix){
           default:
             break;
@@ -536,7 +549,7 @@ function lost(x,y){
         
       }
 
-      world[''+i+j].msg = ""+prefix+" "+monName+"\n ";
+     
          
     }   
    

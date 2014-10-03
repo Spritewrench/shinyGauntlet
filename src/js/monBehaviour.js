@@ -88,6 +88,13 @@ function move(mon, player){
            mon.height = 32;
          
           }
+          //flash before attacking
+          if(mon.attackCD>= 5 && mon.attackCD <= 15 ){
+            mon.alpha = 10;
+          }
+          else{
+            mon.alpha = 1;
+          }
           if(mon.attackCD > 1 ){
              mon.attackCD--;
               
