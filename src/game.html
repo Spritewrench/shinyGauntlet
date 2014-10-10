@@ -81,7 +81,7 @@
     var i = 0;
     var j = 0;
     
-    for(var i = 0; i < 5; i++){
+    for(var i = 0; i < 2; i++){
       holderX = 0;
       holderY = 0;    
       for(j = 0; j < dunSize; j++){
@@ -100,21 +100,8 @@
       }
 
     }
-    //count monsters
-    for(var i =-100; i < 100; i++){
-      for(var j =-100; j < 100; j++){
+    
 
-        if(typeof world[''+i+j].mon[0] != 'undefined'){
-          if(world[''+i+j].mon[0].monType > 0 && world[''+i+j].mon[0].monType < 6  ){
-            placedMon[world[''+i+j].mon[0].monType]++;
-          }
-        }
-      }
-        
-      
-         
-    }
-    localStorage.setItem("doorKey",""+placedMon[1]+placedMon[2]+placedMon[3]+placedMon[4]+placedMon[5])    ;
 
  
     //reset position if ero starts at end
@@ -122,6 +109,14 @@
     && localStorage.getItem("winY") ==   localStorage.getItem("heroStartY")){
       window.location.href = "game.html"; 
     }    
+    
+
+        
+      
+         
+
+    
+    localStorage.setItem("doorKey","0");
 function lost(x,y){
    var randomizer = Math.floor((Math.random()*4));
    
@@ -411,7 +406,7 @@ function lost(x,y){
             break;      
 
         }  
-         world[''+i+j].msg = ""+prefix+" "+monName+"\n ";
+         
       }
       else{
         
@@ -546,9 +541,13 @@ function lost(x,y){
             break;             
   
         }
-        
-      }
 
+      }
+        world[''+i+j].msg = ""+prefix+" "+monName+"\n ";  
+        if(world[''+i+j].mon[k].monType > 5 && world[''+i+j].mon[k].monType < 10){
+          world[''+i+j].msg = "";//""+prefix+" "+monName+"\n ";  
+        }   
+      
      
          
     }   

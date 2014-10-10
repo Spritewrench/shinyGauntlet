@@ -1,11 +1,12 @@
 {
-  "main": "app://xyz/index.html",
+  "main": "index.html",
   "name": "shiny_gauntlet",
   "description": "demo app of node-webkit",
   "version": "0.1.0",
   "keywords": [ "demo", "node-webkit" ],
+  
   "window": {
-    "title": "node-webkit demo",
+    "title": "Shiny_Gauntlet",
     "icon": "link.png",
     "toolbar": false,
     "frame": true,
@@ -16,8 +17,5 @@
     "min_height": 600,
     "max_width": 800,
     "max_height": 600
-  },
-  "webkit": {
-    "plugin": true
   }
 }

@@ -38,6 +38,7 @@
       this.load.image('arrow','assets/monsters/arrow.png');
       this.load.image('scroll','assets/monsters/scroll.png');
       this.load.image('pollen','assets/monsters/pollen.png');
+      this.load.image('magic','assets/monsters/magic.png');
       
       //weps
       this.load.image('mon6','assets/regSwrd1.png');  
@@ -56,8 +57,11 @@
       //creeps
       this.load.image('skull','assets/monsters/skull.png');
       this.load.image('ghost','assets/monsters/ghost.png');
-      this.load.image('21','assets/monsters/cultist.png');
-      this.load.image('22','assets/monsters/pod.png');
+      this.load.image('21','assets/monsters/cultist/21.png');
+      this.load.image('22','assets/monsters/cultist/22.png');
+      this.load.image('23','assets/monsters/cultist/23.png');
+      this.load.image('24','assets/monsters/cultist/24.png');
+      this.load.image('25','assets/monsters/cultist/25.png');
       this.load.image('weed','assets/monsters/ghostWeed.png');
       
       //shiny
@@ -76,7 +80,7 @@
       this.load.image('shine','assets/monsters/shine.png');
       
       //UI
-      this.load.image('timer','assets/timer.png'); 
+      this.load.image('timer','assets/UI/timer.png'); 
       this.load.image('playerHp','assets/UI/heart.png'); 
       this.load.image('playerHpHalf','assets/UI/heartHalf.png'); 
       this.load.image('playerHpEmpty','assets/UI/heartEmpty.png'); 
@@ -110,9 +114,9 @@
           this.load.image('player13','assets/player13.png');
           this.load.image('player14','assets/player14.png');
       
-          this.load.image('11','assets/particleEmitter/11.png');
-          this.load.image('13','assets/particleEmitter/13.png');
-          this.load.image('14','assets/particleEmitter/14.png');
+         // this.load.image('11','assets/particleEmitter/11.png');
+         // this.load.image('13','assets/particleEmitter/13.png');
+         // this.load.image('14','assets/particleEmitter/14.png');
           this.load.image('shield11','assets/weapon/shield11.png');
     
           this.load.image("wep111",'assets/weapon/1/11.png');              
@@ -129,9 +133,9 @@
           this.load.image('player23','assets/player23.png');
           this.load.image('player24','assets/player24.png');
       
-          this.load.image('22','assets/particleEmitter/22.png');
-          this.load.image('23','assets/particleEmitter/23.png');
-          this.load.image('24','assets/particleEmitter/24.png');
+        //  this.load.image('22','assets/particleEmitter/22.png');
+        //  this.load.image('23','assets/particleEmitter/23.png');
+         // this.load.image('24','assets/particleEmitter/24.png');
           this.load.image('shield22','assets/weapon/shield22.png');
     
           this.load.image("wep122",'assets/weapon/1/22.png');              
@@ -148,7 +152,7 @@
       //priest line 
           this.load.image('player33','assets/player33.png');
       
-          this.load.image('33','assets/particleEmitter/33.png');
+          //this.load.image('33','assets/particleEmitter/33.png');
 
           this.load.image('shield33','assets/weapon/shield33.png');
     
@@ -158,7 +162,7 @@
       //thief line 
           this.load.image('player44','assets/player44.png');
       
-          this.load.image('44','assets/particleEmitter/44.png');
+          //this.load.image('44','assets/particleEmitter/44.png');
 
           this.load.image('shield44','assets/weapon/shield44.png');
     
@@ -172,17 +176,17 @@
 
       
       
-      this.load.image('map', 'assets/world/bg.png');
+      this.load.image('map', 'assets/world/'+localStorage.getItem("floorNum")+'.png');
       this.load.image('doorVer', 'assets/world/doorHor.png');
       this.load.image('doorHor', 'assets/world/doorVer.png');
       
-      this.load.image('bigTopWall', 'assets/world/bigTopWall.png');
-      this.load.image('bigSideWall', 'assets/world/bigSideWall.png');
+      this.load.image('bigTopWall', 'assets/world/bigTopWall'+localStorage.getItem("floorNum")+'.png');
+      this.load.image('bigSideWall', 'assets/world/bigSideWall'+localStorage.getItem("floorNum")+'.png');
       
       this.load.image('wall', 'assets/wall.png');
       this.load.image('player', 'assets/player.png');
       this.load.image('playerDeath', 'assets/playerDeath.png');
-      this.load.image('sheep', 'assets/playerDeath.png');
+      
       this.load.image('regSwrd1', 'assets/regSwrd1.png');
       this.load.image('regSpear1', 'assets/regSpear1.png');
       this.load.image('regDagger1', 'assets/regDagger1.png');
@@ -197,7 +201,8 @@
       //this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.xml');
       
      //music from @LimeFaceX
-      this.load.audio('nightStalker', ['sound/NightStalker.wav']);      
+      this.load.audio('nightStalker', ['sound/NightStalker.wav']); 
+      this.load.audio('curse', ['sound/Curse.wav']); 
       this.load.audio('attack', ['sound/attack.wav']); 
       this.load.audio('playerHit', ['sound/playerHit.wav']); 
       

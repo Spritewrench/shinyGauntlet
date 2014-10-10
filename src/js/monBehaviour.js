@@ -16,76 +16,24 @@ function move(mon, player){
           
           
           
-          
-        case 21:  
-          //flip sprite
-          if(player.x >= mon.x && mon.scale.x > 0){
-            
-            mon.scale.x = -1*mon.scale.x ;
-    
-          }
-          if(player.x < mon.x && mon.scale.x < 0){
-            
-            mon.scale.x = -1*mon.scale.x ;
-      
-          }          
-          var tx = player.x - mon.x,
-              ty = player.y - mon.y,
-              dist = Math.sqrt(tx*tx+ty*ty);
-                //fade in
-                mon.alpha+= 0.01; 
-                if(mon.alpha > 1){
-                  mon.alpha = 1;
-                }          
-          if( mon.attackCD > 100 ){
-                //mon.tarX = mon.x;
-                mon.speed = 0;  
-                mon.attackCD--;
-                
-
-          }
-          else if(mon.prefix == 1){
-            //mon.angle = 0;
-            mon.speed = 1;
-            mon.tarX = player.x;
-            mon.tarY = player.y;            
-          }
-          else if(mon.prefix == 2 && dist > player.lightSize){
-            //mon.angle = 0;
-            mon.attackCD = -1;    
-          }          
-          
-          var tx = mon.tarX - mon.x,
-              ty = mon.tarY - mon.y,
-              dist = Math.sqrt(tx*tx+ty*ty);
-          if(player.alpha >= 1){
-            velX = (tx/dist)*mon.speed;
-            velY = (ty/dist)*mon.speed;     
-            mon.body.x += velX;
-            mon.body.y += velY;                
-          }
- 
-          if(dist <= 50){
-            //attack(mon,player);
-          }          
-
-          break; 
-          
-        //ghost weed  
-        case 22:  
+        //cultist
+        case 21:           
+        case 22:    
+        case 23:  
+        case 25:  
           if( mon.attackCD > 100 ){
                 //mon.tarX = mon.x;
                 var wobble = Math.floor((Math.random()*10)-5);
-                mon.width += wobble;
-                mon.height += wobble;
+                //mon.width += wobble;
+                //mon.height += wobble;                
                 mon.attackCD--;
             
                 
 
           }
           else {
-           mon.width = 32;
-           mon.height = 32;
+           mon.width = 64;
+           mon.height = 64;
          
           }
           //flash before attacking
@@ -96,27 +44,102 @@ function move(mon, player){
             mon.alpha = 1;
           }
           if(mon.attackCD > 1 ){
+             mon.attackCD -= 0.5;
+              
+
+          }   
+          if(mon.attackCD <= 1){
+            mon.attackCD = 100+ Math.floor((Math.random()*400));
+
+          }             
+          // walk
+            var tx = mon.tarX - mon.x,
+                ty = mon.tarY - mon.y,
+                dist = Math.sqrt(tx*tx+ty*ty);
+
+            velX = (tx/dist)*mon.speed;
+            velY = (ty/dist)*mon.speed;     
+            mon.body.x += velX;
+            mon.body.y += velY;     
+            if(dist <= 50){
+              var randomizer = Math.floor((Math.random()*10-mon.randomizer)+1);
+              if( randomizer == 1){
+                mon.tarX = player.x;
+                mon.tarY = player.y;                
+              }
+              else{
+                mon.tarX = Math.floor((Math.random()*600)+100);
+                mon.tarY = Math.floor((Math.random()*400)+100);          
+              }  
+            }          
+
+          break;  
+        case 24:  
+          if( mon.attackCD > 100 ){
+                //mon.tarX = mon.x;
+                var wobble = Math.floor((Math.random()*10)-5);
+                //mon.width += wobble;
+                //mon.height += wobble;                
+                mon.attackCD--;
+            
+                
+
+          }
+          else {
+           mon.width = 64;
+           mon.height = 64;
+         
+          }
+          //flash before attacking
+          if(mon.attackCD>= 5 && mon.attackCD <= 15 || mon.attackCD>= 25 && mon.attackCD <= 35 || mon.attackCD>= 45 && mon.attackCD <= 55 ){
+            mon.alpha = 10;
+          }
+          else{
+            mon.alpha = 1;
+          }
+          if(mon.attackCD > 1 ){
              mon.attackCD--;
               
 
-          }           
-          //spin
-          if(mon.attackCD < 101){
-            mon.angle++;
-            
-          }
-          
-            if(mon.attackCD <= 1){
-              mon.attackCD = 100;
-              mon.tarX = player.x;
-              mon.tarY = player.y+3;
+          }   
+          if(mon.attackCD <= 1){
+            mon.attackCD = 100+ Math.floor((Math.random()*400));
+
+          }             
+          // walk
+            var tx = mon.tarX - mon.x,
+                ty = mon.tarY - mon.y,
+                dist = Math.sqrt(tx*tx+ty*ty);
+
+            velX = (tx/dist)*mon.speed;
+            velY = (ty/dist)*mon.speed;     
+            mon.body.x += velX;
+            mon.body.y += velY;     
+            if(dist <= 50){
+              var randomizer = Math.floor((Math.random()*10-mon.randomizer)+1);
+              if( randomizer == 1){
+                mon.tarX = player.x;
+                mon.tarY = player.y;                
+              }
+              else{
+                mon.tarX = Math.floor((Math.random()*600)+100);
+                mon.tarY = Math.floor((Math.random()*400)+100);          
+              }  
             }          
 
-            break;     
-          
-          
+          break;     
+                
+          //////////////////////////////////////////////////////////////////////////////////////////////////////
           
         case 99:      
+          if(localStorage.getItem("doorKey") == "00000" && mon.prefix == 98){
+            mon.alpha -= 0.005;
+            mon.attackCD--;
+            if(mon.attackCD < 1){
+              mon.attackCD =1 
+            }
+            
+          }
 
           if(mon.width < 64 ){
             mon.width++;
@@ -132,6 +155,33 @@ function move(mon, player){
             player.angle+=5;
             player.body.x -= velX;
             player.body.y -= velY;  
+            
+            //suck in player
+            if(dist <= 50){
+              player.width--;
+              player.height-= 2;
+              player.wep.visible = false;
+              player.shield.visible = false;
+              if(player.width <= 0){
+          if(parseInt(localStorage.getItem("floorNum"))+1 <= 4){
+            localStorage.setItem("floorNum",parseInt(localStorage.getItem("floorNum"))+1);
+          }
+                localStorage.setItem("dunSize",parseInt(localStorage.getItem("dunSize"))+1);
+                localStorage.setItem("hp",player.hp);  
+                localStorage.setItem("mageSchool",player.class[1]);
+                localStorage.setItem("warriorSchool",player.class[2]);
+                localStorage.setItem("priestSchool",player.class[3]);
+                localStorage.setItem("thiefSchool",player.class[4]);  
+
+                localStorage.setItem("AltwepType",player.wepAlt);
+                localStorage.setItem("AltwepPref",player.wepAltPrefix); 
+                localStorage.setItem("durability",player.wep.durability);  
+                localStorage.setItem("durabilityMax",player.wep.durabilityMax);  
+                localStorage.setItem("Altdurability",player.wep.Altdurability);  
+                localStorage.setItem("AltdurabilityMax",player.wep.AltdurabilityMax);          
+                window.location.href = "game.html";               
+              }
+            }
           } 
           else{
             player.angle = 0;  
@@ -142,15 +192,17 @@ function move(mon, player){
         //mino
         case 1:   
           //flip sprite
-          if(player.x >= mon.x && mon.scale.x > 0){
-            
-            mon.scale.x = -1*mon.scale.x ;
-    
-          }
-          if(player.x < mon.x && mon.scale.x < 0){
-            
-            mon.scale.x = -1*mon.scale.x ;
-      
+          if(player.alpha >= 1){
+            if(player.x >= mon.x && mon.scale.x > 0){
+
+              mon.scale.x = -1*mon.scale.x ;
+
+            }
+            if(player.x < mon.x && mon.scale.x < 0){
+
+              mon.scale.x = -1*mon.scale.x ;
+
+            }               
           }
           if(mon.attackCD >= 0 ){
             mon.attackCD--;
@@ -375,7 +427,7 @@ function move(mon, player){
           //ice shards
           case 11:
           mon.hp--;
-          mon.speed = 1;
+          
           var tx = mon.tarX - mon.x,
                 ty = mon.tarY - mon.y,
                 dist = Math.sqrt(tx*tx+ty*ty);
@@ -441,7 +493,7 @@ function move(mon, player){
       
       }
       //look for vanished player
-      if(player.alpha != 1 && player.wep.prefix == 4 && (mon.tarX == player.x || mon.tarY == player.y )){
+      if(player.alpha < 1 && player.wep.prefix == 4 && (mon.tarX == player.x || mon.tarY == player.y )){
             mon.tarX = Math.floor((Math.random()*600)+100);
             mon.tarY = Math.floor((Math.random()*400)+100);           
       }
@@ -508,8 +560,11 @@ function move(mon, player){
 
           break;  
           case 12:
-            mon.tarX = Math.floor((Math.random()*600)+100);
-            mon.tarY = Math.floor((Math.random()*400)+100);  
+            if(mon.prefix != 1 && mon.prefix != 2){
+              mon.tarX = Math.floor((Math.random()*600)+100);
+              mon.tarY = Math.floor((Math.random()*400)+100);                
+            }
+
           break;            
       }
              
@@ -593,28 +648,24 @@ function attack(mon, player){
       break;
     case 21:        
       //alert ("brains~~");
-      if(mon.attackCD > 0 && mon.attackCD <= 100 && mon.prefix == 1){
-        if(player.class[2] > 0){
-          player.hp-=0.5;
-        }   
-        else{
-          player.hp--;
-        }
-        
-      }
+
       break;   
     case 22:        
       //alert ("brains~~");
-      if(mon.attackCD > 0 && mon.attackCD <= 100 && mon.prefix == 1){
-        if(player.class[2] > 0){
-          player.hp-=0.5;
-        }   
-        else{
-          player.hp--;
-        }
-        
-      }
-      break;         
+
+      
+    case 23:        
+      //alert ("brains~~");
+
+      break;   
+    case 24:        
+      //alert ("brains~~");
+
+      
+    case 25:        
+      //alert ("brains~~");
+
+      break;     
     case 30:        
       //alert ("brains~~");
       break;       
@@ -638,7 +689,13 @@ function getHit(mon, damage, knockback){
 
     if( (mon.monType > 10 && mon.monType <= 19) || (mon.monType == 0) || mon.monType == 20 || mon.monType == 99 ){
       //mon.hp = 0;
-      mon.knockback = 0;
+      if(mon.monType > 10 && mon.monType <= 19 && (mon.prefix >=1 && mon.prefix <= 2)){
+        mon.knockback = 0;
+      }
+      else{
+        mon.knockback = 0;
+      }
+      
       dmgTaken = 0;
 
       

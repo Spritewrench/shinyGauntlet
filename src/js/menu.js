@@ -44,7 +44,7 @@
       if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
         //this.game.state.start('game');
         localStorage.setItem("dungeonSeed", 0 );  
-        localStorage.setItem("dunSize",2);
+        localStorage.setItem("dunSize",5);
         localStorage.setItem("floorNum",0);
         localStorage.setItem("wepType",1);
         localStorage.setItem("wepPref",0);  
