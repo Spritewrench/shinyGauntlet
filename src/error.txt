@@ -1,0 +1,9 @@
+
+mage spell over powered*
+base class ability (sword spin)*
+infinite durability bug (drop weapon pick it back up for infinite dura)*
+darkness scroll make field too small*
+high score issue*
+shock keeper enemy bug
+drop title screen down a bit*
+rank*

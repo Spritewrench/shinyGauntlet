@@ -15,12 +15,54 @@ function move(mon, player){
           
           
           
-          
+        //firefly
+        case 80:
+            mon.angle+=mon.speed;
+            //mon.attackCD--;
+            if(mon.hp < mon.hpMax){
+              //mon.hp+= 0.005;
+            }
+            //mon.attackCD--;
+            if(mon.attackCD <= 0){
+              mon.attackCD = 100;
+              mon.holderX = mon.tarX;
+              mon.holderY = mon.tarY;
+            }              
+            
+            
+            var tx = mon.tarX - mon.x,
+                ty = mon.tarY - mon.y,
+                dist = Math.sqrt(tx*tx+ty*ty);
+
+            velX = (tx/dist)*2;
+            velY = (ty/dist)*2;     
+            mon.body.x += velX;
+            mon.body.y += velY;     
+            if(dist <= 50){
+              var randomizer = Math.floor((Math.random()*10-mon.randomizer)+1);
+              if( randomizer >= 1 && randomizer <= 5){
+                mon.tarX = player.x;
+                mon.tarY = player.y;               
+              }
+              else{
+                mon.tarX = Math.floor((Math.random()*600)+100);
+                mon.tarY = Math.floor((Math.random()*400)+100);          
+              }  
+            }       
+
+            break;
         //cultist
         case 21:           
         case 22:    
         case 23:  
         case 25:  
+            
+                      
+          if(parseInt(localStorage.getItem("biome")) == 2){
+            mon.angle+=2;
+            mon.speed =0;
+
+          }
           if( mon.attackCD > 100 ){
                 //mon.tarX = mon.x;
                 var wobble = Math.floor((Math.random()*10)-5);
@@ -36,22 +78,39 @@ function move(mon, player){
            mon.height = 64;
          
           }
-          //flash before attacking
-          if(mon.attackCD>= 5 && mon.attackCD <= 15 ){
-            mon.alpha = 10;
+          if(parseInt(localStorage.getItem("biome")) != 3){
+            //flash before attacking
+            if(mon.attackCD>= 5 && mon.attackCD <= 15 ){
+              mon.alpha = 10;
+            }
+            else{
+              mon.alpha = 1;
+            }
+            if(mon.attackCD > 1 ){
+               mon.attackCD -= 0.5;
+               //mon.alpha--;
+
+            }   
+            if(mon.attackCD <= 1){
+              //mon.alpha = 1;
+              mon.attackCD = 100+ Math.floor((Math.random()*400));
+
+            }            
           }
           else{
-            mon.alpha = 1;
+
+            if(mon.attackCD > 1 ){
+               mon.attackCD -= 0.5;
+               mon.alpha-= 0.01;
+
+            }   
+            if(mon.attackCD <= 1){
+              mon.alpha = 1;
+              mon.attackCD = 100+ Math.floor((Math.random()*400));
+
+            }            
           }
-          if(mon.attackCD > 1 ){
-             mon.attackCD -= 0.5;
-              
-
-          }   
-          if(mon.attackCD <= 1){
-            mon.attackCD = 100+ Math.floor((Math.random()*400));
-
-          }             
+             
           // walk
             var tx = mon.tarX - mon.x,
                 ty = mon.tarY - mon.y,
@@ -75,6 +134,11 @@ function move(mon, player){
 
           break;  
         case 24:  
+          if(parseInt(localStorage.getItem("biome")) == 2){
+            mon.angle+=2;
+            mon.speed =0;
+
+          }          
           if( mon.attackCD > 100 ){
                 //mon.tarX = mon.x;
                 var wobble = Math.floor((Math.random()*10)-5);
@@ -162,17 +226,33 @@ function move(mon, player){
               player.height-= 2;
               player.wep.visible = false;
               player.shield.visible = false;
-              if(player.width <= 0){
-          if(parseInt(localStorage.getItem("floorNum"))+1 <= 4){
-            localStorage.setItem("floorNum",parseInt(localStorage.getItem("floorNum"))+1);
-          }
-                localStorage.setItem("dunSize",parseInt(localStorage.getItem("dunSize"))+1);
-                localStorage.setItem("hp",player.hp);  
+              if(player.width <= 0 && player.height <= 0){
+                localStorage.setItem("floorNum",localStorage.getItem("floorNext"));
+                if(parseInt(localStorage.getItem("dunSize")) < 10){
+                  localStorage.setItem("dunSize",parseInt(localStorage.getItem("dunSize"))+1);
+                }
+                localStorage.setItem("Altlevel",player.Altlevel);
+                localStorage.setItem("level",player.level);
+                if(parseInt(localStorage.getItem("deathCount")) > 0){
+                  localStorage.setItem("level",1);
+                  localStorage.setItem("Altlevel",1);
+                  localStorage.setItem("durability",0);  
+                  localStorage.setItem("Altdurability",0);                  
+                }
+                localStorage.setItem("deathCount", 0 );
+                 localStorage.setItem("skipBonus",0);
+                localStorage.setItem("mundaneNum", parseInt(localStorage.getItem("mundaneNum"))+1);
+                localStorage.setItem("hp",player.hp); 
+                localStorage.setItem("maxhp",player.maxHp);
                 localStorage.setItem("mageSchool",player.class[1]);
                 localStorage.setItem("warriorSchool",player.class[2]);
                 localStorage.setItem("priestSchool",player.class[3]);
                 localStorage.setItem("thiefSchool",player.class[4]);  
+                localStorage.setItem("archerSchool",player.class[5]);  
 
+                
+                
+                
                 localStorage.setItem("AltwepType",player.wepAlt);
                 localStorage.setItem("AltwepPref",player.wepAltPrefix); 
                 localStorage.setItem("durability",player.wep.durability);  
@@ -231,7 +311,8 @@ function move(mon, player){
             velX = (tx/dist)*1;
             velY = (ty/dist)*1;                
             mon.body.x -= velX;
-            mon.body.y -= velY;             
+            mon.body.y -= velY;        
+            mon.light = 0.4;
           }
     
           if(dist <= 100  ){
@@ -475,21 +556,23 @@ function move(mon, player){
             }    
 
             break;
-          //trap
+          //cultist
           case 14:
-            if(mon.speed < 3){
-              mon.speed++;
-            }
-            if(mon.attackCD > 1 ){
-              mon.attackCD--;
-              
 
-            }           
-            if(mon.attackCD <= 1){
-              mon.attackCD = 100;
-              mon.tarX = player.x;
-              mon.tarY = player.y+3;
-            }           
+          //mon.speed = 10;
+          var tx = mon.tarX - mon.x,
+                ty = mon.tarY - mon.y,
+                dist = Math.sqrt(tx*tx+ty*ty);
+
+            velX = (tx/dist)*mon.speed;
+            velY = (ty/dist)*mon.speed;     
+            mon.body.x += velX;
+            mon.body.y += velY;
+            if(dist <= 10){
+              mon.hp = 0;
+            }                 
+            //return new createjs.Point(rotatedX,rotatedY);
+            break;         
       
       }
       //look for vanished player
@@ -576,17 +659,37 @@ function attack(mon, player){
   var monType = parseInt(mon.monType);
   switch(monType){
     default:        
-      
-      //warrior half damage
-      if(player.class[2] > 0){
-        player.hp-=0.5;
+      var skip = parseInt(localStorage.getItem("skipBonus")); 
+      if(skip > 0 ){
+        localStorage.setItem("skipBonus",0);
+        localStorage.setItem("floorNext",parseInt(localStorage.getItem("floorNum")) + 1 + parseInt(localStorage.getItem("skipBonus")));
+               
+        
+      }      
+
+      if(parseInt(localStorage.getItem("biome")) == 2 && mon.monType == 14){
+        player.isPoisoned += 250;
       }
-      else{
-        player.hp--;
+      else if(player.wep.prefix != 99){
+        //warrior half damage
+        if(player.class[2] > 0 ){
+          player.hp-=0.5;
+        }
+        else {
+          player.hp--;
+        } 
+              
       }
+      if(mon.monType > 10 && mon.monType <=19){
+        mon.hp = 0;
+      }      
       //alert ("brains~~");
       break;
-    case 11:        
+    /*case 11: 
+        var skip = parseInt(localStorage.getItem("skipBonus"));
+        if(skip == 1){
+          localStorage.setItem("skipBonus",0);
+        }      
       if(player.class[2] > 0){
         player.hp-=0.5;
       }
@@ -596,7 +699,11 @@ function attack(mon, player){
       mon.hp =0;
       //alert ("brains~~");
       break;
-   case 12:        
+   case 12:      
+        var skip = parseInt(localStorage.getItem("skipBonus"));
+        if(skip == 1){
+          localStorage.setItem("skipBonus",0);
+        }      
       if(player.class[2] > 0){
         player.hp-=0.5;
       }
@@ -606,7 +713,11 @@ function attack(mon, player){
       mon.hp =0;
       //alert ("brains~~");
       break;
-   case 13:        
+   case 13:  
+        var skip = parseInt(localStorage.getItem("skipBonus"));
+        if(skip == 1){
+          localStorage.setItem("skipBonus",0);
+        }      
       if(player.class[2] > 0){
         player.hp-=0.5;
       }
@@ -615,7 +726,8 @@ function attack(mon, player){
       }
       mon.hp =0;
       //alert ("brains~~");
-      break;      
+      break;   
+      */
     case 99:        
       //player.hp = 0;
       //alert ("brains~~");
@@ -668,6 +780,9 @@ function attack(mon, player){
       break;     
     case 30:        
       //alert ("brains~~");
+      break; 
+    case 80:        
+      //alert ("brains~~");
       break;       
       
       
@@ -687,7 +802,7 @@ function getHit(mon, damage, knockback){
     }
 
 
-    if( (mon.monType > 10 && mon.monType <= 19) || (mon.monType == 0) || mon.monType == 20 || mon.monType == 99 ){
+    if( (mon.monType > 10 && mon.monType <= 19) || (mon.monType == 0) || mon.monType == 20 || mon.monType == 99 || mon.monType == 80){
       //mon.hp = 0;
       if(mon.monType > 10 && mon.monType <= 19 && (mon.prefix >=1 && mon.prefix <= 2)){
         mon.knockback = 0;

@@ -42,3 +42,24 @@ canvas{
 #clickMe, #clickMe2 {
   width: 285px;
 }
+#rankMessage{
+  font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  text-align: center;
+  color: #fff;
+}
+#message{
+  font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  padding-top:250px;;
+  text-align: center;
+  color: #fff;
+}
+#instruc{
+  font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  text-align: center;
+  color: #fff;  
+}
+#nameInput{
+  width: 300px;
+  text-align: left;
+  margin: 0 auto;
+}

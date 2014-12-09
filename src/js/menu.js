@@ -13,10 +13,29 @@
         , y = (this.game.height / 2) - 100;
 
 
-      this.titleTxt = this.add.text(x, y, 'YOU DIED ON FLOOR '+localStorage.getItem("floorNum")+'!', {font: '16px nunitolight', fill: '#fff',align: 'center'});
+      this.titleTxt = this.add.text(x, y, 'YOU DIED ON FLOOR '+localStorage.getItem("floorNum")+'! \n \n Leader Board', {font: '16px nunitolight', fill: '#fff',align: 'center'});
       this.titleTxt.anchor.setTo(0.5, 0.5);
-
-      y = y + this.titleTxt.height + 5;
+    //firebase
+    var lb = new Firebase("https://shiny-gauntlet-lb.firebaseio.com/");
+    //set data
+    lb.push({ name: "patch" , score : localStorage.getItem("floorNum")});
+    // Attach an asynchronous callback to read the data at our posts reference
+    lb.on('value', function (snapshot) {
+      var high = 0;
+      var name = "";
+      var player;
+      for(player of snapshot.val()){
+        console.log(player);
+       /* if(player.score > high){
+          name = player.name;
+          high = player.score;
+        }*/
+      }
+      
+    }, function (errorObject) {
+      alert('The read failed: ' + errorObject.code);
+    });    
+      /*y = y + this.titleTxt.height + 5;
       this.startTxt = this.add.text(x, y, '[M] Main Menu', {font: '12px minecraftia',fill: '#fff', align: 'center'});
       this.startTxt.anchor.setTo(0.5, 0.5);
       
@@ -34,7 +53,7 @@
       
       y = y + this.startTxt4.height + 20;
       this.startTxt5 = this.add.text(x, y, '# of Bosses Defeated: '+localStorage.getItem("bossCount"), {font: '12px nunitolight', fill: '#fff',align: 'center'});
-      this.startTxt5.anchor.setTo(0.5, 0.5);         
+      this.startTxt5.anchor.setTo(0.5, 0.5);     */    
       
 
       this.input.onDown.add(this.onDown, this);

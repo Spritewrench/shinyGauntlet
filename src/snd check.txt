@@ -1,0 +1,10 @@
+weapon pick up*
+heart pick up*
+coin pick up*
+gem pick up*
+wep swap*
+scroll pick up*
+reflect sounds* 
+boss hit(5)
+boss crit(5)
+attack sounds(???)

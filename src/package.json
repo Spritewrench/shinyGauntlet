@@ -7,7 +7,7 @@
   
   "window": {
     "title": "Shiny_Gauntlet",
-    "icon": "link.png",
+    "icon": "player.png",
     "toolbar": false,
     "frame": true,
     "width": 800,

@@ -1,0 +1,184 @@
+<html>
+  <head>
+    <script src='https://cdn.firebase.com/js/client/1.1.1/firebase.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+
+  </head>
+  <body>
+     <h1><div id="message"></div></h1>
+     <div id="scoreMessage"></div>
+    <input class="example-leaderboard-name" type="text" id="nameInput" placeholder="            Enter a name and hit ENTER" autofocus>
+    <br/>
+    <div id="rankMessage">Calculating Rank...</div>
+    
+    </br>
+    </br>
+<div id="instruc">Press <b>[CTRL]</b> + <b>[SPACE]</b> to try again</div>
+<div id="instruc">Press <b>[DELETE]</b> to erase current user</div>    
+
+    <script>
+      var name = "patch";
+      var newScore = 0;
+      var rank = [];
+      var key = 0;      
+      var lb = new Firebase("https://shiny-gauntlet-lb.firebaseio.com/");
+      //highscore
+      if( parseInt(localStorage.getItem("floorNum")) >= parseInt(localStorage.getItem("highScore")) || localStorage.getItem("highScore") == null ){
+        localStorage.setItem("highScore",parseInt(localStorage.getItem("floorNum")));
+      }      
+      $("#message").text("Your High Score is "+parseInt(localStorage.getItem("highScore"))+"! \n You died on floor "+localStorage.getItem("floorNum")+"!");
+      $("#message").html($("#message").html().replace(/\n/g,'<br/>'));
+      //nameInput
+      //alert(document.readyState);
+      if(localStorage.getItem("name") != null ){
+        
+        document.getElementById("nameInput").style.display = 'none';
+        name = localStorage.getItem("name");
+        newScore = Number(localStorage.getItem("highScore"));
+        
+        var userScoreRef = lb.child(name);
+        playerCount = 0;
+
+        // Use setWithPriority to put the name / score in Firebase, and set the priority to be the score.
+        userScoreRef.setWithPriority({ name:name, score:newScore }, newScore);        
+      }           
+      
+    
+    //set data
+    //lb.push({ name: "patch" , score : localStorage.getItem("floorNum")});
+    // Attach an asynchronous callback to read the data at our posts reference
+
+      
+    lb.on('value', function (snapshot) {
+      
+      var player;
+      var arra = snapshot.val();
+      var playerCount = 0;
+
+      //count max number of items
+      for(player in snapshot.val()){
+        key++;
+        
+      }
+      playerCount = key;
+      for(player in snapshot.val()){
+        rank[arra[player].name] = key;
+        //console.log(arra[player].name+"  "+lb.child(name).getPriority());
+        key--;
+        
+      }  
+      
+   
+      //console.log(localStorage.getItem("highScore"));
+      if(rank[name] != undefined){
+        localStorage.setItem("rank",rank[name]);
+         $("#rankMessage").text(name+", you ranked "+rank[name]+" out of "+playerCount);
+        localStorage.setItem("rank",name+": Rank "+rank[name]+" out of "+playerCount);
+        
+        
+        //lb.child(name).update({ name:name, score:newScore });
+        //lb.child(name).setPriority(newScore);
+      }
+           
+    }, function (errorObject) {
+      alert('The read failed: ' + errorObject.code);
+    }); 
+      
+      
+      
+  $("#nameInput").keypress(function (e) {
+    if (e.keyCode == 13) {
+      newScore = Number(localStorage.getItem("highScore"));
+      name = $("#nameInput").val();
+      localStorage.setItem("name",name);
+      $("#nameInput").val("");
+
+      if (name.length === 0){
+        alert("please enter a name");
+        return;
+      }
+      
+      if (rank[name] != undefined ){
+        alert("name already taken");
+        return;  
+      }
+      
+      
+      document.getElementById("nameInput").style.display = 'none';
+
+      
+      var userScoreRef = lb.child(name);
+      playerCount = 0;
+
+      // Use setWithPriority to put the name / score in Firebase, and set the priority to be the score.
+      userScoreRef.setWithPriority({ name:name, score:newScore }, newScore);
+    }
+  });     
+
+
+  
+  var map = {32: false, 17: false};
+  //retry
+    document.addEventListener('keydown', function(event) {
+    if (event.keyCode in map) {
+        map[event.keyCode] = true;
+        if (map[32] && map[17]) {
+            // FIRE EVENT
+            localStorage.setItem("deathCount", parseInt(localStorage.getItem("deathCount"))+1 );
+            localStorage.setItem("dungeonSeed", 0 );  
+            localStorage.setItem("dunSize",5);
+            localStorage.setItem("floorNum",1);
+            localStorage.setItem("mundaneNum", 2);
+            localStorage.setItem("biome", Math.floor((Math.random()*5)));
+            localStorage.setItem("wepType",1);
+            localStorage.setItem("wepPref",0);  
+            localStorage.setItem("AltwepType",1);
+            localStorage.setItem("AltwepPref",0);
+            localStorage.setItem("durability",0);  
+            localStorage.setItem("durabilityMax",0);  
+            localStorage.setItem("Altdurability",0);  
+            localStorage.setItem("AltdurabilityMax",0);  
+            localStorage.setItem("hp",3);  
+            localStorage.setItem("maxhp",5);  
+            localStorage.setItem("mageSchool",0);
+            localStorage.setItem("warriorSchool",0);
+            localStorage.setItem("priestSchool",0);
+            localStorage.setItem("thiefSchool",0);   
+            localStorage.setItem("money",0);    
+            window.location.href = "game.html";          
+          }
+    }       
+
+
+
+    });
+    document.addEventListener('keyup', function(event)  {
+      console.log("!");
+      if (event.keyCode in map) {
+          map[event.keyCode] = false;
+      }
+    });  
+    document.addEventListener('keydown', function(event) {
+ 
+      if(event.keyCode == 46){
+        if (localStorage.getItem("name") == null){
+          alert("no user to eraser");
+          return;  
+        }    
+        localStorage.removeItem("name");
+        
+        localStorage.setItem("rank","unranked");
+        rank[name] = undefined;
+        var userScoreRef = lb.child(name);
+        userScoreRef.remove();
+        window.location.href = "dead.html";
+        
+
+      }
+
+
+    });        
+    </script>    
+  </body>
+</html>

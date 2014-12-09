@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>shiny-gauntlet</title>
-
+  <script src='https://cdn.firebase.com/js/client/1.1.1/firebase.js'></script>
   <!-- build:css main.min.css -->
   <link rel="stylesheet" href="css/main.css"> 
   <link rel="stylesheet" href="css/stylesheet.css" type="text/css" charset="utf-8" />
@@ -21,6 +21,12 @@
   <!-- build:js main.min.js -->
   <script>
     var world = new Object();
+    
+
+    
+    
+    localStorage.setItem("floorNext",parseInt(localStorage.getItem("floorNum")) + 1 + parseInt(localStorage.getItem("skipBonus")));
+    
     var seed = localStorage.getItem("dungeonSeed");
     localStorage.setItem("roomCount",0);
     localStorage.setItem("bossCount",0);
@@ -73,7 +79,7 @@
     }
     
     
-    
+    placeMon(0,0,0,0,0);
    //arrange dungeon
     var holderX = 0;
     var holderY = 0;
@@ -104,7 +110,7 @@
 
 
  
-    //reset position if ero starts at end
+    //reset position if hero starts at end
     if( localStorage.getItem("winX") ==   localStorage.getItem("heroStartX")
     && localStorage.getItem("winY") ==   localStorage.getItem("heroStartY")){
       window.location.href = "game.html"; 
@@ -150,7 +156,7 @@ function lost(x,y){
   //control wep drops
 
    randomizer = Math.floor((Math.random()*10));
-  if(randomizer == 0  || randomizer == 5 || randomizer == 9){
+  if(randomizer == 0  || randomizer == 5 || randomizer == 9 || (x == parseInt(localStorage.getItem("heroStartX")) && y == parseInt(localStorage.getItem("heroStartY")))){
     monType = Math.floor((Math.random()*4)+6);
   }
   else if(randomizer != 3 && randomizer != 4 && randomizer != 5 && randomizer != 6 && randomizer != 7){
@@ -172,31 +178,31 @@ function lost(x,y){
       //monType = 6;
       if(monType > 5){
         randomizer = 1;//Math.floor((Math.random()*2)+1);
-        monPref = Math.floor((Math.random()*4)+1);
+
+        monPref = Math.floor((Math.random()*5)+1);// + parseInt(localStorage.getItem("biome"))*10;
+        
+        if(parseInt(localStorage.getItem("floorNum")) % 3 == 0){
+          monPref = Math.floor((Math.random()*5)+1) ;// + (parseInt(localStorage.getItem("biome"))+1)*10;
+        }
+        
         //monPref = 1;
         
         //only certain classes get certain weapons
         switch(monPref){
+            case 11:
             case 1:
-              
+              monPref = 1;
               if(randomizer == 1){
                 monType = 6;
               }
               else{
                 monType = 8;
               }
-              //level up wizard
-              if(localStorage.getItem("mageSchool") == 1){
-                  //monPref = 11;
-              }
-              if(localStorage.getItem("priestSchool") == 1){
-                 // monPref = 13;
-              }   
-              if(localStorage.getItem("thiefSchool") == 1){
-                 // monPref = 14;
-              }               
+             
               break;
+            case 22:
             case 2:
+              monPref = 2;
               if(randomizer == 1){
                 monType = 7;
               }
@@ -204,18 +210,11 @@ function lost(x,y){
                 monType = 6;
               }            
               
-              //level up Champion
-              if(localStorage.getItem("warriorSchool") == 1 ){
-                //monPref = 22;
-              } 
-              if(localStorage.getItem("priestSchool") == 1){
-                  //monPref = 23;
-              }  
-              if(localStorage.getItem("thiefSchool") == 1){
-                //  monPref = 24;
-              }             
+           
               break;
+            case 33:
             case 3:
+              monPref = 3;
               if(randomizer == 1){
                 monType = 6;
               }
@@ -223,45 +222,79 @@ function lost(x,y){
                 monType = 9;
               }      
      
-              if(localStorage.getItem("priestSchool") == 1){
-                 // monPref = 33;
-              }             
-              //level up bishop
-              if(localStorage.getItem("mageSchool") == 1 ){
-               // monPref = 13;
-              }      
-              //level up templar
-              if(localStorage.getItem("warriorSchool") == 1 ){
-                //monPref = 23;
-              }                    
+                  
               break;
+            case 44:
             case 4:
+              monPref = 4;
               if(randomizer == 1){
                 monType = 8;
               }
               else{
                 monType = 6;
               }        
-              if(localStorage.getItem("thiefSchool") == 1){
-                 // monPref = 44;
-              }                     
-              //level up cultist
-              if(localStorage.getItem("mageSchool") == 1 ){
-              //  monPref = 14;
+              
+              break;
+            case 55:
+            case 5:
+              monPref = 5;
+              if(randomizer == 1){
+                monType = 9;
+              }
+              else{
+                monType = 6;
+              } 
+              break;
+            case 12:
+              if(randomizer == 1){
+                monType = 6;
+              }
+              else{
+                monType = 6;
               }  
-              //level up bandit
-              if(localStorage.getItem("warriorSchool") == 1 ){
-                // monPref = 24;
-              }                
-              break;            
+              break;
+            case 13:
+              if(randomizer == 1){
+                monType = 7;
+              }
+              else{
+                monType = 6;
+              }
+              break;
+            case 14:
+              if(randomizer == 1){
+                monType = 6;
+              }
+              else{
+                monType = 6;
+              }   
+              break;
+            case 15:
+              if(randomizer == 1){
+                monType = 9;
+              }
+              else{
+                monType = 6;
+              }               
+           
+              break;
+            
         }        
       }
 
         
         
-      //monster stats    
+      //monster stats  
       
-      placeMon(x,y,monType,monPref,k);
+      if(x == parseInt(localStorage.getItem("heroStartX")) && y == parseInt(localStorage.getItem("heroStartY"))){
+		placeMon(x,y,0,0,k);
+        
+      }
+      else{
+        //
+        placeMon(x,y,monType,monPref,k);
+      }
+      
      
     }   
   
@@ -290,6 +323,7 @@ function lost(x,y){
       world[''+i+j].mon[k].def = 0;
       world[''+i+j].mon[k].size = 128;
       world[''+i+j].mon[k].prefix = parseInt(monPref);
+      world[''+i+j].mon[k].level = parseInt(localStorage.getItem("floorNum"));
       var prefix = "<Insert Prefix>";
       var ability = "";
       //prefix system
@@ -302,30 +336,30 @@ function lost(x,y){
       switch( world[''+i+j].mon[k].monType){
         case 0:
           monName = "";
-          world[''+i+j].mon[k].hp = 100;
+          world[''+i+j].mon[k].hp = 100 + (parseInt(localStorage.getItem("floorNum")) *10);
           break;
         case 1:
           monName = "Minotaur";
-          world[''+i+j].mon[k].hp = 100;
+          world[''+i+j].mon[k].hp = 100 + (parseInt(localStorage.getItem("floorNum")) *10);
           break;
         case 2:
           monName = "Slime";
-          world[''+i+j].mon[k].hp = 100;
+          world[''+i+j].mon[k].hp = 100 + (parseInt(localStorage.getItem("floorNum")) *10);
           world[''+i+j].mon[k].speed = 4;
           break;   
         case 3:
           monName = "Lich";
-          world[''+i+j].mon[k].hp = 100;
+          world[''+i+j].mon[k].hp = 100 + (parseInt(localStorage.getItem("floorNum")) *10);
           world[''+i+j].mon[k].speed = 3;
           break;  
         case 4:
           monName = "Scion";
-          world[''+i+j].mon[k].hp = 100;
+          world[''+i+j].mon[k].hp = 100 + (parseInt(localStorage.getItem("floorNum")) *10);
 
           break;
         case 5:
           monName = "Dragon";
-          world[''+i+j].mon[k].hp = 100;
+          world[''+i+j].mon[k].hp = 100 + (parseInt(localStorage.getItem("floorNum")) *10);
           world[''+i+j].mon[k].speed = 1;
 
           break;              
@@ -343,6 +377,7 @@ function lost(x,y){
           break;    
 
       }
+      world[''+i+j].mon[k].maxHp = world[''+i+j].mon[k].hp;
       if(world[''+i+j].mon[k].monType == 0){
         world[''+i+j].mon[k].name = 'pit';
         monName = "";
@@ -429,6 +464,7 @@ function lost(x,y){
             switch(world[''+i+j].mon[k].monType){
                 case 6:
                   monName = "Rod";
+                  world[''+i+j].mon[k].hp = 25+ (parseInt(localStorage.getItem("floorNum")) *10);;
                   break;
                 case 7:
                   monName = "Staff";
@@ -444,8 +480,8 @@ function lost(x,y){
           //Warriror
           case 2:
             prefix = "Warrior's";
-            ability = "Passive Ability: Press <space> to block (Shield taunts enemies)";
-            
+            ability = "Active Ability: Press <space> to block (Shield taunts enemies)";
+            world[''+i+j].mon[k].hp = 30+ (parseInt(localStorage.getItem("floorNum")) *10);;
             break;  
           //Priest
           case 3:
@@ -454,6 +490,7 @@ function lost(x,y){
             switch(world[''+i+j].mon[k].monType){
                 case 6:
                   monName = "Rod";
+                  world[''+i+j].mon[k].hp = 15+ (parseInt(localStorage.getItem("floorNum")) *10);;
                   break;
      
             }            
@@ -463,8 +500,14 @@ function lost(x,y){
           case 4:
             prefix = "Thief's";
             ability = "Active Ability: Press <space> to vanish";
-            
+            world[''+i+j].mon[k].hp = 25+ (parseInt(localStorage.getItem("floorNum")) *10);;
             break;
+          //Archer
+          case 5:
+            prefix = "Archer's";
+            ability = "Active Ability: Press <space> to reload";
+            world[''+i+j].mon[k].hp = 30+ (parseInt(localStorage.getItem("floorNum")) *10);;
+            break;            
           //Wizard
           case 11:
             prefix = "Wizard's";
@@ -544,6 +587,7 @@ function lost(x,y){
 
       }
         world[''+i+j].msg = ""+prefix+" "+monName+"\n ";  
+        world[''+i+j].mon[k].title = ""+prefix+" "+monName+" Lvl: "+localStorage.getItem("floorNum");
         if(world[''+i+j].mon[k].monType > 5 && world[''+i+j].mon[k].monType < 10){
           world[''+i+j].msg = "";//""+prefix+" "+monName+"\n ";  
         }   

@@ -53,10 +53,17 @@
    
     function genDungeon(){
 
-
+        localStorage.setItem("deathCount", 0 );
+        localStorage.setItem("skipBonus",0);
         localStorage.setItem("dungeonSeed", 0 );  
         localStorage.setItem("dunSize",5);
-        localStorage.setItem("floorNum",0);
+        localStorage.setItem("floorNum",1);
+        localStorage.setItem("biome",0);
+        localStorage.setItem("mundaneNum", 2);
+      
+        localStorage.setItem("level",1);
+        localStorage.setItem("Altlevel",1);      
+        
         localStorage.setItem("wepType",1);
         localStorage.setItem("wepPref",0);   
         localStorage.setItem("AltwepType",1);
@@ -71,7 +78,8 @@
         localStorage.setItem("mageSchool",0);
         localStorage.setItem("warriorSchool",0);
         localStorage.setItem("priestSchool",0);
-        localStorage.setItem("thiefSchool",0);      
+        localStorage.setItem("thiefSchool",0);  
+        localStorage.setItem("archerSchool",0);  
         window.location.href = "game.html";   
         localStorage.setItem("musicCtrl",0);
     }
