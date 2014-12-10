@@ -3939,7 +3939,7 @@ var bgmusic = null;
         this.player.alpha += (0 -  this.player.alpha)*0.1;
         if( this.player.alpha <= 0.1){
           //this.game.state.start('menu');
-          window.location.href = "dead.html";
+          window.location.href = "app://shiny/dead.html";
           //localStorage.setItem("hp",3); 
          // localStorage.setItem("maxhp",5);
           //localStorage.setItem("",3); 
